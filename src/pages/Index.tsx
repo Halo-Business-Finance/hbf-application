@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, HelpCircle } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogIn } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -79,6 +79,50 @@ const Index = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show auth prompt for unauthenticated users
+  if (!authenticated && !loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              Halo Business Finance
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Your Commercial Loan Marketplace
+            </p>
+          </div>
+
+          {/* Auth Required Card */}
+          <Card className="max-w-md mx-auto">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                <LogIn className="w-6 h-6" />
+                Authentication Required
+              </CardTitle>
+              <CardDescription className="text-base">
+                Please sign in or create an account to access loan applications and manage your submissions.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button 
+                size="lg" 
+                className="w-full"
+                onClick={() => navigate('/auth')}
+              >
+                Sign In / Sign Up
+              </Button>
+              <p className="text-sm text-muted-foreground text-center">
+                New to Halo Business Finance? You can create an account quickly and securely.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
