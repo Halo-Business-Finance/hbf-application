@@ -5,11 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, HelpCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/contexts/AuthContext";
+import ApplicationsList from "@/components/ApplicationsList";
+import RefinanceForm from "@/components/forms/RefinanceForm";
+import BridgeLoanForm from "@/components/forms/BridgeLoanForm";
 
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { authenticated, loading } = useAuth();
   
   const loanTypeId = searchParams.get('id');
 
@@ -67,6 +72,17 @@ const Index = () => {
     navigate('/');
     setSelectedLoanType(null);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
@@ -152,47 +168,45 @@ const Index = () => {
         {/* Loan Application Forms */}
         {selectedLoanType && (
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {loanTypes.find(lt => lt.id === selectedLoanType)?.title} Application
-                </CardTitle>
-                <CardDescription>
-                  Complete the form below to start your loan application
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground mb-4">
-                    Loan application form for {loanTypes.find(lt => lt.id === selectedLoanType)?.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Form component will be implemented next
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {selectedLoanType === 1 && <RefinanceForm />}
+            {selectedLoanType === 2 && <BridgeLoanForm />}
+            {selectedLoanType === 3 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Purchase Application</CardTitle>
+                  <CardDescription>Form coming soon</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 4 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Franchise Loan Application</CardTitle>
+                  <CardDescription>Form coming soon</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 5 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Factoring Application</CardTitle>
+                  <CardDescription>Form coming soon</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 6 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Working Capital Application</CardTitle>
+                  <CardDescription>Form coming soon</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
           </div>
         )}
 
         {/* Applications List */}
-        {!selectedLoanType && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Applications</CardTitle>
-              <CardDescription>
-                Track the status of your loan applications
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">
-                  No applications found. Start by selecting a loan type above.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {!selectedLoanType && authenticated && <ApplicationsList />}
       </div>
     </div>
   );
