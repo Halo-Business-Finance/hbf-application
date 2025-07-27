@@ -14,7 +14,105 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      loan_applications: {
+        Row: {
+          amount_requested: number | null
+          application_number: string | null
+          application_started_date: string | null
+          application_submitted_date: string | null
+          business_address: string | null
+          business_city: string | null
+          business_name: string | null
+          business_state: string | null
+          business_zip: string | null
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          loan_details: Json | null
+          loan_type: Database["public"]["Enums"]["loan_type"]
+          phone: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+          user_id: string
+          years_in_business: number | null
+        }
+        Insert: {
+          amount_requested?: number | null
+          application_number?: string | null
+          application_started_date?: string | null
+          application_submitted_date?: string | null
+          business_address?: string | null
+          business_city?: string | null
+          business_name?: string | null
+          business_state?: string | null
+          business_zip?: string | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          loan_details?: Json | null
+          loan_type: Database["public"]["Enums"]["loan_type"]
+          phone?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+          user_id: string
+          years_in_business?: number | null
+        }
+        Update: {
+          amount_requested?: number | null
+          application_number?: string | null
+          application_started_date?: string | null
+          application_submitted_date?: string | null
+          business_address?: string | null
+          business_city?: string | null
+          business_name?: string | null
+          business_state?: string | null
+          business_zip?: string | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          loan_details?: Json | null
+          loan_type?: Database["public"]["Enums"]["loan_type"]
+          phone?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+          user_id?: string
+          years_in_business?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          business_name: string | null
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_name?: string | null
+          created_at?: string
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +121,20 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      application_status:
+        | "draft"
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "funded"
+      loan_type:
+        | "refinance"
+        | "bridge_loan"
+        | "purchase"
+        | "franchise"
+        | "factoring"
+        | "working_capital"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +261,23 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      application_status: [
+        "draft",
+        "submitted",
+        "under_review",
+        "approved",
+        "rejected",
+        "funded",
+      ],
+      loan_type: [
+        "refinance",
+        "bridge_loan",
+        "purchase",
+        "franchise",
+        "factoring",
+        "working_capital",
+      ],
+    },
   },
 } as const
