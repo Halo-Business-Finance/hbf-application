@@ -45,11 +45,12 @@ const Navbar = () => {
     <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-slate-900 text-white">
       {/* Logo */}
       <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
-        <img 
-          src="/logo.svg" 
-          alt="Halo Business Finance" 
-          className="h-10 w-auto"
-        />
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-lg">H</span>
+          </div>
+          <span className="text-white font-bold text-xl">Halo Business Finance</span>
+        </div>
       </div>
 
       {/* Navigation Items */}
@@ -94,7 +95,7 @@ const Navbar = () => {
               
               <DropdownMenuContent 
                 align="end" 
-                className="w-56 bg-background border shadow-lg z-50"
+                className="w-56 bg-background border shadow-lg z-50 backdrop-blur-sm"
               >
                 <DropdownMenuItem 
                   onClick={() => navigate('/change-password')}

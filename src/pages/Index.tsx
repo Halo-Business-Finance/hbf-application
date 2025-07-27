@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, HelpCircle, LogIn } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,37 +28,37 @@ const Index = () => {
     {
       id: 1,
       title: "Refinance of Property",
-      icon: "/loantypes/refinance.svg",
+      icon: Home,
       description: "Refinance your existing commercial property"
     },
     {
       id: 2,
       title: "Bridge Loan",
-      icon: "/loantypes/bridge.svg", 
+      icon: Building2, 
       description: "Short-term financing to bridge the gap"
     },
     {
       id: 3,
       title: "Purchase of Property",
-      icon: "/loantypes/purchase.svg",
+      icon: CreditCard,
       description: "Finance the purchase of commercial property"
     },
     {
       id: 4,
       title: "Franchise Loan",
-      icon: "/loantypes/businessterm.svg",
+      icon: Store,
       description: "Financing for franchise opportunities"
     },
     {
       id: 5,
       title: "Factoring Loan", 
-      icon: "/loantypes/sba.svg",
+      icon: Banknote,
       description: "Convert receivables to immediate cash"
     },
     {
       id: 6,
       title: "Working Capital",
-      icon: "/loantypes/shorttermbusiness.svg",
+      icon: TrendingUp,
       description: "Finance day-to-day business operations"
     }
   ];
@@ -174,36 +174,37 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {loanTypes.map((loanType) => (
-                  <Card
-                    key={loanType.id}
-                    className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-primary/50 group"
-                    onClick={() => handleLoanTypeSelect(loanType.id)}
-                  >
-                    <CardContent className="p-6 text-center">
-                      <div className="mb-4 flex justify-center relative">
-                        <img 
-                          src={loanType.icon} 
-                          alt={loanType.title}
-                          className="w-20 h-20 object-contain"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
-                        >
-                          <HelpCircle className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
-                        {loanType.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {loanType.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
+                {loanTypes.map((loanType) => {
+                  const IconComponent = loanType.icon;
+                  return (
+                    <Card
+                      key={loanType.id}
+                      className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-primary/50 group"
+                      onClick={() => handleLoanTypeSelect(loanType.id)}
+                    >
+                      <CardContent className="p-6 text-center">
+                        <div className="mb-4 flex justify-center relative">
+                          <div className="w-20 h-20 flex items-center justify-center bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                            <IconComponent className="w-10 h-10 text-primary" />
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
+                          {loanType.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {loanType.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
