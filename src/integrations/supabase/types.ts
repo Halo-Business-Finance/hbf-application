@@ -14,6 +14,309 @@ export type Database = {
   }
   public: {
     Tables: {
+      crm_activities: {
+        Row: {
+          activity_type: string
+          completed_at: string | null
+          contact_id: string | null
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          external_crm_id: string | null
+          id: string
+          opportunity_id: string | null
+          priority: string | null
+          scheduled_at: string | null
+          status: string | null
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          completed_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          external_crm_id?: string | null
+          id?: string
+          opportunity_id?: string | null
+          priority?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          completed_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          external_crm_id?: string | null
+          id?: string
+          opportunity_id?: string | null
+          priority?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_activities_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "crm_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_contacts: {
+        Row: {
+          assigned_to: string | null
+          company_name: string | null
+          contact_type: string | null
+          created_at: string
+          custom_fields: Json | null
+          email: string
+          external_crm_id: string | null
+          first_name: string
+          id: string
+          job_title: string | null
+          last_contact_date: string | null
+          last_name: string
+          lead_source: string | null
+          lead_status: string | null
+          next_follow_up_date: string | null
+          notes: string | null
+          phone: string | null
+          tags: string[] | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          company_name?: string | null
+          contact_type?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          email: string
+          external_crm_id?: string | null
+          first_name: string
+          id?: string
+          job_title?: string | null
+          last_contact_date?: string | null
+          last_name: string
+          lead_source?: string | null
+          lead_status?: string | null
+          next_follow_up_date?: string | null
+          notes?: string | null
+          phone?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          company_name?: string | null
+          contact_type?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          email?: string
+          external_crm_id?: string | null
+          first_name?: string
+          id?: string
+          job_title?: string | null
+          last_contact_date?: string | null
+          last_name?: string
+          lead_source?: string | null
+          lead_status?: string | null
+          next_follow_up_date?: string | null
+          notes?: string | null
+          phone?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      crm_integration_settings: {
+        Row: {
+          api_endpoint: string | null
+          created_at: string
+          external_crm_name: string
+          field_mappings: Json | null
+          id: string
+          last_sync_at: string | null
+          settings: Json | null
+          sync_direction: string | null
+          sync_enabled: boolean | null
+          updated_at: string
+          user_id: string
+          webhook_url: string | null
+        }
+        Insert: {
+          api_endpoint?: string | null
+          created_at?: string
+          external_crm_name?: string
+          field_mappings?: Json | null
+          id?: string
+          last_sync_at?: string | null
+          settings?: Json | null
+          sync_direction?: string | null
+          sync_enabled?: boolean | null
+          updated_at?: string
+          user_id: string
+          webhook_url?: string | null
+        }
+        Update: {
+          api_endpoint?: string | null
+          created_at?: string
+          external_crm_name?: string
+          field_mappings?: Json | null
+          id?: string
+          last_sync_at?: string | null
+          settings?: Json | null
+          sync_direction?: string | null
+          sync_enabled?: boolean | null
+          updated_at?: string
+          user_id?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      crm_opportunities: {
+        Row: {
+          actual_close_date: string | null
+          assigned_to: string | null
+          contact_id: string
+          created_at: string
+          custom_fields: Json | null
+          expected_close_date: string | null
+          external_crm_id: string | null
+          id: string
+          loan_amount: number | null
+          loan_application_id: string | null
+          loan_type: string
+          loss_reason: string | null
+          notes: string | null
+          opportunity_name: string
+          probability: number | null
+          stage: string | null
+          updated_at: string
+        }
+        Insert: {
+          actual_close_date?: string | null
+          assigned_to?: string | null
+          contact_id: string
+          created_at?: string
+          custom_fields?: Json | null
+          expected_close_date?: string | null
+          external_crm_id?: string | null
+          id?: string
+          loan_amount?: number | null
+          loan_application_id?: string | null
+          loan_type: string
+          loss_reason?: string | null
+          notes?: string | null
+          opportunity_name: string
+          probability?: number | null
+          stage?: string | null
+          updated_at?: string
+        }
+        Update: {
+          actual_close_date?: string | null
+          assigned_to?: string | null
+          contact_id?: string
+          created_at?: string
+          custom_fields?: Json | null
+          expected_close_date?: string | null
+          external_crm_id?: string | null
+          id?: string
+          loan_amount?: number | null
+          loan_application_id?: string | null
+          loan_type?: string
+          loss_reason?: string | null
+          notes?: string | null
+          opportunity_name?: string
+          probability?: number | null
+          stage?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_opportunities_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_opportunities_loan_application_id_fkey"
+            columns: ["loan_application_id"]
+            isOneToOne: false
+            referencedRelation: "loan_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_sync_log: {
+        Row: {
+          created_at: string
+          data_payload: Json | null
+          entity_id: string | null
+          entity_type: string
+          error_message: string | null
+          external_id: string | null
+          id: string
+          operation: string
+          processing_time_ms: number | null
+          status: string
+          sync_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_payload?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          operation: string
+          processing_time_ms?: number | null
+          status: string
+          sync_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_payload?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          operation?: string
+          processing_time_ms?: number | null
+          status?: string
+          sync_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       loan_applications: {
         Row: {
           amount_requested: number | null
