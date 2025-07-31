@@ -8,7 +8,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, KeyRound, Home, User } from 'lucide-react';
+import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { LogOut, KeyRound, Home, User, Settings, FileText, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
@@ -97,6 +98,24 @@ const Navbar = () => {
                 align="end" 
                 className="w-56 bg-background border shadow-lg z-50 backdrop-blur-sm"
               >
+                <DropdownMenuItem 
+                  onClick={() => navigate('/portal')}
+                  className="cursor-pointer hover:bg-muted"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  My Portal
+                </DropdownMenuItem>
+
+                <DropdownMenuItem 
+                  onClick={() => navigate('/admin')}
+                  className="cursor-pointer hover:bg-muted"
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin Dashboard
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator />
+                
                 <DropdownMenuItem 
                   onClick={() => navigate('/change-password')}
                   className="cursor-pointer hover:bg-muted"
