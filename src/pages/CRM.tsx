@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,12 @@ import {
   RefreshCw,
   CheckCircle,
   Clock,
-  ExternalLink
+  ExternalLink,
+  Shield,
+  FileText,
+  Eye,
+  Edit,
+  AlertTriangle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,11 +89,42 @@ const CRM = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [loanApplications, setLoanApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTab, setSelectedTab] = useState("contacts");
+  const [selectedTab, setSelectedTab] = useState("applications");
   const { toast } = useToast();
   const { user } = useAuth();
+
+  // Employee access check - In production, check against employee roles
+  const isEmployee = user?.email?.includes('@halibusinessfinance.com') || user?.email?.includes('@admin.com');
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (!isEmployee) {
+    return (
+      <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4">
+        <Card className="max-w-md mx-auto shadow-xl border-0 bg-card/95 backdrop-blur-sm">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-8 h-8 text-destructive" />
+            </div>
+            <CardTitle className="text-2xl text-foreground">Access Restricted</CardTitle>
+            <CardDescription className="text-base">
+              This CRM system is only accessible to Halo Business Finance employees for loan underwriting and processing.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => window.history.back()} className="w-full">
+              Return to Application
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (user) {
@@ -196,10 +233,10 @@ const CRM = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-4xl font-bold font-display text-foreground mb-2">
-                CRM Dashboard
+                Employee CRM Portal
               </h1>
               <p className="text-lg text-muted-foreground">
-                Manage your leads, contacts, and opportunities
+                Underwrite and process loan applications • Manage borrower relationships
               </p>
             </div>
             <div className="flex gap-3">
@@ -301,7 +338,11 @@ const CRM = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="animate-scale-in">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsTrigger value="applications" className="gap-2">
+              <FileText className="w-4 h-4" />
+              Applications
+            </TabsTrigger>
             <TabsTrigger value="contacts" className="gap-2">
               <Users className="w-4 h-4" />
               Contacts
@@ -319,6 +360,40 @@ const CRM = () => {
               Integration
             </TabsTrigger>
           </TabsList>
+
+          {/* Loan Applications Tab */}
+          <TabsContent value="applications">
+            <Card className="border-0 shadow-lg bg-card/95 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl">Loan Applications</CardTitle>
+                  <CardDescription>Review and process submitted loan applications</CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" className="gap-2">
+                    <RefreshCw className="w-4 h-4" />
+                    Sync Applications
+                  </Button>
+                  <Button className="gap-2 bg-gradient-primary">
+                    <ExternalLink className="w-4 h-4" />
+                    Export to LoanFlow
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="text-center py-12">
+                    <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground mb-2">No Applications Available</h3>
+                    <p className="text-muted-foreground">
+                      Loan applications will appear here for underwriting review. 
+                      They will be automatically imported when borrowers submit applications.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Contacts Tab */}
           <TabsContent value="contacts">

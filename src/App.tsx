@@ -12,6 +12,7 @@ import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
 import CRM from "./pages/CRM";
 import Layout from "./components/Layout";
+import AuthContextProvider from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 

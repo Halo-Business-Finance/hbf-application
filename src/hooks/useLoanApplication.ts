@@ -75,6 +75,21 @@ export const useLoanApplication = () => {
       const result = await loanApplicationService.processApplication(applicationData);
 
       if (result.success) {
+        // Auto-sync to CRM for employee processing
+        try {
+          await supabase.functions.invoke('crm-integration', {
+            body: { 
+              action: 'sync_loan_application', 
+              data: { 
+                applicationId: result.application.id,
+                ...result.application 
+              } 
+            }
+          });
+        } catch (crmError) {
+          console.log('CRM sync failed (non-critical):', crmError);
+        }
+
         // Send confirmation notification
         await notificationService.sendApplicationSubmittedNotification(
           user.email || `${applicationData.first_name}@example.com`,
