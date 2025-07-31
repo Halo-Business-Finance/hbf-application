@@ -36,10 +36,23 @@ serve(async (req) => {
   }
 
   try {
+    // Get authorization header
+    const authHeader = req.headers.get('authorization');
+    
     const supabase = createClient(
       "https://zosgzkpfgaaadadezpxo.supabase.co",
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpvc2d6a3BmZ2FhYWRhZGV6cHhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM1NzAxMjgsImV4cCI6MjA2OTE0NjEyOH0.r2puMuMTlbLkXqceD7MfC630q_W0K-9GbI632BtFJOY"
     );
+
+    // Get user from token for authenticated requests
+    let userId = null;
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+      if (user && !userError) {
+        userId = user.id;
+      }
+    }
 
     const { action, applicationData, applicationId } = await req.json();
 
@@ -48,7 +61,7 @@ serve(async (req) => {
         return await validateApplication(applicationData);
       
       case 'process':
-        return await processApplication(supabase, applicationData);
+        return await processApplication(supabase, applicationData, userId);
       
       case 'updateStatus':
         return await updateApplicationStatus(supabase, applicationId, applicationData.status, applicationData.notes);
@@ -154,8 +167,19 @@ async function validateApplication(applicationData: LoanApplicationData): Promis
   );
 }
 
-async function processApplication(supabase: any, applicationData: LoanApplicationData): Promise<Response> {
+async function processApplication(supabase: any, applicationData: LoanApplicationData, userId?: string): Promise<Response> {
   try {
+    // Check if user is authenticated for application submission
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Authentication required to submit application'
+        }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // First validate the application
     const validationResponse = await validateApplication(applicationData);
     const validation = await validationResponse.json();
@@ -187,6 +211,7 @@ async function processApplication(supabase: any, applicationData: LoanApplicatio
       .from('loan_applications')
       .insert({
         ...applicationData,
+        user_id: userId,
         application_number: applicationNumber,
         status: initialStatus,
         application_submitted_date: new Date().toISOString(),
