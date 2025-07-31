@@ -551,11 +551,11 @@ const AdminUserManagement = () => {
                         </div>
                         <div className="flex gap-2">
                           <Select onValueChange={(value: string) => handleUpdateUserRole(user.id, value as 'admin' | 'user' | 'manager')}>
-                            <SelectTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Shield className="w-4 h-4 mr-1" />
-                                Role
-                              </Button>
+                            <SelectTrigger className="w-[120px]">
+                              <div className="flex items-center gap-1">
+                                <Shield className="w-4 h-4" />
+                                <span>Role</span>
+                              </div>
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="user">User</SelectItem>
@@ -563,11 +563,12 @@ const AdminUserManagement = () => {
                               <SelectItem value="admin">Admin</SelectItem>
                             </SelectContent>
                           </Select>
-                          <Select onValueChange={(value) => handleUpdateUserStatus(user.id, value as 'active' | 'inactive' | 'suspended')}>
-                            <SelectTrigger asChild>
-                              <Button variant="outline" size="sm">
+                          <Select onValueChange={(value: string) => handleUpdateUserStatus(user.id, value as 'active' | 'inactive' | 'suspended')}>
+                            <SelectTrigger className="w-[120px]">
+                              <div className="flex items-center gap-1">
                                 <MoreHorizontal className="w-4 h-4" />
-                              </Button>
+                                <span>Actions</span>
+                              </div>
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="active">Activate</SelectItem>
