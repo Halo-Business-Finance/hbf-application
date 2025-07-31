@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import ApplicationsList from "@/components/ApplicationsList";
 import RefinanceForm from "@/components/forms/RefinanceForm";
 import BridgeLoanForm from "@/components/forms/BridgeLoanForm";
+import WorkingCapitalForm from "@/components/forms/WorkingCapitalForm";
 
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
@@ -239,14 +240,7 @@ const Index = () => {
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 6 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Working Capital Application</CardTitle>
-                  <CardDescription>Form coming soon</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
+            {selectedLoanType === 6 && <WorkingCapitalForm />}
           </div>
         )}
 

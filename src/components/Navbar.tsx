@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, User, Settings, FileText, Shield } from 'lucide-react';
+import { LogOut, KeyRound, Home, User, Settings, FileText, Shield, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
@@ -112,6 +112,14 @@ const Navbar = () => {
                 >
                   <Shield className="w-4 h-4 mr-2" />
                   Admin Dashboard
+                </DropdownMenuItem>
+
+                <DropdownMenuItem 
+                  onClick={() => navigate('/admin/users')}
+                  className="cursor-pointer hover:bg-muted"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  User Management
                 </DropdownMenuItem>
                 
                 <DropdownMenuSeparator />

@@ -387,7 +387,7 @@ const AdminDashboard = () => {
                               </p>
                             </div>
                             <div className="flex gap-2">
-                              <Button variant="outline" size="sm">
+                              <Button variant="outline" size="sm" onClick={() => navigate(`/admin/loans/${application.id}`)}>
                                 <Eye className="w-4 h-4" />
                               </Button>
                               <Select onValueChange={(value) => updateApplicationStatus(application.id, value)}>
