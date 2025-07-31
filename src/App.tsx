@@ -10,7 +10,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLoanDetail from "./pages/AdminLoanDetail";
 import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
-import AuthContextProvider from "./contexts/AuthContext";
+import CRM from "./pages/CRM";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -28,7 +28,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/loans/:id" element={<AdminLoanDetail />} />
-              <Route path="/admin/users" element={<AdminUserManagement />} />
+              <Route path="/crm" element={<CRM />} />
               <Route path="/portal" element={<BorrowerPortal />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
