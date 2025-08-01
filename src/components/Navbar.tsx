@@ -70,7 +70,7 @@ const Navbar = () => {
               size="lg" 
               variant="outline"
               onClick={() => navigate('/')}
-              className="border-white text-white hover:bg-white hover:text-slate-900 transition-colors"
+              className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-slate-900 transition-colors"
             >
               <Home className="w-4 h-4 mr-2" />
               Home
