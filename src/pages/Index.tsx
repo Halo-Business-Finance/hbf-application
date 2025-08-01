@@ -28,98 +28,66 @@ const Index = () => {
   const loanTypes = [
     {
       id: 1,
-      title: "Refinance Property",
-      icon: Home,
-      description: "Optimize your existing commercial property financing",
+      title: "SBA 7(a) Loans",
+      icon: Shield,
+      description: "Versatile financing for working capital, equipment, and real estate purchases",
       badge: "Popular",
       badgeColor: "bg-primary"
     },
     {
       id: 2,
-      title: "Bridge Loan",
-      icon: Building2, 
-      description: "Short-term financing for immediate opportunities",
-      badge: "Fast",
-      badgeColor: "bg-accent"
-    },
-    {
-      id: 3,
-      title: "Working Capital",
-      icon: TrendingUp,
-      description: "Fuel your business operations and growth",
-      badge: "Available",
-      badgeColor: "bg-accent"
-    },
-    {
-      id: 4,
-      title: "SBA 7(a) Loan",
-      icon: Shield,
-      description: "Government-backed loans for business expansion and operations",
-      badge: "Low Rates",
-      badgeColor: "bg-primary"
-    },
-    {
-      id: 5,
-      title: "SBA 504 Loan",
+      title: "SBA 504 Loans",
       icon: Building,
-      description: "Fixed-rate financing for real estate and equipment purchases",
+      description: "Fixed-rate financing for real estate and major equipment purchases",
       badge: "Fixed Rate",
       badgeColor: "bg-primary"
     },
     {
-      id: 6,
+      id: 3,
+      title: "Bridge Loans",
+      icon: Building2, 
+      description: "Short-term financing to bridge cash flow gaps while securing permanent financing",
+      badge: "Fast",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 4,
+      title: "Conventional Loans",
+      icon: CreditCard,
+      description: "Traditional commercial financing for established businesses with strong credit profiles",
+      badge: "Available",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 5,
       title: "Equipment Financing",
       icon: Settings,
-      description: "Purchase or lease business equipment and machinery",
+      description: "Fund new or used equipment purchases with competitive terms",
+      badge: "Available",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 6,
+      title: "Working Capital",
+      icon: TrendingUp,
+      description: "Bridge cash flow gaps and fund day-to-day business operations",
       badge: "Available",
       badgeColor: "bg-accent"
     },
     {
       id: 7,
-      title: "Property Purchase",
+      title: "Business Line of Credit",
       icon: CreditCard,
-      description: "Acquire commercial real estate assets",
-      badge: "Available",
-      badgeColor: "bg-accent"
-    },
-    {
-      id: 8,
-      title: "Line of Credit",
-      icon: CreditCard,
-      description: "Flexible access to funds when you need them",
+      description: "Flexible access to capital when you need it with revolving credit lines",
       badge: "Flexible",
       badgeColor: "bg-accent"
     },
     {
-      id: 9,
-      title: "Invoice Factoring", 
+      id: 8,
+      title: "Term Loans",
       icon: Banknote,
-      description: "Convert receivables to immediate working capital",
-      badge: "Quick Cash",
-      badgeColor: "bg-accent"
-    },
-    {
-      id: 10,
-      title: "Franchise Financing",
-      icon: Store,
-      description: "Fund your franchise expansion dreams",
+      description: "Fixed-rate business loans for major investments and growth initiatives",
       badge: "Available",
-      badgeColor: "bg-accent"
-    },
-    {
-      id: 11,
-      title: "Construction Loan",
-      icon: HardHat,
-      description: "Finance construction and development projects",
-      badge: "Specialized",
-      badgeColor: "bg-warning"
-    },
-    {
-      id: 12,
-      title: "Business Acquisition",
-      icon: Handshake,
-      description: "Finance the purchase of an existing business",
-      badge: "Strategic",
       badgeColor: "bg-accent"
     }
   ];
@@ -351,41 +319,68 @@ const Index = () => {
         {/* Loan Application Forms */}
         {selectedLoanType && (
           <div className="space-y-6 animate-fade-in">
-            {selectedLoanType === 1 && <RefinanceForm />}
-            {selectedLoanType === 2 && <BridgeLoanForm />}
-            {selectedLoanType === 3 && <WorkingCapitalForm />}
+            {/* Active Forms */}
+            {selectedLoanType === 3 && <BridgeLoanForm />}
+            {selectedLoanType === 6 && <WorkingCapitalForm />}
             
             {/* Coming Soon Forms */}
-            {selectedLoanType === 4 && (
+            {selectedLoanType === 1 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Shield className="w-8 h-8 text-primary" />
                   </div>
                   <CardTitle className="text-2xl">SBA 7(a) Loan Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Government-backed financing with competitive rates!</CardDescription>
+                  <CardDescription className="text-lg">
+                    Versatile financing for working capital, equipment, and real estate purchases
+                    <br />
+                    <span className="text-sm text-muted-foreground">Prime + 2.75% Starting Rate • Up to $5M • SBA Guarantee</span>
+                  </CardDescription>
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 5 && (
+            {selectedLoanType === 2 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Building className="w-8 h-8 text-primary" />
                   </div>
                   <CardTitle className="text-2xl">SBA 504 Loan Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Fixed-rate financing for real estate and equipment!</CardDescription>
+                  <CardDescription className="text-lg">
+                    Fixed-rate financing for real estate and major equipment purchases
+                    <br />
+                    <span className="text-sm text-muted-foreground">Fixed Rate Long-term • Up to $5.5M • 10% Down Payment</span>
+                  </CardDescription>
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 6 && (
+            {selectedLoanType === 4 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CreditCard className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Conventional Loan Application</CardTitle>
+                  <CardDescription className="text-lg">
+                    Traditional commercial financing for established businesses
+                    <br />
+                    <span className="text-sm text-muted-foreground">5.25% Starting APR • No Government Guarantee • Fast Approval</span>
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 5 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Settings className="w-8 h-8 text-accent" />
                   </div>
                   <CardTitle className="text-2xl">Equipment Financing Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Finance your business equipment and machinery!</CardDescription>
+                  <CardDescription className="text-lg">
+                    Fund new or used equipment purchases with competitive terms
+                    <br />
+                    <span className="text-sm text-muted-foreground">6.25% Starting APR • 100% Financing Available • Fast Approval</span>
+                  </CardDescription>
                 </CardHeader>
               </Card>
             )}
@@ -395,8 +390,12 @@ const Index = () => {
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CreditCard className="w-8 h-8 text-accent" />
                   </div>
-                  <CardTitle className="text-2xl">Property Purchase Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Acquire your next commercial real estate asset!</CardDescription>
+                  <CardTitle className="text-2xl">Business Line of Credit Application</CardTitle>
+                  <CardDescription className="text-lg">
+                    Flexible access to capital when you need it with revolving credit lines
+                    <br />
+                    <span className="text-sm text-muted-foreground">Prime + 2% Starting Rate • Draw as Needed • Revolving Credit</span>
+                  </CardDescription>
                 </CardHeader>
               </Card>
             )}
@@ -404,54 +403,14 @@ const Index = () => {
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CreditCard className="w-8 h-8 text-accent" />
-                  </div>
-                  <CardTitle className="text-2xl">Line of Credit Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Flexible access to capital when you need it!</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 9 && (
-              <Card className="shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Banknote className="w-8 h-8 text-accent" />
                   </div>
-                  <CardTitle className="text-2xl">Invoice Factoring Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Turn your receivables into immediate cash flow!</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 10 && (
-              <Card className="shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Store className="w-8 h-8 text-accent" />
-                  </div>
-                  <CardTitle className="text-2xl">Franchise Financing Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Fund your franchise expansion dreams!</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 11 && (
-              <Card className="shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <HardHat className="w-8 h-8 text-warning" />
-                  </div>
-                  <CardTitle className="text-2xl">Construction Loan Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Specialized financing for construction projects!</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 12 && (
-              <Card className="shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Handshake className="w-8 h-8 text-accent" />
-                  </div>
-                  <CardTitle className="text-2xl">Business Acquisition Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - Finance your next business acquisition!</CardDescription>
+                  <CardTitle className="text-2xl">Term Loan Application</CardTitle>
+                  <CardDescription className="text-lg">
+                    Fixed-rate business loans for major investments and growth initiatives
+                    <br />
+                    <span className="text-sm text-muted-foreground">5.75% Starting APR • Fixed Monthly Payments • Quick Approval</span>
+                  </CardDescription>
                 </CardHeader>
               </Card>
             )}
