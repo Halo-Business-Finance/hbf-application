@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -44,34 +44,82 @@ const Index = () => {
     },
     {
       id: 3,
-      title: "Property Purchase",
-      icon: CreditCard,
-      description: "Acquire commercial real estate assets",
-      badge: "Coming Soon",
-      badgeColor: "bg-warning"
-    },
-    {
-      id: 4,
-      title: "Franchise Financing",
-      icon: Store,
-      description: "Fund your franchise expansion dreams",
-      badge: "Coming Soon",
-      badgeColor: "bg-warning"
-    },
-    {
-      id: 5,
-      title: "Invoice Factoring", 
-      icon: Banknote,
-      description: "Convert receivables to immediate working capital",
-      badge: "Coming Soon",
-      badgeColor: "bg-warning"
-    },
-    {
-      id: 6,
       title: "Working Capital",
       icon: TrendingUp,
       description: "Fuel your business operations and growth",
       badge: "Available",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 4,
+      title: "SBA 7(a) Loan",
+      icon: Shield,
+      description: "Government-backed loans for business expansion and operations",
+      badge: "Low Rates",
+      badgeColor: "bg-primary"
+    },
+    {
+      id: 5,
+      title: "SBA 504 Loan",
+      icon: Building,
+      description: "Fixed-rate financing for real estate and equipment purchases",
+      badge: "Fixed Rate",
+      badgeColor: "bg-primary"
+    },
+    {
+      id: 6,
+      title: "Equipment Financing",
+      icon: Settings,
+      description: "Purchase or lease business equipment and machinery",
+      badge: "Available",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 7,
+      title: "Property Purchase",
+      icon: CreditCard,
+      description: "Acquire commercial real estate assets",
+      badge: "Available",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 8,
+      title: "Line of Credit",
+      icon: CreditCard,
+      description: "Flexible access to funds when you need them",
+      badge: "Flexible",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 9,
+      title: "Invoice Factoring", 
+      icon: Banknote,
+      description: "Convert receivables to immediate working capital",
+      badge: "Quick Cash",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 10,
+      title: "Franchise Financing",
+      icon: Store,
+      description: "Fund your franchise expansion dreams",
+      badge: "Available",
+      badgeColor: "bg-accent"
+    },
+    {
+      id: 11,
+      title: "Construction Loan",
+      icon: HardHat,
+      description: "Finance construction and development projects",
+      badge: "Specialized",
+      badgeColor: "bg-warning"
+    },
+    {
+      id: 12,
+      title: "Business Acquisition",
+      icon: Handshake,
+      description: "Finance the purchase of an existing business",
+      badge: "Strategic",
       badgeColor: "bg-accent"
     }
   ];
@@ -305,40 +353,108 @@ const Index = () => {
           <div className="space-y-6 animate-fade-in">
             {selectedLoanType === 1 && <RefinanceForm />}
             {selectedLoanType === 2 && <BridgeLoanForm />}
-            {selectedLoanType === 3 && (
-              <Card className="shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CreditCard className="w-8 h-8 text-warning" />
-                  </div>
-                  <CardTitle className="text-2xl">Property Purchase Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - We're building something amazing!</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
+            {selectedLoanType === 3 && <WorkingCapitalForm />}
+            
+            {/* Coming Soon Forms */}
             {selectedLoanType === 4 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Store className="w-8 h-8 text-warning" />
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl">Franchise Loan Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - We're building something amazing!</CardDescription>
+                  <CardTitle className="text-2xl">SBA 7(a) Loan Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Government-backed financing with competitive rates!</CardDescription>
                 </CardHeader>
               </Card>
             )}
             {selectedLoanType === 5 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Banknote className="w-8 h-8 text-warning" />
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Building className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl">Invoice Factoring Application</CardTitle>
-                  <CardDescription className="text-lg">Coming Soon - We're building something amazing!</CardDescription>
+                  <CardTitle className="text-2xl">SBA 504 Loan Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Fixed-rate financing for real estate and equipment!</CardDescription>
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 6 && <WorkingCapitalForm />}
+            {selectedLoanType === 6 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Settings className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Equipment Financing Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Finance your business equipment and machinery!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 7 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CreditCard className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Property Purchase Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Acquire your next commercial real estate asset!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 8 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CreditCard className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Line of Credit Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Flexible access to capital when you need it!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 9 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Banknote className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Invoice Factoring Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Turn your receivables into immediate cash flow!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 10 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Store className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Franchise Financing Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Fund your franchise expansion dreams!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 11 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <HardHat className="w-8 h-8 text-warning" />
+                  </div>
+                  <CardTitle className="text-2xl">Construction Loan Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Specialized financing for construction projects!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 12 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Handshake className="w-8 h-8 text-accent" />
+                  </div>
+                  <CardTitle className="text-2xl">Business Acquisition Application</CardTitle>
+                  <CardDescription className="text-lg">Coming Soon - Finance your next business acquisition!</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
           </div>
         )}
 
