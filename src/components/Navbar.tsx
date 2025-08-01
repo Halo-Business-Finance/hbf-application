@@ -68,9 +68,9 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             <Button 
               size="lg" 
-              variant="outline"
+              variant="secondary"
               onClick={() => navigate('/')}
-              className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-slate-900 transition-colors"
+              className="bg-slate-700 text-white border-slate-600 hover:bg-slate-600 hover:border-slate-500 transition-colors"
             >
               <Home className="w-4 h-4 mr-2" />
               Home
