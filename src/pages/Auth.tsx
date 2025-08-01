@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,14 +22,24 @@ const Auth = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signIn, signUp, authenticated } = useAuth();
   const { toast } = useToast();
 
+  // Get loan type from URL parameters
+  const loanType = searchParams.get("loan");
+
   // Redirect if already authenticated
-  if (authenticated) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (authenticated) {
+      // Redirect to appropriate loan form or home page
+      if (loanType) {
+        navigate(`/?id=${loanType}`);
+      } else {
+        navigate("/");
+      }
+    }
+  }, [authenticated, loanType, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +101,12 @@ const Auth = () => {
             title: "Welcome back!",
             description: "You have successfully signed in.",
           });
-          navigate("/");
+          // Redirect to appropriate loan form or home page
+          if (loanType) {
+            navigate(`/?id=${loanType}`);
+          } else {
+            navigate("/");
+          }
         }
       }
     } catch (err) {
