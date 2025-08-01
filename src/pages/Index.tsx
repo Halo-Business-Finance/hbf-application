@@ -44,6 +44,14 @@ const Index = () => {
     },
     {
       id: 3,
+      title: "USDA B&I Loans",
+      icon: Shield,
+      description: "USDA Business & Industry loans for rural business development and job creation",
+      badge: "Rural Focus",
+      badgeColor: "bg-primary"
+    },
+    {
+      id: 4,
       title: "Bridge Loans",
       icon: Building2, 
       description: "Short-term financing to bridge cash flow gaps while securing permanent financing",
@@ -51,7 +59,7 @@ const Index = () => {
       badgeColor: "bg-accent"
     },
     {
-      id: 4,
+      id: 5,
       title: "Conventional Loans",
       icon: CreditCard,
       description: "Traditional commercial financing for established businesses with strong credit profiles",
@@ -59,7 +67,7 @@ const Index = () => {
       badgeColor: "bg-accent"
     },
     {
-      id: 5,
+      id: 6,
       title: "Equipment Financing",
       icon: Settings,
       description: "Fund new or used equipment purchases with competitive terms",
@@ -67,7 +75,7 @@ const Index = () => {
       badgeColor: "bg-accent"
     },
     {
-      id: 6,
+      id: 7,
       title: "Working Capital",
       icon: TrendingUp,
       description: "Bridge cash flow gaps and fund day-to-day business operations",
@@ -75,7 +83,7 @@ const Index = () => {
       badgeColor: "bg-accent"
     },
     {
-      id: 7,
+      id: 8,
       title: "Business Line of Credit",
       icon: CreditCard,
       description: "Flexible access to capital when you need it with revolving credit lines",
@@ -83,7 +91,7 @@ const Index = () => {
       badgeColor: "bg-accent"
     },
     {
-      id: 8,
+      id: 9,
       title: "Term Loans",
       icon: Banknote,
       description: "Fixed-rate business loans for major investments and growth initiatives",
@@ -320,8 +328,8 @@ const Index = () => {
         {selectedLoanType && (
           <div className="space-y-6 animate-fade-in">
             {/* Active Forms */}
-            {selectedLoanType === 3 && <BridgeLoanForm />}
-            {selectedLoanType === 6 && <WorkingCapitalForm />}
+            {selectedLoanType === 4 && <BridgeLoanForm />}
+            {selectedLoanType === 7 && <WorkingCapitalForm />}
             
             {/* Coming Soon Forms */}
             {selectedLoanType === 1 && (
@@ -354,7 +362,22 @@ const Index = () => {
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 4 && (
+            {selectedLoanType === 3 && (
+              <Card className="shadow-lg">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-8 h-8 text-primary" />
+                  </div>
+                  <CardTitle className="text-2xl">USDA B&I Loan Application</CardTitle>
+                  <CardDescription className="text-lg">
+                    USDA Business & Industry loans for rural business development and job creation
+                    <br />
+                    <span className="text-sm text-muted-foreground">Competitive Rates • Up to $25M • Rural Focus • Job Creation Requirements</span>
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {selectedLoanType === 5 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -369,7 +392,7 @@ const Index = () => {
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 5 && (
+            {selectedLoanType === 6 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -384,7 +407,7 @@ const Index = () => {
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 7 && (
+            {selectedLoanType === 8 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -399,7 +422,7 @@ const Index = () => {
                 </CardHeader>
               </Card>
             )}
-            {selectedLoanType === 8 && (
+            {selectedLoanType === 9 && (
               <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
