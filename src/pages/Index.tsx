@@ -25,78 +25,87 @@ const Index = () => {
     }
   }, [loanTypeId]);
 
-  const loanTypes = [
+  const loanPrograms = [
     {
       id: 1,
       title: "SBA 7(a) Loans",
       icon: Shield,
       description: "Versatile financing for working capital, equipment, and real estate purchases",
-      badge: "Popular",
-      badgeColor: "bg-primary"
+      badge: "Prime + 2.75%",
+      badgeColor: "bg-primary",
+      details: "Up to $5 million | Long-term financing | Most popular SBA program"
     },
     {
       id: 2,
-      title: "SBA 504 Loans",
+      title: "SBA 504 Loans", 
       icon: Building,
       description: "Fixed-rate financing for real estate and major equipment purchases",
       badge: "Fixed Rate",
-      badgeColor: "bg-primary"
+      badgeColor: "bg-primary",
+      details: "Up to $5.5 million | 10% down payment | Long-term fixed rates"
     },
     {
       id: 3,
       title: "USDA B&I Loans",
       icon: Shield,
-      description: "USDA Business & Industry loans for rural business development and job creation",
-      badge: "Rural Focus",
-      badgeColor: "bg-primary"
+      description: "Rural business development financing backed by USDA guarantee",
+      badge: "Prime + 2%",
+      badgeColor: "bg-primary",
+      details: "Up to $25 million | Rural area focus | Job creation requirements"
     },
     {
       id: 4,
       title: "Bridge Loans",
       icon: Building2, 
       description: "Short-term financing to bridge cash flow gaps while securing permanent financing",
-      badge: "Fast",
-      badgeColor: "bg-accent"
+      badge: "8.5% APR",
+      badgeColor: "bg-accent",
+      details: "Fast 7-day closing | Up to $10 million | Quick access to capital"
     },
     {
       id: 5,
       title: "Conventional Loans",
       icon: CreditCard,
       description: "Traditional commercial financing for established businesses with strong credit profiles",
-      badge: "Available",
-      badgeColor: "bg-accent"
+      badge: "5.25% APR",
+      badgeColor: "bg-accent",
+      details: "No government guarantee | Faster approval | Flexible terms"
     },
     {
       id: 6,
       title: "Equipment Financing",
       icon: Settings,
       description: "Fund new or used equipment purchases with competitive terms",
-      badge: "Available",
-      badgeColor: "bg-accent"
+      badge: "6.25% APR",
+      badgeColor: "bg-accent",
+      details: "100% financing available | Fast approval | Equipment as collateral"
     },
     {
       id: 7,
       title: "Working Capital",
       icon: TrendingUp,
       description: "Bridge cash flow gaps and fund day-to-day business operations",
-      badge: "Available",
-      badgeColor: "bg-accent"
+      badge: "Prime + 1%",
+      badgeColor: "bg-accent",
+      details: "Revolving credit line | Quick access | Fund daily operations"
     },
     {
       id: 8,
       title: "Business Line of Credit",
       icon: CreditCard,
       description: "Flexible access to capital when you need it with revolving credit lines",
-      badge: "Flexible",
-      badgeColor: "bg-accent"
+      badge: "Prime + 2%",
+      badgeColor: "bg-accent",
+      details: "Draw as needed | Pay interest only on used funds | Revolving credit"
     },
     {
       id: 9,
       title: "Term Loans",
       icon: Banknote,
       description: "Fixed-rate business loans for major investments and growth initiatives",
-      badge: "Available",
-      badgeColor: "bg-accent"
+      badge: "5.75% APR",
+      badgeColor: "bg-accent",
+      details: "Fixed monthly payments | Competitive rates | Major investments"
     }
   ];
 
@@ -212,14 +221,35 @@ const Index = () => {
         <div className="text-center mb-12 animate-fade-in">
           <Badge variant="secondary" className="mb-4 px-4 py-1.5">
             <Sparkles className="w-4 h-4 mr-2" />
-            Loan Application Portal
+            Nationwide SBA & Commercial Loan Marketplace
           </Badge>
           <h1 className="text-4xl sm:text-5xl font-bold font-display text-foreground mb-4">
-            Halo Business Finance
+            Comprehensive Business Financing Solutions
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Your Commercial Loan Marketplace - Streamlined applications, competitive rates, expert support
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            We provide credit, financing, treasury and payment solutions to help your business succeed. 
+            Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
           </p>
+          
+          {/* Company Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">2,500+</div>
+              <div className="text-sm text-muted-foreground">Happy Clients</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">$2.5B+</div>
+              <div className="text-sm text-muted-foreground">Funding Provided</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">95%</div>
+              <div className="text-sm text-muted-foreground">Approval Rate</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">7 Days</div>
+              <div className="text-sm text-muted-foreground">Avg Processing</div>
+            </div>
+          </div>
         </div>
 
         {/* Back Button */}
@@ -247,7 +277,9 @@ const Index = () => {
         {!selectedLoanType && (
           <Card className="mb-12 shadow-lg border-0 bg-card/95 backdrop-blur-sm animate-scale-in">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-3xl font-bold text-foreground mb-2">Choose Your Loan Type</CardTitle>
+              <CardTitle className="text-3xl font-bold text-foreground mb-2">
+                Explore Our 12 Comprehensive Financing Programs
+              </CardTitle>
               <CardDescription className="text-lg text-muted-foreground">
                 Select the financing solution that best fits your business needs
               </CardDescription>
@@ -255,23 +287,23 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {loanTypes.map((loanType, index) => {
-                  const IconComponent = loanType.icon;
-                  const isComingSoon = loanType.badge === "Coming Soon";
+                {loanPrograms.map((program, index) => {
+                  const IconComponent = program.icon;
+                  const isComingSoon = ![4, 7].includes(program.id); // Only Bridge Loans and Working Capital are active
                   return (
                     <Card
-                      key={loanType.id}
+                      key={program.id}
                       className={`cursor-pointer transition-all duration-300 border-2 group relative overflow-hidden ${
                         isComingSoon 
                           ? 'opacity-60 cursor-not-allowed hover:border-border' 
                           : 'hover:scale-105 hover:shadow-xl hover:border-primary/30 hover:bg-card/90'
                       }`}
-                      onClick={() => !isComingSoon && handleLoanTypeSelect(loanType.id)}
+                      onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)}
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
                       <div className="absolute top-4 right-4">
-                        <Badge className={`${loanType.badgeColor} text-white text-xs font-medium`}>
-                          {loanType.badge}
+                        <Badge className={`${program.badgeColor} text-white text-xs font-medium`}>
+                          {program.badge}
                         </Badge>
                       </div>
                       
@@ -300,19 +332,31 @@ const Index = () => {
                             ? 'text-muted-foreground' 
                             : 'text-foreground group-hover:text-primary'
                         }`}>
-                          {loanType.title}
+                          {program.title}
                         </h3>
                         
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {loanType.description}
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                          {program.description}
                         </p>
 
-                        {!isComingSoon && (
+                        {program.details && (
+                          <div className="text-xs text-muted-foreground border-t pt-2 mb-4">
+                            {program.details}
+                          </div>
+                        )}
+
+                        {!isComingSoon ? (
                           <div className="mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button variant="outline" size="sm" className="w-full">
                               Start Application
                               <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
+                          </div>
+                        ) : (
+                          <div className="mt-6">
+                            <Badge variant="secondary" className="text-xs">
+                              Coming Soon
+                            </Badge>
                           </div>
                         )}
                       </CardContent>
@@ -370,9 +414,9 @@ const Index = () => {
                   </div>
                   <CardTitle className="text-2xl">USDA B&I Loan Application</CardTitle>
                   <CardDescription className="text-lg">
-                    USDA Business & Industry loans for rural business development and job creation
+                    Rural business development financing backed by USDA guarantee
                     <br />
-                    <span className="text-sm text-muted-foreground">Competitive Rates • Up to $25M • Rural Focus • Job Creation Requirements</span>
+                    <span className="text-sm text-muted-foreground">Prime + 2% Starting Rate • Up to $25M • Rural Focus • Job Creation Requirements</span>
                   </CardDescription>
                 </CardHeader>
               </Card>
