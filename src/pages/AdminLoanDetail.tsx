@@ -93,58 +93,16 @@ const AdminLoanDetail = () => {
 
   const loadApplicationDetails = async () => {
     try {
-      // In a real app, you'd fetch the specific application
-      // For now, we'll simulate this data
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      setLoadingData(true);
+      const applicationData = await adminService.getApplicationDetails(id!);
       
-      const mockApplication: LoanApplication = {
-        id: id!,
-        application_number: 'HBF-2024-001-12345',
-        first_name: 'John',
-        last_name: 'Smith',
-        business_name: 'Tech Solutions LLC',
-        business_address: '123 Business St',
-        business_city: 'New York',
-        business_state: 'NY',
-        business_zip: '10001',
-        phone: '(555) 123-4567',
-        loan_type: 'refinance',
-        amount_requested: 500000,
-        status: 'under_review',
-        years_in_business: 5,
-        created_at: '2024-01-15T10:00:00Z',
-        updated_at: '2024-01-20T14:30:00Z',
-        application_submitted_date: '2024-01-15T10:00:00Z',
-        loan_details: {
-          purpose: 'Expand operations',
-          collateral: 'Commercial property',
-          credit_score: 720
-        }
-      };
-
-      const mockHistory: StatusHistory[] = [
-        {
-          id: '1',
-          old_status: 'pending',
-          new_status: 'under_review',
-          notes: 'Application moved to review stage',
-          updated_by: 'admin@halo.com',
-          updated_at: '2024-01-20T14:30:00Z'
-        },
-        {
-          id: '2',
-          old_status: 'draft',
-          new_status: 'pending',
-          notes: 'Application submitted by customer',
-          updated_by: 'system',
-          updated_at: '2024-01-15T10:00:00Z'
-        }
-      ];
-
-      setApplication(mockApplication);
-      setStatusHistory(mockHistory);
-      setEditData(mockApplication);
-      setNewStatus(mockApplication.status);
+      if (applicationData) {
+        setApplication(applicationData);
+        setEditData(applicationData);
+        setNewStatus(applicationData.status);
+      } else {
+        throw new Error('Application not found');
+      }
     } catch (error) {
       console.error('Error loading application details:', error);
       toast({
@@ -505,11 +463,61 @@ const AdminLoanDetail = () => {
                       </div>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                 </CardContent>
+               </Card>
+
+               {/* Loan-Specific Details */}
+               <Card className="lg:col-span-2">
+                 <CardHeader>
+                   <CardTitle className="flex items-center gap-2">
+                     <FileText className="w-5 h-5" />
+                     Loan-Specific Information
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   {application.loan_details && Object.keys(application.loan_details).length > 0 ? (
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                       {Object.entries(application.loan_details).map(([key, value]) => {
+                         if (value === null || value === undefined || value === '') return null;
+                         
+                         // Format the key for display
+                         const displayKey = key
+                           .replace(/_/g, ' ')
+                           .replace(/([A-Z])/g, ' $1')
+                           .replace(/^./, str => str.toUpperCase());
+                         
+                         // Format the value for display
+                         let displayValue = value;
+                         if (typeof value === 'boolean') {
+                           displayValue = value ? 'Yes' : 'No';
+                         } else if (typeof value === 'number' && key.includes('amount')) {
+                           displayValue = `$${value.toLocaleString()}`;
+                         } else if (typeof value === 'object') {
+                           displayValue = JSON.stringify(value, null, 2);
+                         }
+                         
+                         return (
+                           <div key={key} className="space-y-1">
+                             <Label className="text-sm font-medium text-muted-foreground">
+                               {displayKey}
+                             </Label>
+                             <p className="text-sm font-medium break-words">
+                               {String(displayValue)}
+                             </p>
+                           </div>
+                         );
+                       })}
+                     </div>
+                   ) : (
+                     <p className="text-muted-foreground">No additional loan details available.</p>
+                   )}
+                  </CardContent>
+                </Card>
+              </div>
 
               {/* Timeline */}
-              <Card>
+              <div className="lg:col-span-2">
+                <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="w-5 h-5" />
