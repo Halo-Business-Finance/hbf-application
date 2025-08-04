@@ -391,11 +391,11 @@ const AdminDashboard = () => {
                                 <Eye className="w-4 h-4" />
                               </Button>
                               <Select onValueChange={(value) => updateApplicationStatus(application.id, value)}>
-                                <SelectTrigger asChild>
-                                  <Button variant="outline" size="sm">
-                                    <Edit className="w-4 h-4 mr-1" />
-                                    Update Status
-                                  </Button>
+                                <SelectTrigger className="w-[140px]">
+                                  <div className="flex items-center gap-1">
+                                    <Edit className="w-4 h-4" />
+                                    <SelectValue placeholder="Update Status" />
+                                  </div>
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="pending">Pending</SelectItem>
