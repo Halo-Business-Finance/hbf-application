@@ -10,6 +10,9 @@ import ApplicationsList from "@/components/ApplicationsList";
 import RefinanceForm from "@/components/forms/RefinanceForm";
 import BridgeLoanForm from "@/components/forms/BridgeLoanForm";
 import WorkingCapitalForm from "@/components/forms/WorkingCapitalForm";
+import SBA7aLoanForm from "@/components/forms/SBA7aLoanForm";
+import SBA504LoanForm from "@/components/forms/SBA504LoanForm";
+import EquipmentFinancingForm from "@/components/forms/EquipmentFinancingForm";
 
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
@@ -289,7 +292,7 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
-                  const isComingSoon = ![4, 7].includes(program.id); // Only Bridge Loans and Working Capital are active
+                  const isComingSoon = ![1, 2, 4, 6, 7].includes(program.id); // Active forms: SBA 7(a), SBA 504, Bridge Loans, Equipment Financing, Working Capital
                   return (
                     <Card
                       key={program.id}
@@ -372,7 +375,10 @@ const Index = () => {
         {selectedLoanType && (
           <div className="space-y-6 animate-fade-in">
             {/* Active Forms */}
+            {selectedLoanType === 1 && <SBA7aLoanForm />}
+            {selectedLoanType === 2 && <SBA504LoanForm />}
             {selectedLoanType === 4 && <BridgeLoanForm />}
+            {selectedLoanType === 6 && <EquipmentFinancingForm />}
             {selectedLoanType === 7 && <WorkingCapitalForm />}
             
             {/* Coming Soon Forms */}
