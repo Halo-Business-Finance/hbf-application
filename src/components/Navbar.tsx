@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -78,19 +78,11 @@ const Navbar = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
                   <span className="text-white font-medium">
                     {username || 'User'}
                   </span>
-                  <Avatar className="h-11 w-11 border-2 border-white/20">
-                    <AvatarImage 
-                      src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" 
-                      alt="User Avatar" 
-                    />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      <UserCircle className="w-5 h-5" />
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserCircle className="w-6 h-6 text-white" />
                 </div>
               </DropdownMenuTrigger>
               
