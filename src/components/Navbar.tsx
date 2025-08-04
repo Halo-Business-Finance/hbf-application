@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, User, Settings, FileText, Shield, Users } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
@@ -88,7 +88,7 @@ const Navbar = () => {
                       alt="User Avatar" 
                     />
                     <AvatarFallback className="bg-primary text-primary-foreground">
-                      <User className="w-5 h-5" />
+                      <UserCircle className="w-5 h-5" />
                     </AvatarFallback>
                   </Avatar>
                 </div>
