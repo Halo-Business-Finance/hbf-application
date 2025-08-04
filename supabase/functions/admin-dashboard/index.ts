@@ -203,10 +203,7 @@ async function getFilteredApplications(supabase: any, filters: ApplicationFilter
   try {
     let query = supabase
       .from('loan_applications')
-      .select(`
-        *,
-        profiles(first_name, last_name)
-      `);
+      .select('*');
 
     // Apply filters
     if (filters.status) {
@@ -249,13 +246,33 @@ async function getFilteredApplications(supabase: any, filters: ApplicationFilter
 
     if (error) throw error;
 
-    // Format applications to flatten profile data
-    const formattedApplications = applications.map((app: any) => ({
-      ...app,
-      first_name: app.profiles?.first_name || app.first_name || 'N/A',
-      last_name: app.profiles?.last_name || app.last_name || 'N/A',
-      profiles: undefined // Remove the nested profiles object
-    }));
+    // Get profiles data for all user_ids
+    const userIds = [...new Set(applications.map((app: any) => app.user_id))];
+    
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name')
+      .in('id', userIds);
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+    }
+
+    // Create a map of user profiles
+    const profilesMap = (profiles || []).reduce((acc: any, profile: any) => {
+      acc[profile.id] = profile;
+      return acc;
+    }, {});
+
+    // Format applications to include profile data
+    const formattedApplications = applications.map((app: any) => {
+      const profile = profilesMap[app.user_id];
+      return {
+        ...app,
+        first_name: profile?.first_name || app.first_name || 'N/A',
+        last_name: profile?.last_name || app.last_name || 'N/A'
+      };
+    });
 
     return new Response(
       JSON.stringify({ applications: formattedApplications }),
