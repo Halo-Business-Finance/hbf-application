@@ -60,17 +60,11 @@ class AdminService {
    */
   async getFilteredApplications(filters: ApplicationFilter) {
     try {
-      const searchParams = new URLSearchParams();
-      searchParams.append('action', 'applications');
-      
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          searchParams.append(key, value.toString());
-        }
-      });
-
       const { data, error } = await supabase.functions.invoke('admin-dashboard', {
-        body: null
+        body: {
+          action: 'applications',
+          ...filters
+        }
       });
 
       if (error) throw error;

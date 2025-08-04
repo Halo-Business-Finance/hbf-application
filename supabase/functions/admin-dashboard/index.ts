@@ -86,14 +86,27 @@ serve(async (req) => {
     }
 
     const url = new URL(req.url);
-    const action = url.searchParams.get('action') || 'stats';
+    let action = url.searchParams.get('action') || 'stats';
+    let body = null;
+
+    // Handle POST requests with body
+    if (req.method === 'POST') {
+      try {
+        body = await req.json();
+        if (body.action) {
+          action = body.action;
+        }
+      } catch (e) {
+        // If no valid JSON body, continue with URL params
+      }
+    }
 
     switch (action) {
       case 'stats':
         return await getApplicationStats(supabase);
       
       case 'applications':
-        const filters = Object.fromEntries(url.searchParams.entries());
+        const filters = body ? body : Object.fromEntries(url.searchParams.entries());
         return await getFilteredApplications(supabase, filters);
       
       case 'update-status':
@@ -236,8 +249,16 @@ async function getFilteredApplications(supabase: any, filters: ApplicationFilter
 
     if (error) throw error;
 
+    // Format applications to flatten profile data
+    const formattedApplications = applications.map((app: any) => ({
+      ...app,
+      first_name: app.profiles?.first_name || app.first_name || 'N/A',
+      last_name: app.profiles?.last_name || app.last_name || 'N/A',
+      profiles: undefined // Remove the nested profiles object
+    }));
+
     return new Response(
-      JSON.stringify({ applications }),
+      JSON.stringify({ applications: formattedApplications }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
