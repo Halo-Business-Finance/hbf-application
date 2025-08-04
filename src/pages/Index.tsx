@@ -13,6 +13,10 @@ import WorkingCapitalForm from "@/components/forms/WorkingCapitalForm";
 import SBA7aLoanForm from "@/components/forms/SBA7aLoanForm";
 import SBA504LoanForm from "@/components/forms/SBA504LoanForm";
 import EquipmentFinancingForm from "@/components/forms/EquipmentFinancingForm";
+import { USDABILoanForm } from "@/components/forms/USDABILoanForm";
+import { ConventionalLoanForm } from "@/components/forms/ConventionalLoanForm";
+import { TermLoanForm } from "@/components/forms/TermLoanForm";
+import { BusinessLineOfCreditForm } from "@/components/forms/BusinessLineOfCreditForm";
 
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
@@ -292,7 +296,7 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
-                  const isComingSoon = ![1, 2, 4, 6, 7].includes(program.id); // Active forms: SBA 7(a), SBA 504, Bridge Loans, Equipment Financing, Working Capital
+                  const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(program.id); // All forms now active
                   return (
                     <Card
                       key={program.id}
@@ -377,9 +381,13 @@ const Index = () => {
             {/* Active Forms */}
             {selectedLoanType === 1 && <SBA7aLoanForm />}
             {selectedLoanType === 2 && <SBA504LoanForm />}
+            {selectedLoanType === 3 && <USDABILoanForm />}
             {selectedLoanType === 4 && <BridgeLoanForm />}
+            {selectedLoanType === 5 && <ConventionalLoanForm />}
             {selectedLoanType === 6 && <EquipmentFinancingForm />}
             {selectedLoanType === 7 && <WorkingCapitalForm />}
+            {selectedLoanType === 8 && <BusinessLineOfCreditForm />}
+            {selectedLoanType === 9 && <TermLoanForm />}
             
             {/* Coming Soon Forms */}
             {selectedLoanType === 1 && (
