@@ -13,6 +13,7 @@ import BorrowerPortal from "./pages/BorrowerPortal";
 import CRM from "./pages/CRM";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
+import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/loans/:id" element={<AdminLoanDetail />} />
               <Route path="/crm" element={<CRM />} />
+              <Route path="/crm/loanflow-integration" element={<LoanflowCrmIntegration />} />
               <Route path="/portal" element={<BorrowerPortal />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

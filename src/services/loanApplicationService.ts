@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { createLoanflowCrmService } from './loanflowCrmService';
 
 export interface LoanApplicationValidation {
   isValid: boolean;
@@ -66,6 +67,11 @@ class LoanApplicationService {
       });
 
       if (error) throw error;
+
+      // Auto-sync to Loanflow CRM if enabled
+      if (data.success && data.application) {
+        await this.syncToLoanflowCrm(data.application);
+      }
 
       return data;
     } catch (error) {
@@ -211,6 +217,47 @@ class LoanApplicationService {
     } catch (error) {
       console.error('Error deleting application:', error);
       throw new Error('Failed to delete application');
+    }
+  }
+
+  /**
+   * Sync application to Loanflow CRM
+   */
+  private async syncToLoanflowCrm(application: any) {
+    try {
+      // Check if auto-sync is enabled
+      const settings = localStorage.getItem('loanflow-crm-settings');
+      if (!settings) return;
+
+      const parsedSettings = JSON.parse(settings);
+      if (!parsedSettings.autoSync) return;
+
+      // Only sync if we have a valid endpoint or webhook
+      if (!parsedSettings.apiEndpoint && !parsedSettings.webhookUrl) return;
+
+      const crmService = createLoanflowCrmService({
+        apiEndpoint: parsedSettings.apiEndpoint,
+        apiKey: parsedSettings.apiKey,
+        webhookUrl: parsedSettings.webhookUrl,
+        fieldMapping: parsedSettings.fieldMapping,
+      });
+
+      // Sync in the background - don't block the main flow
+      setTimeout(async () => {
+        try {
+          const result = await crmService.syncApplication(application);
+          if (result.success) {
+            console.log(`Application ${application.application_number} synced to Loanflow CRM`);
+          } else {
+            console.error(`Failed to sync application to Loanflow CRM: ${result.error}`);
+          }
+        } catch (error) {
+          console.error('Error syncing to Loanflow CRM:', error);
+        }
+      }, 0);
+
+    } catch (error) {
+      console.error('Error in Loanflow CRM sync:', error);
     }
   }
 }

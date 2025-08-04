@@ -244,9 +244,12 @@ const CRM = () => {
                 <RefreshCw className="w-4 h-4" />
                 Refresh Data
               </Button>
-              <Button className="gap-2 bg-gradient-primary">
+              <Button 
+                onClick={() => window.open('/crm/loanflow-integration', '_blank')}
+                className="gap-2 bg-gradient-primary"
+              >
                 <ExternalLink className="w-4 h-4" />
-                Sync with LoanFlow Nexus
+                Configure Loanflow CRM
               </Button>
             </div>
           </div>
