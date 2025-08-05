@@ -25,7 +25,7 @@ const invoiceFactoringSchema = z.object({
   businessZip: z.string().min(5, 'Business ZIP code is required'),
   yearsInBusiness: z.number().min(0.5, 'Must be in business for at least 6 months'),
   industryType: z.string().min(1, 'Industry type is required'),
-  federalTaxId: z.string().min(9, 'Federal Tax ID is required'),
+  federalTaxId: z.string().regex(/^\d{2}-\d{7}$/, 'Federal Tax ID must be in format XX-XXXXXXX'),
   numberOfEmployees: z.number().min(1, 'Must have at least 1 employee'),
 
   // Contact Information
@@ -258,7 +258,18 @@ const InvoiceFactoringForm: React.FC = () => {
                   <FormItem>
                     <FormLabel>Federal Tax ID (EIN) *</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input 
+                        {...field} 
+                        placeholder="XX-XXXXXXX"
+                        maxLength={10}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                          if (value.length >= 2) {
+                            value = value.substring(0, 2) + '-' + value.substring(2, 9);
+                          }
+                          field.onChange(value);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
