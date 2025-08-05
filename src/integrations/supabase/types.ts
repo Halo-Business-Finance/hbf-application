@@ -329,6 +329,7 @@ export type Database = {
           business_state: string | null
           business_zip: string | null
           created_at: string
+          email: string | null
           first_name: string | null
           id: string
           last_name: string | null
@@ -351,6 +352,7 @@ export type Database = {
           business_state?: string | null
           business_zip?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -373,6 +375,7 @@ export type Database = {
           business_state?: string | null
           business_zip?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
