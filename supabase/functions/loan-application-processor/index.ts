@@ -12,6 +12,7 @@ interface LoanApplicationData {
   amount_requested: number;
   first_name: string;
   last_name: string;
+  email: string;
   phone: string;
   business_name: string;
   business_address: string;
