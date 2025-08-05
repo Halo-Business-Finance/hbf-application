@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake, FileText, RotateCcw, Zap } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +17,8 @@ import { USDABILoanForm } from "@/components/forms/USDABILoanForm";
 import { ConventionalLoanForm } from "@/components/forms/ConventionalLoanForm";
 import { TermLoanForm } from "@/components/forms/TermLoanForm";
 import { BusinessLineOfCreditForm } from "@/components/forms/BusinessLineOfCreditForm";
+import InvoiceFactoringForm from "@/components/forms/InvoiceFactoringForm";
+import SBAExpressLoanForm from "@/components/forms/SBAExpressLoanForm";
 
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
@@ -113,6 +115,33 @@ const Index = () => {
       badge: "5.75% APR",
       badgeColor: "bg-accent",
       details: "Fixed monthly payments | Competitive rates | Major investments"
+    },
+    {
+      id: 10,
+      title: "Invoice Factoring",
+      icon: FileText,
+      description: "Convert outstanding invoices into immediate cash flow for your business",
+      badge: "1.5% Factor",
+      badgeColor: "bg-accent",
+      details: "90% advance rate | Same-day funding | No debt on balance sheet"
+    },
+    {
+      id: 11,
+      title: "Refinance Loans",
+      icon: RotateCcw,
+      description: "Refinance existing debt to improve cash flow and reduce monthly payments",
+      badge: "4.5% APR",
+      badgeColor: "bg-accent",
+      details: "Lower payments | Improved terms | Debt consolidation"
+    },
+    {
+      id: 12,
+      title: "SBA Express Loans",
+      icon: Zap,
+      description: "Fast-track SBA financing with expedited approval process",
+      badge: "Prime + 4.5%",
+      badgeColor: "bg-primary",
+      details: "Up to $500K | 36-hour approval | Express processing"
     }
   ];
 
@@ -296,7 +325,7 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
-                  const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(program.id); // All forms now active
+                  const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(program.id); // All forms now active
                   return (
                     <Card
                       key={program.id}
@@ -388,6 +417,9 @@ const Index = () => {
             {selectedLoanType === 7 && <WorkingCapitalForm />}
             {selectedLoanType === 8 && <BusinessLineOfCreditForm />}
             {selectedLoanType === 9 && <TermLoanForm />}
+            {selectedLoanType === 10 && <InvoiceFactoringForm />}
+            {selectedLoanType === 11 && <RefinanceForm />}
+            {selectedLoanType === 12 && <SBAExpressLoanForm />}
             
             {/* Coming Soon Forms */}
             {selectedLoanType === 1 && (
