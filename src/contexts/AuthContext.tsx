@@ -68,23 +68,27 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    console.log('Attempting sign in with email:', email);
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    console.log('Sign in response:', { data, error });
     return { error };
   };
 
   const signUp = async (email: string, password: string) => {
+    console.log('Attempting sign up with email:', email);
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl
       }
     });
+    console.log('Sign up response:', { data, error });
     return { error };
   };
 
