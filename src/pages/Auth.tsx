@@ -29,6 +29,11 @@ const Auth = () => {
 
   // Get loan type from URL parameters
   const loanType = searchParams.get("loan");
+  
+  // Check if this is a password reset flow
+  const isPasswordReset = searchParams.get("type") === "recovery";
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -120,6 +125,48 @@ const Auth = () => {
     }
   };
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      if (newPassword !== confirmNewPassword) {
+        setError("Passwords do not match");
+        setLoading(false);
+        return;
+      }
+      if (newPassword.length < 6) {
+        setError("Password must be at least 6 characters long");
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        setError(error.message || "Failed to update password");
+      } else {
+        toast({
+          title: "Password updated successfully!",
+          description: "You can now sign in with your new password.",
+        });
+        // Clear the URL parameters and switch to login
+        navigate("/auth");
+        setIsLogin(true);
+        setNewPassword("");
+        setConfirmNewPassword("");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Password reset error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetForm = () => {
     setEmail("");
     setPassword("");
@@ -128,6 +175,95 @@ const Auth = () => {
     setLastName("");
     setError("");
   };
+
+  // If this is a password reset, show the reset form
+  if (isPasswordReset) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 flex items-center justify-center">
+        <div className="w-full max-w-md">
+          <div className="mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/auth")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Sign In
+            </Button>
+          </div>
+
+          <Card className="border shadow-lg">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl font-bold">
+                Reset Your Password
+              </CardTitle>
+              <CardDescription>
+                Enter your new password below
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="newPassword"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      disabled={loading}
+                      minLength={6}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={loading}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="confirmNewPassword">Confirm New Password</Label>
+                  <Input
+                    id="confirmNewPassword"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Confirm your new password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                    minLength={6}
+                  />
+                </div>
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Updating password..." : "Update Password"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   const switchMode = (mode: string) => {
     setIsLogin(mode === "login");
