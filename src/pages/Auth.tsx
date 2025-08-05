@@ -76,10 +76,12 @@ const Auth = () => {
             setError(error.message || "Failed to create account");
           }
         } else {
-          toast({
-            title: "Account created successfully!",
-            description: "Please check your email to verify your account, then sign in.",
-          });
+          setTimeout(() => {
+            toast({
+              title: "Account created successfully!",
+              description: "Please check your email to verify your account, then sign in.",
+            });
+          }, 3000);
           setIsLogin(true);
           setPassword("");
           setConfirmPassword("");
