@@ -49,10 +49,8 @@ serve(async (req) => {
       );
     }
 
-    const supabase = createClient(
-      "https://zosgzkpfgaaadadezpxo.supabase.co",
-      serviceRoleKey
-    );
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || "https://zosgzkpfgaaadadezpxo.supabase.co";
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     // Get user from token for authenticated requests
     let userId = null;
