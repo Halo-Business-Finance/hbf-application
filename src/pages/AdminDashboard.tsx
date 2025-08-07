@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { SecurityAuditLog } from '@/components/SecurityAuditLog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -415,21 +416,25 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="analytics">
-            <Card>
-              <CardHeader>
-                <CardTitle>Analytics Dashboard</CardTitle>
-                <CardDescription>
-                  Detailed analytics and insights (Coming Soon)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center py-8">
-                <TrendingUp className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">
-                  Advanced analytics features will be available soon
-                </p>
-              </CardContent>
-            </Card>
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Analytics Dashboard</CardTitle>
+                  <CardDescription>
+                    Detailed analytics and insights (Coming Soon)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="text-center py-8">
+                  <TrendingUp className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    Advanced analytics features will be available soon
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <SecurityAuditLog />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

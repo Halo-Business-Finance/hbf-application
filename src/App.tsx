@@ -14,6 +14,8 @@ import CRM from "./pages/CRM";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
 import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { RateLimitProvider } from "./components/RateLimitProvider";
 
 const queryClient = new QueryClient();
 
@@ -24,19 +26,41 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthContextProvider>
-          <Layout>
+          <RateLimitProvider>
+            <Layout>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/loans/:id" element={<AdminLoanDetail />} />
-              <Route path="/crm" element={<CRM />} />
-              <Route path="/crm/loanflow-integration" element={<LoanflowCrmIntegration />} />
-              <Route path="/portal" element={<BorrowerPortal />} />
+              <Route path="/admin" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/loans/:id" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminLoanDetail />
+                </ProtectedRoute>
+              } />
+              <Route path="/crm" element={
+                <ProtectedRoute requiredRole="admin">
+                  <CRM />
+                </ProtectedRoute>
+              } />
+              <Route path="/crm/loanflow-integration" element={
+                <ProtectedRoute requiredRole="admin">
+                  <LoanflowCrmIntegration />
+                </ProtectedRoute>
+              } />
+              <Route path="/portal" element={
+                <ProtectedRoute>
+                  <BorrowerPortal />
+                </ProtectedRoute>
+              } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
+          </RateLimitProvider>
         </AuthContextProvider>
       </BrowserRouter>
     </TooltipProvider>

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SecureInput } from "@/components/ui/secure-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -272,8 +273,9 @@ export const ConventionalLoanForm: React.FC = () => {
               </div>
               <div>
                 <Label htmlFor="ownerSSN">Owner SSN</Label>
-                <Input
+                <SecureInput
                   id="ownerSSN"
+                  type="ssn"
                   placeholder="XXX-XX-XXXX"
                   {...register("ownerSSN", { required: "Owner SSN is required" })}
                 />
@@ -336,16 +338,17 @@ export const ConventionalLoanForm: React.FC = () => {
               </div>
               <div>
                 <Label htmlFor="phoneNumber">Phone Number</Label>
-                <Input
+                <SecureInput
                   id="phoneNumber"
-                  placeholder="Phone number"
+                  type="phone"
+                  placeholder="(555) 123-4567"
                   {...register("phoneNumber", { required: "Phone number is required" })}
                 />
                 {errors.phoneNumber && <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>}
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
-                <Input
+                <SecureInput
                   id="email"
                   type="email"
                   placeholder="Email address"

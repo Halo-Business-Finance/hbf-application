@@ -4,6 +4,7 @@ import { loanApplicationService, type LoanApplicationData } from '@/services/loa
 import { notificationService } from '@/services/notificationService';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { sanitizeFormData } from '@/lib/utils';
 
 export const useLoanApplication = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -61,8 +62,11 @@ export const useLoanApplication = () => {
     try {
       setIsLoading(true);
 
+      // Sanitize application data
+      const sanitizedData = sanitizeFormData(applicationData) as LoanApplicationData;
+
       // First validate the application
-      const validationResult = await loanApplicationService.validateApplication(applicationData);
+      const validationResult = await loanApplicationService.validateApplication(sanitizedData);
       if (!validationResult.isValid) {
         toast({
           title: "Validation Failed",
@@ -73,7 +77,7 @@ export const useLoanApplication = () => {
       }
 
       // Process the application
-      const result = await loanApplicationService.processApplication(applicationData);
+      const result = await loanApplicationService.processApplication(sanitizedData);
 
       if (result.success) {
         // Auto-sync to CRM for employee processing

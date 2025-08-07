@@ -11,10 +11,12 @@ import {
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { authenticated, loading, username, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
 
   const handleSignOut = async () => {
     try {
@@ -98,21 +100,25 @@ const Navbar = () => {
                   My Portal
                 </DropdownMenuItem>
 
-                <DropdownMenuItem 
-                  onClick={() => navigate('/admin')}
-                  className="cursor-pointer hover:bg-muted"
-                >
-                  <Shield className="w-4 h-4 mr-2" />
-                  Admin Dashboard
-                </DropdownMenuItem>
+                {isAdmin() && (
+                  <>
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/admin')}
+                      className="cursor-pointer hover:bg-muted"
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      Admin Dashboard
+                    </DropdownMenuItem>
 
-                <DropdownMenuItem 
-                  onClick={() => navigate('/admin/users')}
-                  className="cursor-pointer hover:bg-muted"
-                >
-                  <Users className="w-4 h-4 mr-2" />
-                  User Management
-                </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/admin/users')}
+                      className="cursor-pointer hover:bg-muted"
+                    >
+                      <Users className="w-4 h-4 mr-2" />
+                      User Management
+                    </DropdownMenuItem>
+                  </>
+                )}
                 
                 <DropdownMenuSeparator />
                 
