@@ -33,7 +33,7 @@ const Navbar = () => {
 
   if (loading) {
     return (
-      <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-slate-900 text-white">
+      <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-background border-b">
         <div className="flex items-center">
           <div className="w-20 h-10 bg-muted animate-pulse rounded" />
         </div>
@@ -45,10 +45,10 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-slate-900 text-white">
+    <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-background border-b">
       {/* Logo */}
       <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
-        <span className="text-white font-bold text-xl">Halo Business Finance</span>
+        <span className="text-foreground font-bold text-xl">Halo Business Finance</span>
       </div>
 
       {/* Navigation Items */}
@@ -67,7 +67,7 @@ const Navbar = () => {
               size="lg" 
               variant="secondary"
               onClick={() => navigate('/')}
-              className="bg-slate-700 text-white border-slate-600 hover:bg-slate-600 hover:border-slate-500 transition-colors"
+              className="hover:bg-secondary/80 transition-colors"
             >
               <Home className="w-4 h-4 mr-2" />
               Home
@@ -76,10 +76,10 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
-                  <span className="text-white font-medium">
+                  <span className="text-foreground font-medium">
                     {username || 'User'}
                   </span>
-                  <UserCircle className="w-6 h-6 text-white" />
+                  <UserCircle className="w-6 h-6 text-foreground" />
                 </div>
               </DropdownMenuTrigger>
               

@@ -5,96 +5,96 @@
 
 @layer base {
   :root {
-    /* Loanflow CRM Dark Theme */
-    --background: 220 23% 11%; /* Dark charcoal background */
-    --foreground: 210 40% 98%; /* Almost white text */
+    /* Light Theme with White Background */
+    --background: 0 0% 100%; /* Pure white background */
+    --foreground: 222.2 84% 4.9%; /* Dark text */
     
-    --card: 220 23% 15%; /* Slightly lighter dark for cards */
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 222.2 84% 4.9%;
     
-    --popover: 220 23% 15%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
     
     --primary: 217 91% 60%; /* Blue accent */
     --primary-foreground: 210 40% 98%;
     
-    --secondary: 220 14% 20%; /* Dark gray for secondary elements */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%; /* Light gray for secondary elements */
+    --secondary-foreground: 222.2 84% 4.9%;
     
-    --muted: 220 14% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     
     --accent: 217 91% 60%;
     --accent-foreground: 210 40% 98%;
     
-    --destructive: 0 62% 30%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     
-    --border: 220 13% 25%;
-    --input: 220 13% 25%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 217 91% 60%;
     
     --success: 142 76% 36%; /* Green for positive metrics */
     --warning: 38 92% 50%;
-    
-    /* Custom gradients */
+
+    /* Custom gradients with light theme */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-background: linear-gradient(135deg, hsl(220 23% 11%), hsl(220 23% 8%));
+    --gradient-background: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
-    /* Shadows for dark theme */
+    /* Shadows for light theme */
     --shadow-primary: 0 10px 30px -10px hsl(217 91% 60% / 0.3);
-    --shadow-card: 0 4px 20px -2px hsl(220 23% 5% / 0.5);
+    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.1);
     
     --radius: 0.75rem;
 
     /* Sidebar */
-    --sidebar-background: 220 23% 11%;
-    --sidebar-foreground: 210 40% 98%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 84% 4.9%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 220 14% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 13% 25%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 217 91% 60%;
   }
 
   .dark {
-    /* Keep same values for consistent dark theme */
-    --background: 220 23% 11%;
-    --foreground: 210 40% 98%;
+    /* Light Theme - Keep consistent with root */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
     
-    --card: 220 23% 15%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
     
-    --popover: 220 23% 15%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
     
     --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
     
-    --secondary: 220 14% 20%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
     
-    --muted: 220 14% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     
     --accent: 217 91% 60%;
     --accent-foreground: 210 40% 98%;
     
-    --destructive: 0 62% 30%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     
-    --border: 220 13% 25%;
-    --input: 220 13% 25%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 217 91% 60%;
 
-    --sidebar-background: 220 23% 11%;
-    --sidebar-foreground: 210 40% 98%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 84% 4.9%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 220 14% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 13% 25%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 217 91% 60%;
   }
 }
