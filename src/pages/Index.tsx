@@ -180,10 +180,6 @@ const Index = () => {
           <div className="relative px-4 py-16 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <div className="animate-fade-in">
-                <Badge variant="secondary" className="mb-4 px-4 py-1.5 text-sm font-medium">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Trusted by 1000+ Businesses
-                </Badge>
                 <h1 className="text-5xl sm:text-6xl font-bold font-display text-foreground mb-6 leading-tight">
                   Halo Business
                   <span className="bg-gradient-primary bg-clip-text text-transparent"> Finance</span>
