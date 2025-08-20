@@ -204,7 +204,7 @@ const Index = () => {
               <CardTitle className="text-2xl font-bold text-foreground">
                 Get Started Today
               </CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
+              <CardDescription className="text-base text-foreground">
                 Sign in or create your account to access our loan marketplace and start your application journey.
               </CardDescription>
             </CardHeader>
@@ -218,10 +218,10 @@ const Index = () => {
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="text-sm text-foreground mb-2">
                   New to Commercial Loan Marketplace?
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   Create your account in under 2 minutes - completely secure and confidential.
                 </p>
               </div>
