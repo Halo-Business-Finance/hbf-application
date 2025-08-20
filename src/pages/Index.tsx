@@ -157,7 +157,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center animate-fade-in">
           <div className="relative mb-6">
             <div className="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin border-t-primary mx-auto"></div>
@@ -173,10 +173,10 @@ const Index = () => {
   // Show auth prompt for unauthenticated users
   if (!authenticated && !loading) {
     return (
-      <div className="min-h-screen bg-gradient-background">
+      <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+          <div className="absolute inset-0 opacity-5"></div>
           <div className="relative px-4 py-16 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <div className="animate-fade-in">
@@ -225,7 +225,7 @@ const Index = () => {
             <CardContent className="space-y-6 pt-2">
               <Button 
                 size="lg" 
-                className="w-full bg-gradient-primary hover:opacity-90 transition-all duration-300 text-lg font-semibold py-6 group"
+                className="w-full bg-primary hover:opacity-90 transition-all duration-300 text-lg font-semibold py-6 group"
                 onClick={() => navigate('/auth')}
               >
                 Access Loan Marketplace
@@ -247,7 +247,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-background">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
