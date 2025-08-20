@@ -195,7 +195,7 @@ const Index = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="px-4 pb-8">
+        <div className="px-4 pb-4">
           <Card className="max-w-lg mx-auto shadow-xl border-0 bg-card/95 backdrop-blur-sm animate-scale-in">
             <CardHeader className="text-center pb-4">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
