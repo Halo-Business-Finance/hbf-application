@@ -181,8 +181,8 @@ const Index = () => {
             <div className="max-w-4xl mx-auto text-center">
               <div className="animate-fade-in">
                 <h1 className="text-5xl sm:text-6xl font-bold font-display text-foreground mb-6 leading-tight">
-                  Halo Business
-                  <span className="bg-gradient-primary bg-clip-text text-transparent"> Finance</span>
+                  Commercial Loan
+                  <span className="bg-gradient-primary bg-clip-text text-transparent"> Marketplace</span>
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
                   Your premier commercial loan marketplace. Access competitive financing solutions 
