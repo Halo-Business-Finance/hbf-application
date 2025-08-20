@@ -96,6 +96,8 @@ export default function SBA504LoanForm() {
   };
 
   const onSubmit = async (data: SBA504FormData) => {
+    console.log('Form submit triggered', data);
+    
     const transformedData = {
       loan_type: "sba_504",
       amount_requested: data.projectCost,
@@ -123,8 +125,13 @@ export default function SBA504LoanForm() {
       },
     };
 
+    console.log('Transformed data:', transformedData);
+
     try {
+      console.log('Calling submitApplication...');
       const result = await submitApplication(transformedData);
+      console.log('Submit result:', result);
+      
       if (result) {
         toast({
           title: "Application Submitted Successfully",
@@ -134,6 +141,7 @@ export default function SBA504LoanForm() {
         setCurrentStep(1);
       }
     } catch (error) {
+      console.error('Submit error:', error);
       toast({
         title: "Submission Failed",
         description: "There was an error submitting your application. Please try again.",
