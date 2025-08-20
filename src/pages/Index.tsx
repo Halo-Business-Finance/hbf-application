@@ -190,26 +190,12 @@ const Index = () => {
                 </p>
               </div>
 
-              {/* Features */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-slide-up">
-                {[
-                  { icon: CheckCircle, title: "Fast Approval", desc: "Get pre-approved in 24 hours" },
-                  { icon: Building2, title: "Expert Support", desc: "Dedicated loan specialists" },
-                  { icon: TrendingUp, title: "Best Rates", desc: "Competitive market pricing" }
-                ].map((feature, index) => (
-                  <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover:bg-card/80 transition-all duration-300">
-                    <feature.icon className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
 
         {/* Auth Card */}
-        <div className="px-4 pb-16">
+        <div className="px-4 pb-8">
           <Card className="max-w-lg mx-auto shadow-xl border-0 bg-card/95 backdrop-blur-sm animate-scale-in">
             <CardHeader className="text-center pb-4">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -241,6 +227,23 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Features */}
+        <div className="px-4 pb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto animate-slide-up">
+            {[
+              { icon: CheckCircle, title: "Fast Approval", desc: "Get pre-approved in 24 hours" },
+              { icon: Building2, title: "Expert Support", desc: "Dedicated loan specialists" },
+              { icon: TrendingUp, title: "Best Rates", desc: "Competitive market pricing" }
+            ].map((feature, index) => (
+              <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover:bg-card/80 transition-all duration-300">
+                <feature.icon className="w-8 h-8 text-primary mx-auto mb-3" />
+                <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
