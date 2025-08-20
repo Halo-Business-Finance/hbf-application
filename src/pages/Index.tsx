@@ -182,9 +182,9 @@ const Index = () => {
               <div className="animate-fade-in">
                 <h1 className="text-3xl sm:text-5xl font-bold font-display text-foreground mb-6 leading-tight">
                   Commercial Loan
-                  <span className="text-white"> Marketplace</span>
+                  <span className="text-foreground"> Marketplace</span>
                 </h1>
-                <p className="text-xl text-white mb-8 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-xl text-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
                   Your premier commercial loan marketplace. Access competitive financing solutions 
                   tailored for your business growth and success.
                 </p>
