@@ -180,7 +180,7 @@ const Index = () => {
           <div className="relative px-4 py-16 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <div className="animate-fade-in">
-                <h1 className="text-5xl sm:text-6xl font-bold font-display text-foreground mb-6 leading-tight">
+                <h1 className="text-3xl sm:text-5xl font-bold font-display text-foreground mb-6 leading-tight">
                   Commercial Loan
                   <span className="bg-gradient-primary bg-clip-text text-transparent"> Marketplace</span>
                 </h1>
