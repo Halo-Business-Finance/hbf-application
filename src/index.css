@@ -7,19 +7,19 @@
   :root {
     /* Light Theme with White Background */
     --background: 0 0% 100%; /* Pure white background */
-    --foreground: 222.2 84% 4.9%; /* Dark text */
+    --foreground: 0 0% 0%; /* Pure black text */
     
     --card: 0 0% 100%; /* White cards */
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
     
     --primary: 217 91% 60%; /* Blue accent */
     --primary-foreground: 210 40% 98%;
     
     --secondary: 210 40% 96%; /* Light gray for secondary elements */
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary-foreground: 0 0% 0%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -49,11 +49,11 @@
 
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-foreground: 0 0% 0%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-accent-foreground: 0 0% 0%;
     --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 217 91% 60%;
   }
@@ -61,19 +61,19 @@
   .dark {
     /* Light Theme - Keep consistent with root */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 0%;
     
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
     
     --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
     
     --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary-foreground: 0 0% 0%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -89,11 +89,11 @@
     --ring: 217 91% 60%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-foreground: 0 0% 0%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-accent-foreground: 0 0% 0%;
     --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 217 91% 60%;
   }
