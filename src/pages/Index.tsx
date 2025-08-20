@@ -237,7 +237,7 @@ const Index = () => {
               </Button>
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">
-                  New to Halo Business Finance?
+                  New to Commercial Loan Marketplace?
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Create your account in under 2 minutes - completely secure and confidential.
