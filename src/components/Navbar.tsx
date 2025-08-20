@@ -48,12 +48,7 @@ const Navbar = () => {
     <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-slate-900 text-white">
       {/* Logo */}
       <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">H</span>
-          </div>
-          <span className="text-white font-bold text-xl">Halo Business Finance</span>
-        </div>
+        <span className="text-white font-bold text-xl">Halo Business Finance</span>
       </div>
 
       {/* Navigation Items */}
