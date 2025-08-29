@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import MarketingLanding from "./pages/MarketingLanding";
+import { HaloHomepage } from "./pages/HaloHomepage";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -30,7 +31,8 @@ const App = () => (
           <RateLimitProvider>
             <Layout>
             <Routes>
-              <Route path="/" element={<MarketingLanding />} />
+              <Route path="/" element={<HaloHomepage />} />
+              <Route path="/marketing" element={<MarketingLanding />} />
               <Route path="/application" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={
