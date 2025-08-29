@@ -9,18 +9,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, ChevronDown } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
-import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { authenticated, loading, username, signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  
-  const isMarketingPage = location.pathname === '/';
 
   const handleSignOut = async () => {
     try {
@@ -57,101 +53,24 @@ const Navbar = () => {
 
       {/* Navigation Items */}
       <div className="flex items-center space-x-6">
-        {isMarketingPage && (
-          <nav className="hidden md:flex items-center space-x-8">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary">
-                  Company <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate('/about')}>About Us</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/team')}>Our Team</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/contact')}>Contact</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary">
-                  SBA Loans <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate('/application?id=1')}>SBA 7(a) Loans</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/application?id=2')}>SBA 504 Loans</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/application?id=12')}>SBA Express</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary">
-                  USDA Loans <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate('/application?id=3')}>USDA B&I Loans</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary">
-                  Commercial Loans <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate('/application?id=5')}>Conventional Loans</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/application?id=9')}>Term Loans</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/application?id=4')}>Bridge Loans</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary">
-                  Equipment Financing <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate('/application?id=6')}>Equipment Loans</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/application?id=7')}>Working Capital</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/application?id=8')}>Line of Credit</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </nav>
-        )}
-        
         {!authenticated ? (
-          <div className="flex items-center space-x-4">
-            {isMarketingPage && (
-              <Button 
-                variant="outline"
-                onClick={() => navigate('/application')}
-              >
-                Get Started
-              </Button>
-            )}
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/auth')}
-              className="bg-primary hover:bg-primary/90"
-            >
-              {isMarketingPage ? 'Sign In' : 'Login'}
-            </Button>
-          </div>
+          <Button 
+            size="lg" 
+            onClick={() => navigate('/auth')}
+            className="bg-primary hover:bg-primary/90"
+          >
+            Login
+          </Button>
         ) : (
           <div className="flex items-center space-x-4">
             <Button 
               size="lg" 
               variant="secondary"
-              onClick={() => navigate('/application')}
+              onClick={() => navigate('/')}
               className="hover:bg-secondary/80 transition-colors"
             >
               <Home className="w-4 h-4 mr-2" />
-              Application
+              Home
             </Button>
 
             <DropdownMenu>
