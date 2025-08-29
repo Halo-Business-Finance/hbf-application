@@ -18,7 +18,7 @@ export const LoanProgramCard: React.FC<LoanProgramCardProps> = ({
   badge, 
   onSelect 
 }) => (
-  <Card className="loan-program-card" onClick={onSelect}>
+  <Card className="loan-program-card group" onClick={onSelect}>
     <CardHeader className="pb-4">
       <div className="flex items-center justify-between mb-2">
         <Badge className="badge-secondary">
@@ -67,9 +67,9 @@ export const ProcessStep: React.FC<ProcessStepProps> = ({
   icon: IconComponent, 
   isLast = false 
 }) => (
-  <div className="process-step">
+  <div className="process-step group">
     <div className="relative mb-6">
-      <div className="process-icon">
+      <div className="process-icon group-hover:bg-primary/20">
         <IconComponent className="w-8 h-8 text-primary" />
       </div>
       <div className="process-badge">
@@ -97,7 +97,7 @@ export const FeatureBenefit: React.FC<FeatureBenefitProps> = ({
   title, 
   description 
 }) => (
-  <div className="feature-card">
+  <div className="feature-card group text-center">
     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
       <IconComponent className="w-8 h-8 text-primary" />
     </div>
@@ -149,7 +149,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ title, subtitle, onGet
             </div>
             <Button 
               size="lg" 
-              className="cta-primary w-full"
+              className="cta-primary w-full group"
               onClick={onGetStarted}
             >
               Start Application

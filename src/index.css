@@ -150,20 +150,20 @@
   }
   
   .feature-card {
-    @apply professional-card p-6 group hover:scale-105 hover:border-primary/30;
+    @apply professional-card p-6 hover:scale-105 hover:border-primary/30;
   }
   
   .loan-program-card {
-    @apply professional-card cursor-pointer transition-all duration-300 border-2 group relative overflow-hidden hover:scale-105 hover:shadow-xl hover:border-primary/30 hover:bg-card/90;
+    @apply professional-card cursor-pointer transition-all duration-300 border-2 relative overflow-hidden hover:scale-105 hover:shadow-xl hover:border-primary/30 hover:bg-card/90;
   }
   
   /* Process Step Components */
   .process-step {
-    @apply text-center group relative;
+    @apply text-center relative;
   }
   
   .process-icon {
-    @apply w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-colors;
+    @apply w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto transition-colors;
   }
   
   .process-badge {
@@ -189,7 +189,7 @@
   
   /* CTA Components */
   .cta-primary {
-    @apply bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-8 text-lg group shadow-primary;
+    @apply bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-8 text-lg shadow-primary;
   }
   
   .cta-secondary {
