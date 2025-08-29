@@ -168,12 +168,10 @@ const Auth = () => {
   };
 
   const handleMicrosoftSignIn = async () => {
-    console.log("Microsoft sign in clicked");
     setLoading(true);
     setError("");
     
     try {
-      console.log("Attempting Microsoft OAuth...");
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'azure',
         options: {
@@ -181,14 +179,12 @@ const Auth = () => {
         }
       });
       
-      console.log("OAuth response:", { error });
-      
       if (error) {
-        console.error("OAuth error:", error);
+        console.error("OAuth authentication failed");
         setError(error.message || "Failed to sign in with Microsoft");
       }
     } catch (err) {
-      console.error("Caught exception:", err);
+      console.error("Authentication error occurred");
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);

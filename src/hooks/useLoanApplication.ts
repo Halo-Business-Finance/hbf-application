@@ -92,7 +92,7 @@ export const useLoanApplication = () => {
             }
           });
         } catch (crmError) {
-          console.log('CRM sync failed (non-critical):', crmError);
+          // CRM sync failure is non-critical, continue with application flow
         }
 
         // Send confirmation notification

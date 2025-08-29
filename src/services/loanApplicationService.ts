@@ -246,13 +246,11 @@ class LoanApplicationService {
       setTimeout(async () => {
         try {
           const result = await crmService.syncApplication(application);
-          if (result.success) {
-            console.log(`Application ${application.application_number} synced to Loanflow CRM`);
-          } else {
-            console.error(`Failed to sync application to Loanflow CRM: ${result.error}`);
+          if (!result.success) {
+            console.error('CRM sync failed');
           }
         } catch (error) {
-          console.error('Error syncing to Loanflow CRM:', error);
+          console.error('CRM sync error occurred');
         }
       }, 0);
 
