@@ -5,97 +5,107 @@
 
 @layer base {
   :root {
-    /* Light Theme with White Background */
+    /* Halo Business Finance Brand Colors */
     --background: 0 0% 100%; /* Pure white background */
-    --foreground: 0 0% 0%; /* Pure black text */
+    --foreground: 218 15% 25%; /* Dark blue-gray text */
     
     --card: 0 0% 100%; /* White cards */
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 218 15% 25%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 218 15% 25%;
     
-    --primary: 217 91% 60%; /* Blue accent */
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Professional Blue matching Halo's brand */
+    --primary: 214 84% 56%; /* Halo blue #3B82F6 equivalent */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 214 84% 66%; /* Lighter version */
     
     --secondary: 210 40% 96%; /* Light gray for secondary elements */
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 218 15% 25%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
     
-    --accent: 217 91% 60%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 214 84% 56%;
+    --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
     
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
+    --ring: 214 84% 56%;
     
     --success: 142 76% 36%; /* Green for positive metrics */
     --warning: 38 92% 50%;
 
-    /* Custom gradients with light theme */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-background: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    /* Professional gradients matching Halo's style */
+    --gradient-primary: linear-gradient(135deg, hsl(214 84% 56%), hsl(214 84% 66%));
+    --gradient-hero: linear-gradient(135deg, hsl(214 84% 56% / 0.1), hsl(214 84% 66% / 0.05));
+    --gradient-background: linear-gradient(135deg, hsl(0 0% 100%), hsl(214 84% 98%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(214 84% 99%));
     
-    /* Shadows for light theme */
-    --shadow-primary: 0 10px 30px -10px hsl(217 91% 60% / 0.3);
-    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.1);
+    /* Professional shadows */
+    --shadow-primary: 0 10px 30px -10px hsl(214 84% 56% / 0.3);
+    --shadow-card: 0 4px 20px -2px hsl(214 84% 56% / 0.1);
+    --shadow-hero: 0 20px 60px -10px hsl(214 84% 56% / 0.2);
     
+    /* Typography scale for professional presentation */
+    --text-hero: 3.5rem; /* 56px */
+    --text-section: 2.25rem; /* 36px */
+    --text-feature: 1.25rem; /* 20px */
+
     --radius: 0.75rem;
 
-    /* Sidebar */
+    /* Sidebar matching the professional theme */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-foreground: 218 15% 25%;
+    --sidebar-primary: 214 84% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-accent-foreground: 218 15% 25%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-ring: 214 84% 56%;
   }
 
   .dark {
-    /* Light Theme - Keep consistent with root */
+    /* Keep consistent professional theme - no dark mode for business focus */
     --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --foreground: 218 15% 25%;
     
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 218 15% 25%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 218 15% 25%;
     
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 214 84% 56%;
+    --primary-foreground: 0 0% 100%;
     
     --secondary: 210 40% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 218 15% 25%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
     
-    --accent: 217 91% 60%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 214 84% 56%;
+    --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
     
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
+    --ring: 214 84% 56%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-foreground: 218 15% 25%;
+    --sidebar-primary: 214 84% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-accent-foreground: 218 15% 25%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-ring: 214 84% 56%;
   }
 }
 
@@ -115,9 +125,99 @@
 }
 
 @layer components {
-  /* Loanflow CRM Style Components */
+  /* Professional Halo Business Finance Components */
+  
+  /* Hero Section Components */
+  .hero-section {
+    @apply relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10;
+  }
+  
+  .hero-background {
+    @apply absolute inset-0 bg-[url('/assets/hero-pattern.svg')] opacity-5;
+  }
+  
+  .hero-title {
+    @apply text-4xl sm:text-6xl font-bold font-display text-foreground leading-tight;
+  }
+  
+  .hero-subtitle {
+    @apply text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed;
+  }
+  
+  /* Professional Card Components */
+  .professional-card {
+    @apply bg-card border border-border/50 rounded-xl shadow-card backdrop-blur-sm hover:shadow-primary transition-all duration-300;
+  }
+  
+  .feature-card {
+    @apply professional-card p-6 group hover:scale-105 hover:border-primary/30;
+  }
+  
+  .loan-program-card {
+    @apply professional-card cursor-pointer transition-all duration-300 border-2 group relative overflow-hidden hover:scale-105 hover:shadow-xl hover:border-primary/30 hover:bg-card/90;
+  }
+  
+  /* Process Step Components */
+  .process-step {
+    @apply text-center group relative;
+  }
+  
+  .process-icon {
+    @apply w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-colors;
+  }
+  
+  .process-badge {
+    @apply absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold;
+  }
+  
+  /* Statistics Components */
+  .stats-section {
+    @apply py-24 bg-primary text-white;
+  }
+  
+  .stat-item {
+    @apply text-center;
+  }
+  
+  .stat-value {
+    @apply text-4xl font-bold mb-2;
+  }
+  
+  .stat-label {
+    @apply text-primary-foreground/80;
+  }
+  
+  /* CTA Components */
+  .cta-primary {
+    @apply bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-8 text-lg group shadow-primary;
+  }
+  
+  .cta-secondary {
+    @apply bg-secondary hover:bg-secondary/80 text-secondary-foreground font-medium border border-border;
+  }
+  
+  /* Navigation Components */
+  .nav-dropdown {
+    @apply text-foreground hover:text-primary transition-colors;
+  }
+  
+  /* Form Components */
+  .form-section {
+    @apply space-y-6 p-8 professional-card;
+  }
+  
+  /* Badge Components */
+  .badge-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-full text-sm font-medium;
+  }
+  
+  .badge-secondary {
+    @apply bg-secondary text-secondary-foreground px-4 py-2 rounded-full text-sm font-medium;
+  }
+
+  /* Legacy metric components for dashboard compatibility */
   .metric-card {
-    @apply bg-card border border-border/50 rounded-lg p-6 shadow-lg backdrop-blur-sm;
+    @apply professional-card p-6;
   }
   
   .metric-value {
@@ -133,11 +233,11 @@
   }
   
   .metric-change.positive {
-    @apply text-green-400;
+    @apply text-success;
   }
   
   .metric-change.negative {
-    @apply text-red-400;
+    @apply text-destructive;
   }
   
   .dashboard-header {
