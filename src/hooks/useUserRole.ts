@@ -18,12 +18,18 @@ export const useUserRole = () => {
       }
 
       try {
-        // For now, check if user email contains 'admin' for admin role
-        // This is a temporary solution until user_roles table is created
-        if (user.email && user.email.includes('admin')) {
-          setRole('admin');
+        // Fetch user role from database profiles table
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching user role:', error);
+          setRole('user'); // Default fallback
         } else {
-          setRole('user');
+          setRole(profile?.role || 'user');
         }
       } catch (error) {
         console.error('Error determining user role:', error);
