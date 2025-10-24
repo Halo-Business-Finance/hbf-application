@@ -323,7 +323,7 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mt-2">Click on any option to get started with your application</p>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
                   const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(program.id);
