@@ -254,40 +254,64 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
+        {/* Welcome Header for Authenticated Users */}
+        {authenticated && !selectedLoanType && (
+          <div className="mb-8 animate-fade-in">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back!</h1>
+                <p className="text-muted-foreground">Manage your loan applications and track your progress</p>
+              </div>
+              <Button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
+                + New Application
+              </Button>
+            </div>
           </div>
-          <h1 className="font-playfair text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
-            Comprehensive Business Financing Solutions
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
-            We provide credit, financing, treasury and payment solutions to help your business succeed. 
-            Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
-          </p>
-          
-          {/* Company Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
-            </Card>
-            <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
-            </Card>
-            <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">95%</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
-            </Card>
-            <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">7 Days</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
-            </Card>
+        )}
+
+        {/* My Applications Section - Shows First for Authenticated Users */}
+        {!selectedLoanType && authenticated && (
+          <div className="mb-12 animate-slide-up">
+            <ApplicationsList />
           </div>
-        </div>
+        )}
+
+        {/* Header for Unauthenticated or When Viewing Forms */}
+        {(!authenticated || selectedLoanType) && (
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
+            </div>
+            <h1 className="font-playfair text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
+              Comprehensive Business Financing Solutions
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
+              We provide credit, financing, treasury and payment solutions to help your business succeed. 
+              Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
+            </p>
+            
+            {/* Company Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+              <Card className="p-6 border-0">
+                <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
+              </Card>
+              <Card className="p-6 border-0">
+                <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
+              </Card>
+              <Card className="p-6 border-0">
+                <div className="text-3xl font-bold text-primary mb-1">95%</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
+              </Card>
+              <Card className="p-6 border-0">
+                <div className="text-3xl font-bold text-primary mb-1">7 Days</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
+              </Card>
+            </div>
+          </div>
+        )}
 
         {/* Back Button */}
         {selectedLoanType && (
@@ -521,12 +545,6 @@ const Index = () => {
           </div>
         )}
 
-        {/* Applications List */}
-        {!selectedLoanType && authenticated && (
-          <div className="animate-slide-up">
-            <ApplicationsList />
-          </div>
-        )}
       </div>
     </div>
   );

@@ -94,7 +94,7 @@ const ApplicationsList = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto">
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <Card key={i} className="animate-pulse">
@@ -116,17 +116,14 @@ const ApplicationsList = () => {
 
   if (applications.length === 0) {
     return (
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto">
         <Card>
           <CardContent className="p-12 text-center">
             <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">No Applications Yet</h3>
             <p className="text-muted-foreground mb-6">
-              You haven't submitted any loan applications. Start by selecting a loan type above.
+              You haven't submitted any loan applications. Select a loan type below to get started.
             </p>
-            <Button onClick={() => window.location.href = '/'}>
-              Start New Application
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -134,11 +131,11 @@ const ApplicationsList = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Your Loan Applications</h2>
+        <h2 className="text-2xl font-bold mb-2">Your Applications</h2>
         <p className="text-muted-foreground">
-          Track the status and progress of your loan applications
+          Track the status of your loan applications
         </p>
       </div>
 
