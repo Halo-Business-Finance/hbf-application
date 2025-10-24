@@ -157,14 +157,14 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center animate-fade-in">
           <div className="relative mb-6">
             <div className="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin border-t-primary mx-auto"></div>
             <Sparkles className="w-6 h-6 text-primary absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
           </div>
           <h3 className="text-lg font-semibold text-foreground mb-2">Loading Your Dashboard</h3>
-          <p className="text-muted-foreground">Preparing your loan application experience...</p>
+          <p className="text-sm text-muted-foreground">Preparing your loan application experience...</p>
         </div>
       </div>
     );
@@ -175,16 +175,19 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5"></div>
-          <div className="relative px-4 py-16 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
+        <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <div className="relative px-6 py-20 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto text-center">
               <div className="animate-fade-in">
-                <h1 className="text-3xl sm:text-5xl font-bold font-display text-foreground mb-6 leading-tight">
+                <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">Enterprise Loan Solutions</span>
+                </div>
+                <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-foreground mb-6 leading-tight">
                   Commercial Loan
-                  <span className="text-foreground"> Marketplace</span>
+                  <span className="text-primary"> Marketplace</span>
                 </h1>
-                <p className="text-xl text-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-lg text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
                   Your premier commercial loan marketplace. Access competitive financing solutions 
                   tailored for your business growth and success.
                 </p>
@@ -195,33 +198,33 @@ const Index = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="px-4 pb-4">
-          <Card className="max-w-lg mx-auto shadow-xl border-0 bg-card/95 backdrop-blur-sm animate-scale-in">
-            <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="px-6 pb-8 -mt-8">
+          <Card className="max-w-2xl mx-auto border-0 shadow-xl animate-scale-in">
+            <CardHeader className="text-center pb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
                 <LogIn className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl font-bold text-foreground">
+              <CardTitle className="text-3xl font-bold text-foreground mb-2">
                 Get Started Today
               </CardTitle>
-              <CardDescription className="text-base text-foreground">
+              <CardDescription className="text-base text-muted-foreground">
                 Sign in or create your account to access our loan marketplace and start your application journey.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 pt-2">
               <Button 
                 size="lg" 
-                className="w-full bg-primary hover:opacity-90 transition-all duration-300 text-lg font-semibold py-6 group"
+                className="w-full text-base font-semibold py-7 group shadow-md hover:shadow-lg"
                 onClick={() => navigate('/auth')}
               >
                 Access Loan Marketplace
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <div className="text-center">
-                <p className="text-sm text-foreground mb-2">
-                  New to Commercial Loan Marketplace?
+              <div className="text-center pt-2">
+                <p className="text-sm text-muted-foreground mb-2">
+                  New to our platform?
                 </p>
-                <p className="text-xs text-foreground">
+                <p className="text-xs text-muted-foreground">
                   Create your account in under 2 minutes - completely secure and confidential.
                 </p>
               </div>
@@ -230,18 +233,20 @@ const Index = () => {
         </div>
 
         {/* Features */}
-        <div className="px-4 pb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto animate-slide-up">
+        <div className="px-6 pb-20 pt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { icon: CheckCircle, title: "Fast Approval", desc: "Get pre-approved in 24 hours" },
-              { icon: Building2, title: "Expert Support", desc: "Dedicated loan specialists" },
-              { icon: TrendingUp, title: "Best Rates", desc: "Competitive market pricing" }
+              { icon: CheckCircle, title: "Fast Approval", desc: "Get pre-approved in 24 hours", color: "text-success" },
+              { icon: Building2, title: "Expert Support", desc: "Dedicated loan specialists", color: "text-primary" },
+              { icon: TrendingUp, title: "Best Rates", desc: "Competitive market pricing", color: "text-accent" }
             ].map((feature, index) => (
-              <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover:bg-card/80 transition-all duration-300">
-                <feature.icon className="w-8 h-8 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
+              <Card key={index} className="p-6 text-center hover:shadow-lg transition-all duration-300 border-0">
+                <div className={`w-12 h-12 ${feature.color} bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4`}>
+                  <feature.icon className="w-6 h-6" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-2 text-lg">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground">{feature.desc}</p>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
@@ -251,51 +256,51 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
-          <Badge variant="secondary" className="mb-4 px-4 py-1.5">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Nationwide SBA & Commercial Loan Marketplace
-          </Badge>
-          <h1 className="text-4xl sm:text-5xl font-bold font-display text-foreground mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
             Comprehensive Business Financing Solutions
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
             We provide credit, financing, treasury and payment solutions to help your business succeed. 
             Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
           </p>
           
           {/* Company Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">2,500+</div>
-              <div className="text-sm text-muted-foreground">Happy Clients</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">$2.5B+</div>
-              <div className="text-sm text-muted-foreground">Funding Provided</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">95%</div>
-              <div className="text-sm text-muted-foreground">Approval Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">7 Days</div>
-              <div className="text-sm text-muted-foreground">Avg Processing</div>
-            </div>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
+            </Card>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
+            </Card>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">95%</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
+            </Card>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">7 Days</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
+            </Card>
           </div>
         </div>
 
         {/* Back Button */}
         {selectedLoanType && (
           <div className="mb-8 animate-slide-up">
-            <Alert className="border-primary/20 bg-primary-muted/50">
+            <Alert className="border-primary/20 bg-primary/5">
               <AlertDescription className="flex items-center justify-between">
                 <Button 
                   variant="ghost" 
                   onClick={handleBackToHome}
-                  className="p-0 h-auto text-primary hover:text-primary/80 font-medium group"
+                  className="p-0 h-auto text-primary hover:text-primary/80 font-semibold group"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                   Return to Loan Types
@@ -310,12 +315,12 @@ const Index = () => {
 
         {/* Loan Type Selection */}
         {!selectedLoanType && (
-          <Card className="mb-12 shadow-lg border-0 bg-card/95 backdrop-blur-sm animate-scale-in">
+          <Card className="mb-12 border-0 shadow-lg animate-scale-in">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-3xl font-bold text-foreground mb-2">
+              <CardTitle className="text-3xl font-bold text-foreground mb-3">
                 Explore Our 12 Comprehensive Financing Programs
               </CardTitle>
-              <CardDescription className="text-lg text-muted-foreground">
+              <CardDescription className="text-base text-muted-foreground">
                 Select the financing solution that best fits your business needs
               </CardDescription>
               <p className="text-sm text-muted-foreground mt-2">Click on any option to get started with your application</p>
@@ -328,41 +333,32 @@ const Index = () => {
                   return (
                     <Card
                       key={program.id}
-                      className={`cursor-pointer transition-all duration-300 border-2 group relative overflow-hidden ${
+                      className={`cursor-pointer transition-all duration-300 border group relative overflow-hidden ${
                         isComingSoon 
                           ? 'opacity-60 cursor-not-allowed hover:border-border' 
-                          : 'hover:scale-105 hover:shadow-xl hover:border-primary/30 hover:bg-card/90'
+                          : 'hover:scale-[1.02] hover:shadow-xl hover:border-primary/50'
                       }`}
                       onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)}
-                      style={{ animationDelay: `${index * 100}ms` }}
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <div className="absolute top-4 right-4">
-                        <Badge className={`${program.badgeColor} text-white text-xs font-medium`}>
+                      <div className="absolute top-4 right-4 z-10">
+                        <Badge className={`${program.badgeColor} text-white text-xs font-semibold px-2.5 py-1`}>
                           {program.badge}
                         </Badge>
                       </div>
                       
                       <CardContent className="p-6 text-center">
-                        <div className="mb-6 flex justify-center relative">
-                          <div className={`w-20 h-20 flex items-center justify-center rounded-2xl transition-all duration-300 ${
+                        <div className="mb-5 flex justify-center relative">
+                          <div className={`w-16 h-16 flex items-center justify-center rounded-xl transition-all duration-300 ${
                             isComingSoon 
                               ? 'bg-muted' 
-                              : 'bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110'
+                              : 'bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 shadow-sm'
                           }`}>
-                            <IconComponent className={`w-10 h-10 ${isComingSoon ? 'text-muted-foreground' : 'text-primary'}`} />
+                            <IconComponent className={`w-8 h-8 ${isComingSoon ? 'text-muted-foreground' : 'text-primary'}`} />
                           </div>
-                          {!isComingSoon && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="absolute -top-2 -right-2 w-8 h-8 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <HelpCircle className="w-4 h-4" />
-                            </Button>
-                          )}
                         </div>
                         
-                        <h3 className={`font-bold text-xl mb-3 transition-colors ${
+                        <h3 className={`font-bold text-lg mb-3 transition-colors ${
                           isComingSoon 
                             ? 'text-muted-foreground' 
                             : 'text-foreground group-hover:text-primary'
@@ -375,20 +371,20 @@ const Index = () => {
                         </p>
 
                         {program.details && (
-                          <div className="text-xs text-muted-foreground border-t pt-2 mb-4">
+                          <div className="text-xs text-muted-foreground border-t pt-3 mb-4 font-medium">
                             {program.details}
                           </div>
                         )}
 
                         {!isComingSoon ? (
-                          <div className="mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button variant="outline" size="sm" className="w-full">
+                          <div className="mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button variant="outline" size="sm" className="w-full font-semibold">
                               Start Application
                               <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                           </div>
                         ) : (
-                          <div className="mt-6">
+                          <div className="mt-5">
                             <Badge variant="secondary" className="text-xs">
                               Coming Soon
                             </Badge>

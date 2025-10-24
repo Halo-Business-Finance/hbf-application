@@ -87,6 +87,10 @@ export default {
 				'gradient-background': 'var(--gradient-background)',
 			},
 			boxShadow: {
+				'sm': 'var(--shadow-sm)',
+				'md': 'var(--shadow-md)',
+				'lg': 'var(--shadow-lg)',
+				'xl': 'var(--shadow-xl)',
 				'primary': 'var(--shadow-primary)',
 				'card': 'var(--shadow-card)',
 			},

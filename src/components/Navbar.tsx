@@ -33,7 +33,7 @@ const Navbar = () => {
 
   if (loading) {
     return (
-      <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-background border-b">
+      <nav className="h-16 px-6 border-b bg-card flex w-full justify-between items-center">
         <div className="flex items-center">
           <div className="w-20 h-10 bg-muted animate-pulse rounded" />
         </div>
@@ -45,10 +45,10 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-[70px] px-5 shadow-lg flex w-full justify-between items-center bg-background border-b">
+    <nav className="h-16 px-6 border-b bg-card flex w-full justify-between items-center sticky top-0 z-50 backdrop-blur-sm bg-card/95">
       {/* Logo */}
       <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
-        <span className="text-foreground font-bold text-xl">Halo Business Finance</span>
+        <span className="text-foreground font-bold text-xl tracking-tight">Halo Business Finance</span>
       </div>
 
       {/* Navigation Items */}
@@ -57,17 +57,17 @@ const Navbar = () => {
           <Button 
             size="lg" 
             onClick={() => navigate('/auth')}
-            className="bg-primary hover:bg-primary/90"
+            className="shadow-sm"
           >
             Login
           </Button>
         ) : (
           <div className="flex items-center space-x-4">
             <Button 
-              size="lg" 
-              variant="secondary"
+              size="default" 
+              variant="ghost"
               onClick={() => navigate('/')}
-              className="hover:bg-secondary/80 transition-colors"
+              className="font-medium"
             >
               <Home className="w-4 h-4 mr-2" />
               Home
@@ -75,17 +75,17 @@ const Navbar = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
-                  <span className="text-foreground font-medium">
+                <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-md hover:bg-accent">
+                  <span className="text-foreground font-semibold text-sm">
                     {username || 'User'}
                   </span>
-                  <UserCircle className="w-6 h-6 text-foreground" />
+                  <UserCircle className="w-5 h-5 text-foreground" />
                 </div>
               </DropdownMenuTrigger>
               
               <DropdownMenuContent 
                 align="end" 
-                className="w-56 bg-background border shadow-lg z-50 backdrop-blur-sm"
+                className="w-56 bg-popover border shadow-lg z-50"
               >
                 <DropdownMenuItem 
                   onClick={() => navigate('/portal')}
