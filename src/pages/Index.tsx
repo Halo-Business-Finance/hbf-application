@@ -22,6 +22,131 @@ import InvoiceFactoringForm from "@/components/forms/InvoiceFactoringForm";
 import SBAExpressLoanForm from "@/components/forms/SBAExpressLoanForm";
 import { supabase } from "@/integrations/supabase/client";
 
+const FundedLoansView = ({ userId }: { userId?: string }) => {
+  const [fundedLoans, setFundedLoans] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFundedLoans = async () => {
+      if (!userId) return;
+
+      const { data } = await supabase
+        .from('loan_applications')
+        .select('*')
+        .eq('user_id', userId)
+        .in('status', ['funded', 'approved'])
+        .order('application_submitted_date', { ascending: false });
+
+      setFundedLoans(data || []);
+      setIsLoading(false);
+    };
+
+    fetchFundedLoans();
+  }, [userId]);
+
+  const getLoanTypeDisplay = (loanType: string) => {
+    const types = {
+      refinance: 'Refinance',
+      bridge_loan: 'Bridge Loan',
+      working_capital: 'Working Capital',
+      sba_7a: 'SBA 7(a)',
+      sba_504: 'SBA 504',
+      equipment_financing: 'Equipment Financing',
+      term_loan: 'Term Loan',
+      business_line_of_credit: 'Business Line of Credit'
+    };
+    return types[loanType as keyof typeof types] || loanType;
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-6">
+              <div className="h-6 bg-muted rounded w-1/3 mb-4"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (fundedLoans.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-12 text-center">
+          <CheckCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-xl font-semibold mb-2">No Funded Loans</h3>
+          <p className="text-muted-foreground">You don't have any funded or closed loans yet</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div>
+      <div className="mb-6 flex items-start gap-3">
+        <CheckCircle className="w-6 h-6 text-green-600 mt-1" />
+        <div>
+          <h2 className="text-2xl font-bold mb-1">Your Funded Loans</h2>
+          <p className="text-muted-foreground">
+            Track your active and closed loans
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {fundedLoans.map((loan) => (
+          <Card key={loan.id} className="hover:shadow-md transition-shadow border-l-4 border-l-green-500">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-1">
+                    {loan.business_name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Application #{loan.application_number}
+                  </p>
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className="text-foreground">
+                      <span className="font-semibold">Type:</span> {getLoanTypeDisplay(loan.loan_type)}
+                    </span>
+                    <span className="text-foreground">
+                      <span className="font-semibold">Amount:</span> {formatCurrency(loan.amount_requested)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Funded: {loan.application_submitted_date ? new Date(loan.application_submitted_date).toLocaleDateString() : 'N/A'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-green-100 text-green-800 border-green-200">
+                    {loan.status === 'funded' ? '✓ FUNDED' : '✓ APPROVED'}
+                  </Badge>
+                  <Button variant="outline" size="sm">
+                    View Details
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const DashboardView = () => {
   const [stats, setStats] = useState({
     totalApplications: 0,
@@ -137,7 +262,7 @@ const DashboardView = () => {
         <TabsList className="grid w-full max-w-md grid-cols-3">
           <TabsTrigger value="applications">My Applications</TabsTrigger>
           <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="loans">Loans</TabsTrigger>
         </TabsList>
 
         <TabsContent value="applications" className="mt-6">
@@ -154,14 +279,8 @@ const DashboardView = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="profile" className="mt-6">
-          <Card>
-            <CardContent className="p-12 text-center">
-              <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Profile Settings</h3>
-              <p className="text-muted-foreground">Manage your profile and preferences</p>
-            </CardContent>
-          </Card>
+        <TabsContent value="loans" className="mt-6">
+          <FundedLoansView userId={user?.id} />
         </TabsContent>
       </Tabs>
     </div>
