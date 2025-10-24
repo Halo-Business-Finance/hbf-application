@@ -179,10 +179,7 @@ const Index = () => {
           <div className="relative px-6 py-20 sm:px-8 lg:px-12">
             <div className="max-w-5xl mx-auto text-center">
               <div className="animate-fade-in">
-                <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">Enterprise Loan Solutions</span>
-                </div>
+                <p className="text-sm font-semibold text-primary mb-6">Enterprise Loan Solutions</p>
                 <h1 className="font-playfair text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
                   Commercial Loan
                   <span className="text-primary"> Marketplace</span>
