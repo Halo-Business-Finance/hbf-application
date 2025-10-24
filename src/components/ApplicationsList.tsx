@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 interface LoanApplication {
   id: string;
@@ -27,6 +28,7 @@ const ApplicationsList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchApplications = async () => {
     if (!user) return;
@@ -179,9 +181,19 @@ const ApplicationsList = () => {
                         ✓ APPROVED
                       </Badge>
                     )}
-                    <Button variant="outline" size="sm">
-                      View Details
-                    </Button>
+                    {application.status === 'draft' ? (
+                      <Button 
+                        variant="default" 
+                        size="sm"
+                        onClick={() => navigate(`/?loan=${application.loan_type}`)}
+                      >
+                        Continue Application
+                      </Button>
+                    ) : (
+                      <Button variant="outline" size="sm">
+                        View Details
+                      </Button>
+                    )}
                   </div>
                 </div>
 
