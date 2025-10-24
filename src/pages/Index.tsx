@@ -326,67 +326,66 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
-                  const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(program.id); // All forms now active
+                  const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(program.id);
                   return (
                     <Card
                       key={program.id}
-                      className={`cursor-pointer transition-all duration-300 border group relative overflow-hidden ${
+                      className={`cursor-pointer transition-all duration-300 overflow-hidden border-0 ${
                         isComingSoon 
-                          ? 'opacity-60 cursor-not-allowed hover:border-border' 
-                          : 'hover:scale-[1.02] hover:shadow-xl hover:border-primary/50'
+                          ? 'opacity-60 cursor-not-allowed' 
+                          : 'hover:scale-[1.02] hover:shadow-xl'
                       }`}
-                      onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)}
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <div className="absolute top-4 right-4 z-10">
-                        <Badge className={`${program.badgeColor} text-white text-xs font-semibold px-2.5 py-1`}>
-                          {program.badge}
-                        </Badge>
-                      </div>
-                      
-                      <CardContent className="p-6 text-center">
-                        <div className="mb-5 flex justify-center relative">
-                          <div className={`w-16 h-16 flex items-center justify-center rounded-xl transition-all duration-300 ${
-                            isComingSoon 
-                              ? 'bg-muted' 
-                              : 'bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 shadow-sm'
-                          }`}>
-                            <IconComponent className={`w-8 h-8 ${isComingSoon ? 'text-muted-foreground' : 'text-primary'}`} />
-                          </div>
+                      {/* Blue Header Section */}
+                      <div className="bg-primary p-6 text-white">
+                        <div className="flex justify-center mb-4">
+                          <IconComponent className="w-12 h-12" />
                         </div>
-                        
-                        <h3 className={`font-bold text-lg mb-3 transition-colors ${
-                          isComingSoon 
-                            ? 'text-muted-foreground' 
-                            : 'text-foreground group-hover:text-primary'
-                        }`}>
+                        <h3 className="font-bold text-xl mb-3 text-center">
                           {program.title}
                         </h3>
-                        
-                        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                        <p className="text-sm text-center leading-relaxed opacity-90">
                           {program.description}
                         </p>
+                      </div>
 
-                        {program.details && (
-                          <div className="text-xs text-muted-foreground border-t pt-3 mb-4 font-medium">
-                            {program.details}
+                      {/* White Body Section */}
+                      <CardContent className="p-6">
+                        <div className="mb-6">
+                          <div className="text-2xl font-bold text-foreground mb-1">
+                            {program.badge}
                           </div>
-                        )}
+                          <div className="text-sm text-muted-foreground">
+                            Starting Rate
+                          </div>
+                        </div>
 
-                        {!isComingSoon ? (
-                          <div className="mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button variant="outline" size="sm" className="w-full font-semibold">
-                              Start Application
-                              <ArrowRight className="w-4 h-4 ml-2" />
-                            </Button>
+                        <div className="mb-6">
+                          <div className="font-bold text-foreground mb-2">
+                            Loan Terms
                           </div>
-                        ) : (
-                          <div className="mt-5">
-                            <Badge variant="secondary" className="text-xs">
-                              Coming Soon
-                            </Badge>
+                          <div className="text-sm text-muted-foreground">
+                            {program.details?.split('|')[0]?.trim() || 'Contact for details'}
                           </div>
-                        )}
+                        </div>
+
+                        <ul className="space-y-2 mb-6">
+                          {program.details?.split('|').slice(1).map((detail, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                              <span>{detail.trim()}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        <Button 
+                          className="w-full font-semibold"
+                          onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)}
+                          disabled={isComingSoon}
+                        >
+                          {isComingSoon ? 'Coming Soon' : 'Apply Now'}
+                        </Button>
                       </CardContent>
                     </Card>
                   );
