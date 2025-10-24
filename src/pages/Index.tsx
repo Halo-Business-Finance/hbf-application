@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake, FileText, RotateCcw, Zap } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake, FileText, RotateCcw, Zap, DollarSign, Clock } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import ApplicationsList from "@/components/ApplicationsList";
 import RefinanceForm from "@/components/forms/RefinanceForm";
@@ -19,6 +20,153 @@ import { TermLoanForm } from "@/components/forms/TermLoanForm";
 import { BusinessLineOfCreditForm } from "@/components/forms/BusinessLineOfCreditForm";
 import InvoiceFactoringForm from "@/components/forms/InvoiceFactoringForm";
 import SBAExpressLoanForm from "@/components/forms/SBAExpressLoanForm";
+import { supabase } from "@/integrations/supabase/client";
+
+const DashboardView = () => {
+  const [stats, setStats] = useState({
+    totalApplications: 0,
+    approvedAmount: 0,
+    pendingReview: 0,
+    successRate: 0
+  });
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!user) return;
+
+      const { data: applications } = await supabase
+        .from('loan_applications')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (applications) {
+        const total = applications.length;
+        const approved = applications.filter(app => app.status === 'approved').length;
+        const pending = applications.filter(app => app.status === 'under_review' || app.status === 'submitted').length;
+        const approvedSum = applications
+          .filter(app => app.status === 'approved')
+          .reduce((sum, app) => sum + (app.amount_requested || 0), 0);
+
+        setStats({
+          totalApplications: total,
+          approvedAmount: approvedSum,
+          pendingReview: pending,
+          successRate: total > 0 ? Math.round((approved / total) * 100) : 0
+        });
+      }
+    };
+
+    fetchStats();
+  }, [user]);
+
+  return (
+    <div className="space-y-8 mb-12">
+      {/* Welcome Header */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back!</h1>
+          <p className="text-muted-foreground">Manage your loan applications and track your progress</p>
+        </div>
+        <Button size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
+          + New Application
+        </Button>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Total Applications</p>
+                <p className="text-3xl font-bold">{stats.totalApplications}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Approved Amount</p>
+                <p className="text-3xl font-bold">${stats.approvedAmount.toLocaleString()}</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Pending Review</p>
+                <p className="text-3xl font-bold">{stats.pendingReview}</p>
+              </div>
+              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Clock className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
+                <p className="text-3xl font-bold">{stats.successRate}%</p>
+              </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs Section */}
+      <Tabs defaultValue="applications" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsTrigger value="applications">My Applications</TabsTrigger>
+          <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="applications" className="mt-6">
+          <ApplicationsList />
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-6">
+          <Card>
+            <CardContent className="p-12 text-center">
+              <Clock className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Recent Activity</h3>
+              <p className="text-muted-foreground">Your recent application activity will appear here</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="profile" className="mt-6">
+          <Card>
+            <CardContent className="p-12 text-center">
+              <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Profile Settings</h3>
+              <p className="text-muted-foreground">Manage your profile and preferences</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
 
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
@@ -254,26 +402,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Welcome Header for Authenticated Users */}
+        {/* Dashboard for Authenticated Users */}
         {authenticated && !selectedLoanType && (
-          <div className="mb-8 animate-fade-in">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back!</h1>
-                <p className="text-muted-foreground">Manage your loan applications and track your progress</p>
-              </div>
-              <Button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
-                + New Application
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* My Applications Section - Shows First for Authenticated Users */}
-        {!selectedLoanType && authenticated && (
-          <div className="mb-12 animate-slide-up">
-            <ApplicationsList />
-          </div>
+          <DashboardView />
         )}
 
         {/* Header for Unauthenticated or When Viewing Forms */}

@@ -94,7 +94,7 @@ const ApplicationsList = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto">
+      <div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <Card key={i} className="animate-pulse">
@@ -116,7 +116,7 @@ const ApplicationsList = () => {
 
   if (applications.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto">
+      <div>
         <Card>
           <CardContent className="p-12 text-center">
             <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -131,90 +131,76 @@ const ApplicationsList = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Your Applications</h2>
-        <p className="text-muted-foreground">
-          Track the status of your loan applications
-        </p>
+    <div>
+      <div className="mb-6 flex items-start gap-3">
+        <FileText className="w-6 h-6 text-foreground mt-1" />
+        <div>
+          <h2 className="text-2xl font-bold mb-1">Your Applications</h2>
+          <p className="text-muted-foreground">
+            Track the status of your loan applications
+          </p>
+        </div>
       </div>
 
       <div className="space-y-4">
-        {applications.map((application) => (
-          <Card key={application.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">
-                    {getLoanTypeDisplay(application.loan_type)}
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-2 mt-1">
-                    <span>Application #{application.application_number}</span>
-                  </CardDescription>
-                </div>
-                <Badge className={getStatusColor(application.status)}>
-                  {application.status.replace('_', ' ').toUpperCase()}
-                </Badge>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="pt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="w-5 h-5 text-muted-foreground" />
+        {applications.map((application) => {
+          const isApproved = application.status === 'approved';
+          const progress = isApproved ? 100 : application.status === 'under_review' ? 50 : 25;
+          
+          return (
+            <Card key={application.id} className="hover:shadow-md transition-shadow border-l-4" style={{ borderLeftColor: isApproved ? '#22c55e' : '#94a3b8' }}>
+              <CardContent className="p-6">
+                <div className="flex justify-between items-start mb-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Loan Amount</p>
-                    <p className="font-semibold">
-                      {formatCurrency(application.amount_requested)}
+                    <h3 className="text-xl font-bold text-foreground mb-1">
+                      {application.business_name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Application #{application.application_number}
                     </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Applicant</p>
-                    <p className="font-semibold">
-                      {application.first_name} {application.last_name}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Business</p>
-                    <p className="font-semibold">{application.business_name}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      {application.application_submitted_date ? 'Submitted' : 'Started'}
-                    </p>
-                    <p className="font-semibold">
-                      {format(
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="text-foreground">
+                        <span className="font-semibold">Type:</span> {getLoanTypeDisplay(application.loan_type)}
+                      </span>
+                      <span className="text-foreground">
+                        <span className="font-semibold">Amount:</span> {formatCurrency(application.amount_requested)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Submitted: {format(
                         new Date(application.application_submitted_date || application.application_started_date),
-                        'MMM dd, yyyy'
+                        'M/d/yyyy'
                       )}
                     </p>
                   </div>
+                  <div className="flex items-center gap-2">
+                    {isApproved && (
+                      <Badge className="bg-green-100 text-green-800 border-green-200">
+                        ✓ APPROVED
+                      </Badge>
+                    )}
+                    <Button variant="outline" size="sm">
+                      View Details
+                    </Button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                <div className="text-sm text-muted-foreground">
-                  Last updated: {format(new Date(application.created_at), 'MMM dd, yyyy h:mm a')}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Application Progress</span>
+                    <span className="font-semibold">{progress}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div 
+                      className="bg-primary h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
                 </div>
-                <Button variant="outline" size="sm">
-                  View Details
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
