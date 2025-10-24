@@ -255,7 +255,7 @@ const BorrowerPortal = () => {
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="applications">My Applications</TabsTrigger>
             <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="loans">Existing Loans</TabsTrigger>
           </TabsList>
 
           <TabsContent value="applications" className="space-y-4">
@@ -324,9 +324,19 @@ const BorrowerPortal = () => {
                                 />
                               </div>
                             </div>
-                            <Button variant="outline" size="sm">
-                              View Details
-                            </Button>
+                             {application.status === 'draft' ? (
+                              <Button 
+                                variant="default" 
+                                size="sm"
+                                onClick={() => navigate(`/?loan=${application.loan_type}`)}
+                              >
+                                Continue Application
+                              </Button>
+                            ) : (
+                              <Button variant="outline" size="sm">
+                                View Details
+                              </Button>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -376,54 +386,8 @@ const BorrowerPortal = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="profile" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Profile Information
-                </CardTitle>
-                <CardDescription>
-                  Manage your personal and business information
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        Email Address
-                      </label>
-                      <p className="text-sm text-muted-foreground">
-                        {user?.email || 'Not provided'}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Phone Number
-                      </label>
-                      <p className="text-sm text-muted-foreground">
-                        Not provided
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-2">
-                      <Building className="w-4 h-4" />
-                      Business Information
-                    </label>
-                    <p className="text-sm text-muted-foreground">
-                      Complete your first application to see business details here
-                    </p>
-                  </div>
-                  <Button variant="outline">
-                    Update Profile
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="loans" className="space-y-4">
+            <ApplicationsList />
           </TabsContent>
         </Tabs>
       </div>
