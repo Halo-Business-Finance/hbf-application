@@ -183,7 +183,7 @@ const Index = () => {
                   <Sparkles className="w-4 h-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">Enterprise Loan Solutions</span>
                 </div>
-                <h1 className="font-playfair text-4xl sm:text-6xl font-bold tracking-tight text-foreground mb-6 leading-tight">
+                <h1 className="font-playfair text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
                   Commercial Loan
                   <span className="text-primary"> Marketplace</span>
                 </h1>
@@ -204,7 +204,7 @@ const Index = () => {
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
                 <LogIn className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-3xl font-bold text-foreground mb-2">
+              <CardTitle className="text-2xl font-bold text-foreground mb-2">
                 Get Started Today
               </CardTitle>
               <CardDescription className="text-base text-muted-foreground">
@@ -263,7 +263,7 @@ const Index = () => {
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
           </div>
-          <h1 className="font-playfair text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
+          <h1 className="font-playfair text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
             Comprehensive Business Financing Solutions
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
@@ -317,7 +317,7 @@ const Index = () => {
         {!selectedLoanType && (
           <Card className="mb-12 border-0 shadow-lg animate-scale-in">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-3xl font-bold text-foreground mb-3">
+              <CardTitle className="text-2xl font-bold text-foreground mb-3">
                 Explore Our 12 Comprehensive Financing Programs
               </CardTitle>
               <CardDescription className="text-base text-muted-foreground">
