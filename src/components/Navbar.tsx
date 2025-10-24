@@ -12,6 +12,7 @@ import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -46,8 +47,9 @@ const Navbar = () => {
 
   return (
     <nav className="h-16 px-6 border-b bg-card flex w-full justify-between items-center sticky top-0 z-50 backdrop-blur-sm bg-card/95">
-      {/* Logo */}
-      <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
+      {/* Left: Sidebar Trigger + Logo */}
+      <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
+        <SidebarTrigger className="m-0" />
         <span className="text-foreground font-bold text-xl tracking-tight">Halo Business Finance</span>
       </div>
 

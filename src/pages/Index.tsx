@@ -183,7 +183,7 @@ const Index = () => {
                   <Sparkles className="w-4 h-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">Enterprise Loan Solutions</span>
                 </div>
-                <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-foreground mb-6 leading-tight">
+                <h1 className="font-playfair text-4xl sm:text-6xl font-bold tracking-tight text-foreground mb-6 leading-tight">
                   Commercial Loan
                   <span className="text-primary"> Marketplace</span>
                 </h1>
@@ -263,7 +263,7 @@ const Index = () => {
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
+          <h1 className="font-playfair text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
             Comprehensive Business Financing Solutions
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
