@@ -11,6 +11,7 @@ import AdminLoanDetail from "./pages/AdminLoanDetail";
 import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
 import CRM from "./pages/CRM";
+import Support from "./pages/Support";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
 import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
@@ -127,6 +128,11 @@ const App = () => (
               <Route path="/portal" element={
                 <ProtectedRoute>
                   <BorrowerPortal />
+                </ProtectedRoute>
+              } />
+              <Route path="/support" element={
+                <ProtectedRoute>
+                  <Support />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
