@@ -17,6 +17,19 @@ import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RateLimitProvider } from "./components/RateLimitProvider";
 
+// Admin pages
+import AllApplications from "./pages/admin/AllApplications";
+import ApplicationReview from "./pages/admin/ApplicationReview";
+import Analytics from "./pages/admin/Analytics";
+import SystemSettings from "./pages/admin/SystemSettings";
+import SecurityAudit from "./pages/admin/SecurityAudit";
+import ExportData from "./pages/admin/ExportData";
+import LoanProducts from "./pages/admin/LoanProducts";
+import PaymentManagement from "./pages/admin/PaymentManagement";
+import Notifications from "./pages/admin/Notifications";
+import SupportTickets from "./pages/admin/SupportTickets";
+import DatabaseManagement from "./pages/admin/DatabaseManagement";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -34,6 +47,66 @@ const App = () => (
               <Route path="/admin" element={
                 <ProtectedRoute requiredRole="admin">
                   <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/applications" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AllApplications />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/review" element={
+                <ProtectedRoute requiredRole="admin">
+                  <ApplicationReview />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/analytics" element={
+                <ProtectedRoute requiredRole="admin">
+                  <Analytics />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/settings" element={
+                <ProtectedRoute requiredRole="admin">
+                  <SystemSettings />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/security" element={
+                <ProtectedRoute requiredRole="admin">
+                  <SecurityAudit />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/export" element={
+                <ProtectedRoute requiredRole="admin">
+                  <ExportData />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/products" element={
+                <ProtectedRoute requiredRole="admin">
+                  <LoanProducts />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/payments" element={
+                <ProtectedRoute requiredRole="admin">
+                  <PaymentManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/notifications" element={
+                <ProtectedRoute requiredRole="admin">
+                  <Notifications />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/support" element={
+                <ProtectedRoute requiredRole="admin">
+                  <SupportTickets />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/database" element={
+                <ProtectedRoute requiredRole="admin">
+                  <DatabaseManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/users" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminUserManagement />
                 </ProtectedRoute>
               } />
               <Route path="/admin/loans/:id" element={

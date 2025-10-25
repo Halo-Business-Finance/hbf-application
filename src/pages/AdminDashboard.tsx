@@ -48,7 +48,7 @@ const AdminDashboard = () => {
       icon: FileText,
       title: 'All Applications',
       description: 'View, manage, and review all loan applications submitted by users',
-      onClick: () => navigate('/admin?tab=applications')
+      onClick: () => navigate('/admin/applications')
     },
     {
       icon: Users,
@@ -60,61 +60,61 @@ const AdminDashboard = () => {
       icon: Eye,
       title: 'Application Review',
       description: 'Review pending applications and update their status',
-      onClick: () => navigate('/admin?tab=review')
+      onClick: () => navigate('/admin/review')
     },
     {
       icon: BarChart3,
       title: 'Analytics & Reports',
       description: 'View detailed analytics, statistics, and generate reports',
-      onClick: () => navigate('/admin?tab=analytics')
+      onClick: () => navigate('/admin/analytics')
     },
     {
       icon: Settings,
       title: 'System Settings',
       description: 'Configure system-wide settings and preferences',
-      onClick: () => navigate('/admin?tab=settings')
+      onClick: () => navigate('/admin/settings')
     },
     {
       icon: Shield,
       title: 'Security & Audit Logs',
       description: 'Monitor security events and view audit logs for compliance',
-      onClick: () => navigate('/admin?tab=security')
+      onClick: () => navigate('/admin/security')
     },
     {
       icon: Download,
       title: 'Export Data',
       description: 'Export applications, users, and reports in CSV or PDF format',
-      onClick: () => navigate('/admin?tab=export')
+      onClick: () => navigate('/admin/export')
     },
     {
       icon: Building2,
       title: 'Loan Products',
       description: 'Manage available loan products, types, and their configurations',
-      onClick: () => navigate('/admin?tab=products')
+      onClick: () => navigate('/admin/products')
     },
     {
       icon: CreditCard,
       title: 'Payment Management',
       description: 'View and manage payment transactions and financial records',
-      onClick: () => navigate('/admin?tab=payments')
+      onClick: () => navigate('/admin/payments')
     },
     {
       icon: Bell,
       title: 'Notifications',
       description: 'Send system notifications and manage alert preferences',
-      onClick: () => navigate('/admin?tab=notifications')
+      onClick: () => navigate('/admin/notifications')
     },
     {
       icon: MessageSquare,
       title: 'Support Tickets',
       description: 'Review and respond to user support requests and inquiries',
-      onClick: () => navigate('/admin?tab=support')
+      onClick: () => navigate('/admin/support')
     },
     {
       icon: Database,
       title: 'Database Management',
       description: 'Monitor database health, backups, and perform maintenance',
-      onClick: () => navigate('/admin?tab=database')
+      onClick: () => navigate('/admin/database')
     }
   ];
 
