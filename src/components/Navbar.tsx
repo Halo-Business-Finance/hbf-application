@@ -177,7 +177,7 @@ const Navbar = () => {
                   className="cursor-pointer hover:bg-muted"
                 >
                   <FileText className="w-4 h-4 mr-2" />
-                  My Portal
+                  My Account
                 </DropdownMenuItem>
 
                 {isAdmin() && (
