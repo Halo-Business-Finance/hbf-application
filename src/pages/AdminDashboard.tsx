@@ -16,7 +16,8 @@ import {
   MessageSquare,
   BarChart3,
   CreditCard,
-  Building2
+  Building2,
+  Plug
 } from 'lucide-react';
 
 
@@ -115,6 +116,12 @@ const AdminDashboard = () => {
       title: 'Database Management',
       description: 'Monitor database health, backups, and perform maintenance',
       onClick: () => navigate('/admin/database')
+    },
+    {
+      icon: Plug,
+      title: 'API Integrations',
+      description: 'Manage external API connections, webhooks, and third-party integrations',
+      onClick: () => navigate('/admin/integrations')
     }
   ];
 

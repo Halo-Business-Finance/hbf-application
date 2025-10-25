@@ -31,6 +31,7 @@ import PaymentManagement from "./pages/admin/PaymentManagement";
 import Notifications from "./pages/admin/Notifications";
 import SupportTickets from "./pages/admin/SupportTickets";
 import DatabaseManagement from "./pages/admin/DatabaseManagement";
+import ApiIntegrations from "./pages/admin/ApiIntegrations";
 
 const queryClient = new QueryClient();
 
@@ -104,6 +105,11 @@ const App = () => (
               <Route path="/admin/database" element={
                 <ProtectedRoute requiredRole="admin">
                   <DatabaseManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/integrations" element={
+                <ProtectedRoute requiredRole="admin">
+                  <ApiIntegrations />
                 </ProtectedRoute>
               } />
               <Route path="/admin/users" element={
