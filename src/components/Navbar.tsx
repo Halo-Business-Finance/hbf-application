@@ -78,9 +78,6 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-md hover:bg-accent">
-                  <span className="text-foreground font-semibold text-sm">
-                    {username || 'User'}
-                  </span>
                   <UserCircle className="w-5 h-5 text-foreground" />
                 </div>
               </DropdownMenuTrigger>
