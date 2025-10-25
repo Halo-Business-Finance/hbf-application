@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { loanApplicationService } from '@/services/loanApplicationService';
 import ApplicationsList from '@/components/ApplicationsList';
-import { 
+import { supabase } from '@/integrations/supabase/client';
+import {
   FileText, 
   Plus, 
   Clock, 
@@ -49,6 +50,7 @@ const BorrowerPortal = () => {
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [userProfile, setUserProfile] = useState<{ first_name: string | null } | null>(null);
 
   useEffect(() => {
     if (!loading && !authenticated) {
@@ -63,6 +65,19 @@ const BorrowerPortal = () => {
 
   const loadPortalData = async () => {
     try {
+      // Fetch user profile
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('id', user.id)
+          .single();
+        
+        if (profileData) {
+          setUserProfile(profileData);
+        }
+      }
+      
       // In a real app, you'd fetch user-specific applications
       // For now, we'll simulate this data
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
@@ -182,7 +197,9 @@ const BorrowerPortal = () => {
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold">Welcome back!</h1>
+            <h1 className="text-3xl font-bold">
+              Welcome back{userProfile?.first_name ? `, ${userProfile.first_name}` : ''}!
+            </h1>
             <p className="text-muted-foreground">
               Manage your loan applications and track your progress
             </p>
