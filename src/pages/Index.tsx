@@ -155,10 +155,19 @@ const DashboardView = () => {
     successRate: 0
   });
   const { user } = useAuth();
-
+  const [firstName, setFirstName] = useState<string | null>(null);
   useEffect(() => {
     const fetchStats = async () => {
       if (!user) return;
+
+      // Fetch user's first name from profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('first_name')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      setFirstName(profile?.first_name ?? null);
 
       const { data: applications } = await supabase
         .from('loan_applications')
@@ -190,7 +199,7 @@ const DashboardView = () => {
       {/* Welcome Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back!</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back{firstName ? `, ${firstName}` : ''}!</h1>
           <p className="text-muted-foreground">Manage your loan applications and track your progress</p>
         </div>
         <Button size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
