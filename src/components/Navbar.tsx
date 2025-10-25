@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -18,6 +19,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { authenticated, loading, username, signOut } = useAuth();
   const { isAdmin } = useUserRole();
+  const [notificationCount] = useState(3); // Mock notification count
 
   const handleSignOut = async () => {
     try {
@@ -65,6 +67,79 @@ const Navbar = () => {
           </Button>
         ) : (
           <div className="flex items-center space-x-4">
+            {/* Notifications Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-blue-900 hover:bg-accent relative"
+                >
+                  <Bell className="w-5 h-5" />
+                  {notificationCount > 0 && (
+                    <Badge 
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500 hover:bg-red-600"
+                    >
+                      {notificationCount}
+                    </Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              
+              <DropdownMenuContent 
+                align="end" 
+                className="w-80 bg-popover border shadow-lg z-50"
+              >
+                <div className="px-4 py-3 border-b">
+                  <h3 className="font-semibold text-blue-900">Notifications</h3>
+                  <p className="text-xs text-muted-foreground">You have {notificationCount} unread notifications</p>
+                </div>
+                
+                <div className="max-h-[400px] overflow-y-auto">
+                  <DropdownMenuItem 
+                    className="cursor-pointer hover:bg-muted py-3 px-4 border-b"
+                  >
+                    <div className="flex flex-col gap-1 w-full">
+                      <p className="text-sm font-medium">Application Approved</p>
+                      <p className="text-xs text-muted-foreground">Your SBA loan application has been approved</p>
+                      <p className="text-xs text-muted-foreground">2 hours ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    className="cursor-pointer hover:bg-muted py-3 px-4 border-b"
+                  >
+                    <div className="flex flex-col gap-1 w-full">
+                      <p className="text-sm font-medium">Document Required</p>
+                      <p className="text-xs text-muted-foreground">Please upload additional tax documents</p>
+                      <p className="text-xs text-muted-foreground">1 day ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    className="cursor-pointer hover:bg-muted py-3 px-4 border-b"
+                  >
+                    <div className="flex flex-col gap-1 w-full">
+                      <p className="text-sm font-medium">Status Update</p>
+                      <p className="text-xs text-muted-foreground">Your application is under review</p>
+                      <p className="text-xs text-muted-foreground">3 days ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                </div>
+                
+                <div className="px-4 py-2 border-t">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full text-xs"
+                    onClick={() => navigate('/portal?tab=notifications')}
+                  >
+                    View All Notifications
+                  </Button>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Help Button */}
             <Button
               variant="ghost"
               size="icon"
@@ -74,6 +149,7 @@ const Navbar = () => {
               <HelpCircle className="w-5 h-5" />
             </Button>
             
+            {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-md hover:bg-accent">
