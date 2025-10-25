@@ -279,8 +279,8 @@ const BorrowerPortal = () => {
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold mb-2">
-            Your Account
+          <h1 className="text-2xl font-bold mb-2">
+            My Account
           </h1>
         </div>
 
