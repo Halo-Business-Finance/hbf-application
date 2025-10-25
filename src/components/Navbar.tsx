@@ -14,12 +14,14 @@ import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, 
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { LoanCalculatorDialog } from '@/components/LoanCalculatorDialog';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { authenticated, loading, username, signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const [notificationCount] = useState(3); // Mock notification count
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -143,12 +145,18 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/calculator')}
+              onClick={() => setCalculatorOpen(true)}
               className="text-blue-900 hover:bg-accent"
               title="Loan Calculator"
             >
               <Calculator className="w-5 h-5" />
             </Button>
+
+            {/* Loan Calculator Dialog */}
+            <LoanCalculatorDialog 
+              open={calculatorOpen} 
+              onOpenChange={setCalculatorOpen} 
+            />
 
             {/* Help Button */}
             <Button
