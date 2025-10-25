@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { loanApplicationService } from '@/services/loanApplicationService';
 import ApplicationsList from '@/components/ApplicationsList';
 import { supabase } from '@/integrations/supabase/client';
-import {
+import { 
   FileText, 
   Plus, 
   Clock, 
@@ -22,7 +22,15 @@ import {
   Calendar,
   User,
   Building,
-  Phone
+  Phone,
+  Shield,
+  Home,
+  CreditCard,
+  Bell,
+  HelpCircle,
+  Settings,
+  Upload,
+  MessageSquare
 } from 'lucide-react';
 
 interface UserStats {
@@ -191,210 +199,118 @@ const BorrowerPortal = () => {
     );
   }
 
+  const accountSections = [
+    {
+      icon: FileText,
+      title: 'My Applications',
+      description: 'Track, view, and manage your loan applications',
+      onClick: () => navigate('/portal?tab=applications')
+    },
+    {
+      icon: Shield,
+      title: 'Login & Security',
+      description: 'Edit login credentials, password, and security settings',
+      onClick: () => navigate('/portal?tab=security')
+    },
+    {
+      icon: User,
+      title: 'Profile Settings',
+      description: 'Manage your personal information and business details',
+      onClick: () => navigate('/portal?tab=profile')
+    },
+    {
+      icon: Home,
+      title: 'Business Information',
+      description: 'Update business address, type, and registration details',
+      onClick: () => navigate('/portal?tab=business')
+    },
+    {
+      icon: CreditCard,
+      title: 'Payment Methods',
+      description: 'View transactions and manage payment settings',
+      onClick: () => navigate('/portal?tab=payments')
+    },
+    {
+      icon: Upload,
+      title: 'Documents',
+      description: 'Upload, view, and manage your application documents',
+      onClick: () => navigate('/portal?tab=documents')
+    },
+    {
+      icon: Bell,
+      title: 'Notifications',
+      description: 'Manage notification preferences and alert settings',
+      onClick: () => navigate('/portal?tab=notifications')
+    },
+    {
+      icon: TrendingUp,
+      title: 'Loan Status',
+      description: 'View current status and history of all your loans',
+      onClick: () => navigate('/portal?tab=status')
+    },
+    {
+      icon: Settings,
+      title: 'Account Settings',
+      description: 'Manage account preferences and general settings',
+      onClick: () => navigate('/portal?tab=settings')
+    },
+    {
+      icon: MessageSquare,
+      title: 'Messages',
+      description: 'View or respond to messages from our team',
+      onClick: () => navigate('/portal?tab=messages')
+    },
+    {
+      icon: HelpCircle,
+      title: 'Help & Support',
+      description: 'Browse help articles, FAQs, or contact our support team',
+      onClick: () => navigate('/portal?tab=support')
+    },
+    {
+      icon: DollarSign,
+      title: 'Funded Loans',
+      description: 'View details of your approved and funded loans',
+      onClick: () => navigate('/portal?tab=funded')
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold">
-              Welcome back{userProfile?.first_name ? `, ${userProfile.first_name}` : ''}!
-            </h1>
-            <p className="text-muted-foreground">
-              Manage your loan applications and track your progress
-            </p>
-          </div>
-          <Button onClick={() => navigate('/')} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            New Application
-          </Button>
+        <div>
+          <h1 className="text-4xl font-bold mb-2">
+            Your Account
+          </h1>
         </div>
 
-        {/* Quick Stats */}
-        {userStats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Applications</p>
-                  <p className="text-2xl font-bold">{userStats.totalApplications}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Approved Amount</p>
-                  <p className="text-2xl font-bold">${userStats.approvedAmount.toLocaleString()}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Pending Review</p>
-                  <p className="text-2xl font-bold">{userStats.pendingApplications}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Success Rate</p>
-                  <p className="text-2xl font-bold">
-                    {userStats.totalApplications > 0 
-                      ? Math.round(((userStats.totalApplications - userStats.pendingApplications) / userStats.totalApplications) * 100)
-                      : 0}%
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Main Content */}
-        <Tabs defaultValue="applications" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="applications">My Applications</TabsTrigger>
-            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-            <TabsTrigger value="loans">Existing Loans</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="applications" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  Your Applications
-                </CardTitle>
-                <CardDescription>
-                  Track the status of your loan applications
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {applications.length === 0 ? (
-                  <div className="text-center py-8">
-                    <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">No Applications Yet</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Start your first loan application to see it here
-                    </p>
-                    <Button onClick={() => navigate('/')}>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Start New Application
-                    </Button>
+        {/* Account Sections Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {accountSections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <Card 
+                key={section.title}
+                className="cursor-pointer hover:shadow-md transition-shadow border"
+                onClick={section.onClick}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-7 h-7 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-base mb-1">{section.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-snug">
+                        {section.description}
+                      </p>
+                    </div>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    {applications.map((application) => (
-                      <Card key={application.id} className="border-l-4 border-l-primary/20">
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold">{application.business_name}</h3>
-                                {getStatusBadge(application.status)}
-                              </div>
-                              <p className="text-sm text-muted-foreground">
-                                Application #{application.application_number}
-                              </p>
-                              <div className="flex flex-wrap gap-4 text-sm">
-                                <span>Type: <strong>{application.loan_type}</strong></span>
-                                <span>Amount: <strong>${application.amount_requested?.toLocaleString()}</strong></span>
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                Submitted: {new Date(application.created_at).toLocaleDateString()}
-                              </p>
-                              
-                              {/* Progress indicator */}
-                              <div className="mt-3">
-                                <div className="flex justify-between text-xs mb-1">
-                                  <span>Application Progress</span>
-                                  <span>
-                                    {application.status === 'approved' ? '100%' : 
-                                     application.status === 'under_review' ? '75%' :
-                                     application.status === 'pending' ? '25%' : '0%'}
-                                  </span>
-                                </div>
-                                <Progress 
-                                  value={
-                                    application.status === 'approved' ? 100 : 
-                                    application.status === 'under_review' ? 75 :
-                                    application.status === 'pending' ? 25 : 0
-                                  } 
-                                  className="h-2"
-                                />
-                              </div>
-                            </div>
-                             {application.status === 'draft' ? (
-                              <Button 
-                                variant="default" 
-                                size="sm"
-                                onClick={() => navigate(`/?loan=${application.loan_type}`)}
-                              >
-                                Continue Application
-                              </Button>
-                            ) : (
-                              <Button variant="outline" size="sm">
-                                View Details
-                              </Button>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="activity" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  Recent Activity
-                </CardTitle>
-                <CardDescription>
-                  Stay updated with your application progress
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {recentActivity.length === 0 ? (
-                  <div className="text-center py-8">
-                    <TrendingUp className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No recent activity</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {recentActivity.map((activity) => (
-                      <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg border">
-                        <div className="mt-1">
-                          {getActivityIcon(activity.type)}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-medium">{activity.title}</h4>
-                          <p className="text-sm text-muted-foreground">{activity.description}</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(activity.date).toLocaleDateString()} at {new Date(activity.date).toLocaleTimeString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="loans" className="space-y-4">
-            <ApplicationsList />
-          </TabsContent>
-        </Tabs>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
