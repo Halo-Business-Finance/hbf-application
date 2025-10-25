@@ -202,56 +202,36 @@ const DashboardView = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Total Applications</p>
-                <p className="text-3xl font-bold">{stats.totalApplications}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Total Applications</p>
+              <p className="text-3xl font-bold">{stats.totalApplications}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Approved Amount</p>
-                <p className="text-3xl font-bold">${stats.approvedAmount.toLocaleString()}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
-              </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Approved Amount</p>
+              <p className="text-3xl font-bold">${stats.approvedAmount.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Pending Review</p>
-                <p className="text-3xl font-bold">{stats.pendingReview}</p>
-              </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-6 h-6 text-yellow-600" />
-              </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Pending Review</p>
+              <p className="text-3xl font-bold">{stats.pendingReview}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
-                <p className="text-3xl font-bold">{stats.successRate}%</p>
-              </div>
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-primary" />
-              </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
+              <p className="text-3xl font-bold">{stats.successRate}%</p>
             </div>
           </CardContent>
         </Card>
