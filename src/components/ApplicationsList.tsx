@@ -181,7 +181,7 @@ const ApplicationsList = () => {
                         ✓ APPROVED
                       </Badge>
                     )}
-                    {application.status === 'draft' ? (
+                    {['draft', 'submitted', 'under_review'].includes(application.status) ? (
                       <Button 
                         variant="default" 
                         size="sm"
