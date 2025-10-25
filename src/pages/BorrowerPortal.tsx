@@ -297,8 +297,8 @@ const BorrowerPortal = () => {
                 <Card className="h-full hover:shadow-md transition-shadow border">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-7 h-7 text-primary" />
+                      <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-7 h-7 text-foreground" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-base mb-1">{section.title}</h3>
