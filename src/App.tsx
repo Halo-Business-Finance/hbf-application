@@ -12,6 +12,7 @@ import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
 import CRM from "./pages/CRM";
 import Support from "./pages/Support";
+import LoanCalculator from "./pages/LoanCalculator";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
 import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
@@ -134,6 +135,9 @@ const App = () => (
                 <ProtectedRoute>
                   <Support />
                 </ProtectedRoute>
+              } />
+              <Route path="/calculator" element={
+                <LoanCalculator />
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

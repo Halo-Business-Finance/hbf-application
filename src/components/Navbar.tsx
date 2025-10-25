@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell, Calculator } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -138,6 +138,16 @@ const Navbar = () => {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Loan Calculator Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/calculator')}
+              className="text-blue-900 hover:bg-accent"
+            >
+              <Calculator className="w-5 h-5" />
+            </Button>
 
             {/* Help Button */}
             <Button
