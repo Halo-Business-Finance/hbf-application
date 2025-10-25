@@ -65,16 +65,6 @@ const Navbar = () => {
           </Button>
         ) : (
           <div className="flex items-center space-x-4">
-            <Button 
-              size="default" 
-              variant="ghost"
-              onClick={() => navigate('/')}
-              className="font-medium"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Home
-            </Button>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-md hover:bg-accent">
