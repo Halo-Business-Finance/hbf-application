@@ -181,7 +181,6 @@ const Navbar = () => {
                 </DropdownMenuItem>
 
                 {isAdmin() && (
-                  <>
                     <DropdownMenuItem 
                       onClick={() => navigate('/admin')}
                       className="cursor-pointer hover:bg-muted"
@@ -189,15 +188,6 @@ const Navbar = () => {
                       <Shield className="w-4 h-4 mr-2" />
                       Admin Dashboard
                     </DropdownMenuItem>
-
-                    <DropdownMenuItem 
-                      onClick={() => navigate('/admin/users')}
-                      className="cursor-pointer hover:bg-muted"
-                    >
-                      <Users className="w-4 h-4 mr-2" />
-                      User Management
-                    </DropdownMenuItem>
-                  </>
                 )}
                 
                 <DropdownMenuSeparator />
