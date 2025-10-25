@@ -145,12 +145,12 @@ const ApplicationsList = () => {
 
   const getStatusMessage = (status: string) => {
     const messages = {
-      draft: { text: 'Draft - Continue Application', color: 'text-gray-700', bg: 'bg-gray-50' },
-      submitted: { text: 'Application Submitted', color: 'text-blue-700', bg: 'bg-blue-50' },
-      under_review: { text: 'Under Review', color: 'text-yellow-700', bg: 'bg-yellow-50' },
-      approved: { text: 'Approved', color: 'text-green-700', bg: 'bg-green-50' },
-      rejected: { text: 'Application Declined', color: 'text-red-700', bg: 'bg-red-50' },
-      funded: { text: 'Funded', color: 'text-purple-700', bg: 'bg-purple-50' }
+      draft: { text: 'Draft - Continue Application', color: 'text-gray-700' },
+      submitted: { text: 'Application Submitted', color: 'text-foreground' },
+      under_review: { text: 'Under Review', color: 'text-foreground' },
+      approved: { text: 'Approved', color: 'text-green-700' },
+      rejected: { text: 'Application Declined', color: 'text-red-700' },
+      funded: { text: 'Funded', color: 'text-purple-700' }
     };
     return messages[status as keyof typeof messages] || messages.draft;
   };
@@ -201,15 +201,15 @@ const ApplicationsList = () => {
                 <div className="flex gap-6">
                   {/* Left side - Icon and details */}
                   <div className="flex-1">
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md ${statusInfo.bg} mb-3`}>
+                    <div className="mb-3">
                       <div className={`text-lg font-semibold ${statusInfo.color}`}>
                         {statusInfo.text}
                       </div>
                     </div>
                     
                     <div className="flex gap-4 mb-4">
-                      <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
-                        <DollarSign className="w-10 h-10 text-primary" />
+                      <div className="flex items-center justify-center w-20 h-20 bg-muted rounded-lg">
+                        <DollarSign className="w-10 h-10 text-foreground" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-base mb-1">
