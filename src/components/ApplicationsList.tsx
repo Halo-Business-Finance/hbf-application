@@ -85,6 +85,17 @@ const ApplicationsList = () => {
     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
+  // Map DB loan_type to Index page loan program id
+  const getProgramIdForLoanType = (loanType: string): number | null => {
+    const map: Record<string, number> = {
+      refinance: 11,
+      bridge_loan: 4,
+      working_capital: 7,
+      factoring: 10,
+    };
+    return map[loanType] ?? null;
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -185,7 +196,14 @@ const ApplicationsList = () => {
                       <Button 
                         variant="default" 
                         size="sm"
-                        onClick={() => navigate(`/?loan=${application.loan_type}`)}
+                        onClick={() => {
+                          const programId = getProgramIdForLoanType(application.loan_type);
+                          if (programId) {
+                            navigate(`/?id=${programId}&app=${application.id}`);
+                          } else {
+                            navigate(`/?id=7&app=${application.id}`); // fallback to Working Capital
+                          }
+                        }}
                       >
                         Continue Application
                       </Button>

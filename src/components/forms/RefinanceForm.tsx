@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface RefinanceFormData {
   amount_requested: number;
@@ -35,6 +35,38 @@ const RefinanceForm = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const appId = searchParams.get('app');
+
+  useEffect(() => {
+    const loadExisting = async () => {
+      if (!appId || !user) return;
+      const { data, error } = await supabase
+        .from('loan_applications')
+        .select('*')
+        .eq('id', appId)
+        .eq('user_id', user.id)
+        .single();
+      if (error || !data) return;
+      setValue('amount_requested', data.amount_requested || 0);
+      setValue('first_name', data.first_name || '');
+      setValue('last_name', data.last_name || '');
+      setValue('phone', data.phone || '');
+      setValue('business_name', data.business_name || '');
+      setValue('business_address', data.business_address || '');
+      setValue('business_city', data.business_city || '');
+      setValue('business_state', data.business_state || '');
+      setValue('business_zip', data.business_zip || '');
+      setValue('years_in_business', data.years_in_business || 0);
+      const d: any = (data.loan_details as any) || {};
+      setValue('property_type', d.property_type || '');
+      setValue('property_value', Number(d.property_value) || 0);
+      setValue('existing_loan_amount', Number(d.existing_loan_amount) || 0);
+      setValue('monthly_income', Number(d.monthly_income) || 0);
+      setValue('property_address', d.property_address || '');
+    };
+    loadExisting();
+  }, [appId, user, setValue]);
 
   const onSubmit = async (data: RefinanceFormData) => {
     if (!user) {
@@ -48,41 +80,63 @@ const RefinanceForm = () => {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('loan_applications')
-        .insert({
-          user_id: user.id,
-          loan_type: 'refinance',
-          amount_requested: data.amount_requested,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          phone: data.phone,
-          business_name: data.business_name,
-          business_address: data.business_address,
-          business_city: data.business_city,
-          business_state: data.business_state,
-          business_zip: data.business_zip,
-          years_in_business: data.years_in_business,
-          loan_details: {
-            property_type: data.property_type,
-            property_value: data.property_value,
-            existing_loan_amount: data.existing_loan_amount,
-            monthly_income: data.monthly_income,
-            property_address: data.property_address,
-          },
-          status: 'submitted',
-          application_submitted_date: new Date().toISOString(),
-        });
-
-      if (error) {
-        throw error;
+      if (appId) {
+        const { error } = await supabase
+          .from('loan_applications')
+          .update({
+            amount_requested: data.amount_requested,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            phone: data.phone,
+            business_name: data.business_name,
+            business_address: data.business_address,
+            business_city: data.business_city,
+            business_state: data.business_state,
+            business_zip: data.business_zip,
+            years_in_business: data.years_in_business,
+            loan_details: {
+              property_type: data.property_type,
+              property_value: data.property_value,
+              existing_loan_amount: data.existing_loan_amount,
+              monthly_income: data.monthly_income,
+              property_address: data.property_address,
+            },
+            status: 'submitted',
+            application_submitted_date: new Date().toISOString(),
+          })
+          .eq('id', appId)
+          .eq('user_id', user.id);
+        if (error) throw error;
+        toast({ title: 'Application Updated', description: 'Your refinance application has been updated.' });
+      } else {
+        const { error } = await supabase
+          .from('loan_applications')
+          .insert({
+            user_id: user.id,
+            loan_type: 'refinance',
+            amount_requested: data.amount_requested,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            phone: data.phone,
+            business_name: data.business_name,
+            business_address: data.business_address,
+            business_city: data.business_city,
+            business_state: data.business_state,
+            business_zip: data.business_zip,
+            years_in_business: data.years_in_business,
+            loan_details: {
+              property_type: data.property_type,
+              property_value: data.property_value,
+              existing_loan_amount: data.existing_loan_amount,
+              monthly_income: data.monthly_income,
+              property_address: data.property_address,
+            },
+            status: 'submitted',
+            application_submitted_date: new Date().toISOString(),
+          });
+        if (error) throw error;
+        toast({ title: 'Application Submitted', description: 'Your refinance application has been submitted successfully.' });
       }
-
-      toast({
-        title: "Application Submitted",
-        description: "Your refinance application has been submitted successfully.",
-      });
-
       navigate('/');
     } catch (error) {
       console.error('Error submitting application:', error);

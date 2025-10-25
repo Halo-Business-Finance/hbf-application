@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,6 +14,9 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { useLoanApplication } from '@/hooks/useLoanApplication';
 import { TrendingUp, Building, DollarSign, FileText, Check } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const workingCapitalSchema = z.object({
   // Personal Information
