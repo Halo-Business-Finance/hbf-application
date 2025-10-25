@@ -145,6 +145,7 @@ const Navbar = () => {
               size="icon"
               onClick={() => navigate('/calculator')}
               className="text-blue-900 hover:bg-accent"
+              title="Loan Calculator"
             >
               <Calculator className="w-5 h-5" />
             </Button>
