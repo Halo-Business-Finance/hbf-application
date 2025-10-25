@@ -143,88 +143,135 @@ const ApplicationsList = () => {
     );
   }
 
+  const getStatusMessage = (status: string) => {
+    const messages = {
+      draft: { text: 'Draft - Continue Application', color: 'text-gray-700', bg: 'bg-gray-50' },
+      submitted: { text: 'Application Submitted', color: 'text-blue-700', bg: 'bg-blue-50' },
+      under_review: { text: 'Under Review', color: 'text-yellow-700', bg: 'bg-yellow-50' },
+      approved: { text: 'Approved', color: 'text-green-700', bg: 'bg-green-50' },
+      rejected: { text: 'Application Declined', color: 'text-red-700', bg: 'bg-red-50' },
+      funded: { text: 'Funded', color: 'text-purple-700', bg: 'bg-purple-50' }
+    };
+    return messages[status as keyof typeof messages] || messages.draft;
+  };
+
   return (
     <div>
-      <div className="mb-6 flex items-start gap-3">
-        <FileText className="w-6 h-6 text-foreground mt-1" />
-        <div>
-          <h2 className="text-2xl font-bold mb-1">Your Applications</h2>
-          <p className="text-muted-foreground">
-            Track the status of your loan applications
-          </p>
-        </div>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold mb-1">Your Applications</h2>
+        <p className="text-muted-foreground text-sm">
+          {applications.length} application{applications.length !== 1 ? 's' : ''} in total
+        </p>
       </div>
 
       <div className="space-y-4">
         {applications.map((application) => {
-          const isApproved = application.status === 'approved';
-          const progress = isApproved ? 100 : application.status === 'under_review' ? 50 : 25;
+          const statusInfo = getStatusMessage(application.status);
           
           return (
-            <Card key={application.id} className="hover:shadow-md transition-shadow border-l-4" style={{ borderLeftColor: isApproved ? '#22c55e' : '#94a3b8' }}>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-foreground mb-1">
-                      {application.business_name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Application #{application.application_number}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="text-foreground">
-                        <span className="font-semibold">Type:</span> {getLoanTypeDisplay(application.loan_type)}
-                      </span>
-                      <span className="text-foreground">
-                        <span className="font-semibold">Amount:</span> {formatCurrency(application.amount_requested)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Submitted: {format(
-                        new Date(application.application_submitted_date || application.application_started_date),
-                        'M/d/yyyy'
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {isApproved && (
-                      <Badge className="bg-green-100 text-green-800 border-green-200">
-                        ✓ APPROVED
-                      </Badge>
-                    )}
-                    {['draft', 'submitted', 'under_review'].includes(application.status) ? (
-                      <Button 
-                        variant="default" 
-                        size="sm"
-                        onClick={() => {
-                          const programId = getProgramIdForLoanType(application.loan_type);
-                          if (programId) {
-                            navigate(`/?id=${programId}&app=${application.id}`);
-                          } else {
-                            navigate(`/?id=7&app=${application.id}`); // fallback to Working Capital
-                          }
-                        }}
-                      >
-                        Continue Application
-                      </Button>
-                    ) : (
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                    )}
+            <Card key={application.id} className="overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
+              {/* Header Section */}
+              <div className="bg-muted/30 px-6 py-3 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm border-b">
+                <div>
+                  <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION DATE</div>
+                  <div className="font-medium">
+                    {format(new Date(application.application_started_date), 'MMMM d, yyyy')}
                   </div>
                 </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Application Progress</span>
-                    <span className="font-semibold">{progress}%</span>
+                <div>
+                  <div className="text-xs text-muted-foreground font-medium mb-1">AMOUNT</div>
+                  <div className="font-medium">{formatCurrency(application.amount_requested)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground font-medium mb-1">BUSINESS</div>
+                  <div className="font-medium truncate">{application.business_name}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION #</div>
+                  <div className="font-medium text-primary">{application.application_number}</div>
+                  <div className="flex gap-3 justify-end mt-1">
+                    <button className="text-xs text-primary hover:underline">View details</button>
+                    <button className="text-xs text-primary hover:underline">View documents</button>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
+                </div>
+              </div>
+
+              {/* Content Section */}
+              <CardContent className="p-6">
+                <div className="flex gap-6">
+                  {/* Left side - Icon and details */}
+                  <div className="flex-1">
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md ${statusInfo.bg} mb-3`}>
+                      <div className={`text-lg font-semibold ${statusInfo.color}`}>
+                        {statusInfo.text}
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-4 mb-4">
+                      <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
+                        <DollarSign className="w-10 h-10 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-base mb-1">
+                          {getLoanTypeDisplay(application.loan_type)}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {application.first_name} {application.last_name} • {application.business_name}
+                        </p>
+                        {application.status === 'draft' && (
+                          <p className="text-xs text-muted-foreground">
+                            Started on {format(new Date(application.application_started_date), 'MMM d, yyyy')}
+                          </p>
+                        )}
+                        {application.application_submitted_date && (
+                          <p className="text-xs text-muted-foreground">
+                            Submitted on {format(new Date(application.application_submitted_date), 'MMM d, yyyy')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      {['draft', 'submitted', 'under_review'].includes(application.status) ? (
+                        <Button 
+                          variant="default"
+                          size="sm"
+                          onClick={() => {
+                            const programId = getProgramIdForLoanType(application.loan_type);
+                            if (programId) {
+                              navigate(`/?id=${programId}&app=${application.id}`);
+                            } else {
+                              navigate(`/?id=7&app=${application.id}`);
+                            }
+                          }}
+                        >
+                          Continue Application
+                        </Button>
+                      ) : (
+                        <Button variant="default" size="sm">
+                          View Application
+                        </Button>
+                      )}
+                      <Button variant="outline" size="sm">
+                        Download PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Right side - Action buttons */}
+                  <div className="flex flex-col gap-2 min-w-[200px]">
+                    <Button variant="outline" size="sm" className="w-full justify-start">
+                      View Status
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start">
+                      Upload Documents
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start">
+                      Contact Support
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start">
+                      Print Application
+                    </Button>
                   </div>
                 </div>
               </CardContent>
