@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, MessageCircle } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -71,7 +71,7 @@ const Navbar = () => {
               onClick={() => navigate('/support')}
               className="text-blue-900 hover:bg-accent"
             >
-              <MessageCircle className="w-5 h-5" />
+              <HelpCircle className="w-5 h-5" />
             </Button>
             
             <DropdownMenu>
