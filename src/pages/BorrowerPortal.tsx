@@ -198,52 +198,40 @@ const BorrowerPortal = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Applications</p>
-                    <p className="text-2xl font-bold">{userStats.totalApplications}</p>
-                  </div>
-                  <FileText className="w-8 h-8 text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Applications</p>
+                  <p className="text-2xl font-bold">{userStats.totalApplications}</p>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Approved Amount</p>
-                    <p className="text-2xl font-bold">${userStats.approvedAmount.toLocaleString()}</p>
-                  </div>
-                  <DollarSign className="w-8 h-8 text-green-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Approved Amount</p>
+                  <p className="text-2xl font-bold">${userStats.approvedAmount.toLocaleString()}</p>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Pending Review</p>
-                    <p className="text-2xl font-bold">{userStats.pendingApplications}</p>
-                  </div>
-                  <Clock className="w-8 h-8 text-yellow-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Pending Review</p>
+                  <p className="text-2xl font-bold">{userStats.pendingApplications}</p>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Success Rate</p>
-                    <p className="text-2xl font-bold">
-                      {userStats.totalApplications > 0 
-                        ? Math.round(((userStats.totalApplications - userStats.pendingApplications) / userStats.totalApplications) * 100)
-                        : 0}%
-                    </p>
-                  </div>
-                  <TrendingUp className="w-8 h-8 text-blue-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Success Rate</p>
+                  <p className="text-2xl font-bold">
+                    {userStats.totalApplications > 0 
+                      ? Math.round(((userStats.totalApplications - userStats.pendingApplications) / userStats.totalApplications) * 100)
+                      : 0}%
+                  </p>
                 </div>
               </CardContent>
             </Card>
