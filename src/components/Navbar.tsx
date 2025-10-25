@@ -49,8 +49,8 @@ const Navbar = () => {
     <nav className="h-16 px-6 border-b bg-card flex w-full justify-between items-center sticky top-0 z-50 backdrop-blur-sm bg-card/95">
       {/* Left: Sidebar Trigger + Logo */}
       <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
-        <SidebarTrigger className="m-0" />
-        <span className="text-foreground font-bold text-xl tracking-tight">Halo Business Finance</span>
+        <SidebarTrigger className="m-0 text-blue-900" />
+        <span className="text-blue-900 font-bold text-xl tracking-tight">Halo Business Finance</span>
       </div>
 
       {/* Navigation Items */}
@@ -68,7 +68,7 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-md hover:bg-accent">
-                  <UserCircle className="w-5 h-5 text-foreground" />
+                  <UserCircle className="w-5 h-5 text-blue-900" />
                 </div>
               </DropdownMenuTrigger>
               
