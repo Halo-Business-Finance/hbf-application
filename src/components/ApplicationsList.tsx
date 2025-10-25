@@ -208,9 +208,6 @@ const ApplicationsList = () => {
                     </div>
                     
                     <div className="flex gap-4 mb-4">
-                      <div className="flex items-center justify-center w-20 h-20 bg-muted rounded-lg">
-                        <DollarSign className="w-10 h-10 text-foreground" />
-                      </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-base mb-1">
                           {getLoanTypeDisplay(application.loan_type)}
