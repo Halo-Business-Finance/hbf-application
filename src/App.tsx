@@ -15,6 +15,7 @@ import CRM from "./pages/CRM";
 import Support from "./pages/Support";
 import LoanCalculator from "./pages/LoanCalculator";
 import MyDocuments from "./pages/MyDocuments";
+import CreditReports from "./pages/CreditReports";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
 import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
@@ -142,6 +143,11 @@ const App = () => (
               <Route path="/documents" element={
                 <ProtectedRoute>
                   <MyDocuments />
+                </ProtectedRoute>
+              } />
+              <Route path="/credit-reports" element={
+                <ProtectedRoute>
+                  <CreditReports />
                 </ProtectedRoute>
               } />
               <Route path="/support" element={

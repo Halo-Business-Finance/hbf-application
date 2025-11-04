@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen } from 'lucide-react';
+import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +16,7 @@ const items = [
   { title: 'Home', url: '/', icon: Home },
   { title: 'My Applications', url: '/portal', icon: FileText },
   { title: 'My Documents', url: '/documents', icon: FolderOpen },
+  { title: 'My Credit Reports', url: '/credit-reports', icon: CreditCard },
 ];
 
 const adminItems = [
