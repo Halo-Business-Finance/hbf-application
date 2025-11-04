@@ -17,20 +17,7 @@ import {
   CheckCircle, 
   XCircle, 
   AlertCircle,
-  TrendingUp,
-  DollarSign,
-  Calendar,
-  User,
-  Building,
-  Phone,
-  Shield,
-  Home,
-  CreditCard,
-  Bell,
-  HelpCircle,
-  Settings,
-  Upload,
-  MessageSquare
+  DollarSign
 } from 'lucide-react';
 
 interface UserStats {
@@ -199,120 +186,184 @@ const BorrowerPortal = () => {
     );
   }
 
-  const accountSections = [
-    {
-      icon: FileText,
-      title: 'My Applications',
-      description: 'Track, view, and manage your loan applications',
-      onClick: () => navigate('/portal?tab=applications')
-    },
-    {
-      icon: Shield,
-      title: 'Login & Security',
-      description: 'Edit login credentials, password, and security settings',
-      onClick: () => navigate('/portal?tab=security')
-    },
-    {
-      icon: User,
-      title: 'Profile Settings',
-      description: 'Manage your personal information and business details',
-      onClick: () => navigate('/portal?tab=profile')
-    },
-    {
-      icon: Home,
-      title: 'Business Information',
-      description: 'Update business address, type, and registration details',
-      onClick: () => navigate('/portal?tab=business')
-    },
-    {
-      icon: CreditCard,
-      title: 'Payment Methods',
-      description: 'View transactions and manage payment settings',
-      onClick: () => navigate('/portal?tab=payments')
-    },
-    {
-      icon: Upload,
-      title: 'Documents',
-      description: 'Upload, view, and manage your application documents',
-      onClick: () => navigate('/portal?tab=documents')
-    },
-    {
-      icon: Bell,
-      title: 'Notifications',
-      description: 'Manage notification preferences and alert settings',
-      onClick: () => navigate('/portal?tab=notifications')
-    },
-    {
-      icon: TrendingUp,
-      title: 'Loan Status',
-      description: 'View current status and history of all your loans',
-      onClick: () => navigate('/portal?tab=status')
-    },
-    {
-      icon: Settings,
-      title: 'Account Settings',
-      description: 'Manage account preferences and general settings',
-      onClick: () => navigate('/portal?tab=settings')
-    },
-    {
-      icon: MessageSquare,
-      title: 'Messages',
-      description: 'View or respond to messages from our team',
-      onClick: () => navigate('/portal?tab=messages')
-    },
-    {
-      icon: HelpCircle,
-      title: 'Help & Support',
-      description: 'Browse help articles, FAQs, or contact our support team',
-      onClick: () => navigate('/portal?tab=support')
-    },
-    {
-      icon: DollarSign,
-      title: 'Funded Loans',
-      description: 'View details of your approved and funded loans',
-      onClick: () => navigate('/portal?tab=funded')
-    }
-  ];
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold mb-2">
-            My Account
-          </h1>
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto p-4 md:p-8">
+        <Tabs defaultValue="applications" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="applications">My Applications</TabsTrigger>
+            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+            <TabsTrigger value="loans">Loans</TabsTrigger>
+          </TabsList>
 
-        {/* Account Sections Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accountSections.map((section) => {
-            const Icon = section.icon;
-            return (
-              <div
-                key={section.title}
-                className="cursor-pointer"
-                onClick={section.onClick}
-              >
-                <Card className="h-full hover:shadow-md transition-shadow border">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-7 h-7 text-blue-900" />
+          <TabsContent value="applications" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight">Your Applications</h2>
+                <p className="text-muted-foreground mt-1">
+                  {applications.length} application{applications.length !== 1 ? 's' : ''} in total
+                </p>
+              </div>
+            </div>
+            
+            <ApplicationsList />
+          </TabsContent>
+
+          <TabsContent value="activity" className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight mb-2">Recent Activity</h2>
+              <p className="text-muted-foreground">Track your recent application activities</p>
+            </div>
+
+            <div className="space-y-4">
+              {recentActivity.length > 0 ? (
+                recentActivity.map((activity) => (
+                  <Card key={activity.id}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="mt-1">
+                          {getActivityIcon(activity.type)}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <h3 className="font-semibold mb-1">{activity.title}</h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {activity.description}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(activity.date).toLocaleDateString('en-US', {
+                                  month: 'long',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                            {activity.status && (
+                              <div>
+                                {getStatusBadge(activity.status)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base mb-1">{section.title}</h3>
-                        <p className="text-sm text-muted-foreground leading-snug">
-                          {section.description}
-                        </p>
-                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">No Recent Activity</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Your recent application activities will appear here
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="loans" className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight mb-2">Loans</h2>
+              <p className="text-muted-foreground">View your loan details and history</p>
+            </div>
+
+            {userStats && (
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{userStats.totalApplications}</div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Approved Amount</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      ${userStats.approvedAmount.toLocaleString()}
                     </div>
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{userStats.pendingApplications}</div>
+                  </CardContent>
+                </Card>
               </div>
-            );
-          })}
-        </div>
+            )}
+
+            <div className="space-y-4">
+              {applications.length > 0 ? (
+                applications.map((app) => (
+                  <Card key={app.id}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-lg">{app.business_name}</CardTitle>
+                          <CardDescription className="mt-1">
+                            {app.loan_type.replace('_', ' ').toUpperCase()} • {app.application_number}
+                          </CardDescription>
+                        </div>
+                        {getStatusBadge(app.status)}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Amount Requested</p>
+                          <p className="text-xl font-semibold">
+                            ${app.amount_requested.toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Application Date</p>
+                          <p className="text-xl font-semibold">
+                            {new Date(app.created_at).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">No Loans Yet</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Start your first loan application to see it here
+                    </p>
+                    <Button onClick={() => navigate('/')}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      New Application
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
