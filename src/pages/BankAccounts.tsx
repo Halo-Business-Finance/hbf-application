@@ -4,26 +4,56 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Landmark, TrendingUp, TrendingDown, DollarSign, Calendar, Building2, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { Landmark, TrendingUp, DollarSign, Calendar, Building2, User, Plus, Trash2 } from 'lucide-react';
 
 interface BankAccount {
   id: string;
-  accountName: string;
-  accountNumber: string;
-  accountType: string;
+  account_name: string;
+  account_number: string;
+  account_type: string;
   balance: number;
   currency: string;
   institution: string;
-  lastUpdated: string;
-  status: 'active' | 'pending' | 'closed';
+  is_business: boolean;
+  status: string;
+  updated_at: string;
+}
+
+interface NewAccountForm {
+  account_name: string;
+  account_number: string;
+  account_type: string;
+  institution: string;
+  balance: string;
+  is_business: boolean;
 }
 
 const BankAccounts = () => {
-  const { authenticated, loading } = useAuth();
+  const { authenticated, loading, user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [personalAccounts, setPersonalAccounts] = useState<BankAccount[]>([]);
   const [businessAccounts, setBusinessAccounts] = useState<BankAccount[]>([]);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [newAccount, setNewAccount] = useState<NewAccountForm>({
+    account_name: '',
+    account_number: '',
+    account_type: 'Checking',
+    institution: '',
+    balance: '0',
+    is_business: false
+  });
 
   useEffect(() => {
     if (!loading && !authenticated) {
@@ -38,78 +68,115 @@ const BankAccounts = () => {
 
   const loadBankAccounts = async () => {
     try {
-      // Simulate API call - In production, this would fetch from your third-party banking API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!user) return;
 
-      // Mock personal accounts data
-      const mockPersonalAccounts: BankAccount[] = [
-        {
-          id: '1',
-          accountName: 'Personal Checking',
-          accountNumber: '****1234',
-          accountType: 'Checking',
-          balance: 15420.50,
-          currency: 'USD',
-          institution: 'Chase Bank',
-          lastUpdated: new Date().toISOString(),
-          status: 'active'
-        },
-        {
-          id: '2',
-          accountName: 'Personal Savings',
-          accountNumber: '****5678',
-          accountType: 'Savings',
-          balance: 48750.00,
-          currency: 'USD',
-          institution: 'Chase Bank',
-          lastUpdated: new Date().toISOString(),
-          status: 'active'
-        }
-      ];
+      const { data, error } = await supabase
+        .from('bank_accounts')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-      // Mock business accounts data
-      const mockBusinessAccounts: BankAccount[] = [
-        {
-          id: '3',
-          accountName: 'Business Checking',
-          accountNumber: '****9012',
-          accountType: 'Business Checking',
-          balance: 125340.75,
-          currency: 'USD',
-          institution: 'Bank of America',
-          lastUpdated: new Date().toISOString(),
-          status: 'active'
-        },
-        {
-          id: '4',
-          accountName: 'Business Savings',
-          accountNumber: '****3456',
-          accountType: 'Business Savings',
-          balance: 287500.00,
-          currency: 'USD',
-          institution: 'Bank of America',
-          lastUpdated: new Date().toISOString(),
-          status: 'active'
-        },
-        {
-          id: '5',
-          accountName: 'Operating Account',
-          accountNumber: '****7890',
-          accountType: 'Business Checking',
-          balance: 52100.25,
-          currency: 'USD',
-          institution: 'Wells Fargo',
-          lastUpdated: new Date().toISOString(),
-          status: 'active'
-        }
-      ];
+      if (error) throw error;
 
-      setPersonalAccounts(mockPersonalAccounts);
-      setBusinessAccounts(mockBusinessAccounts);
+      const personal = data?.filter(account => !account.is_business) || [];
+      const business = data?.filter(account => account.is_business) || [];
+
+      setPersonalAccounts(personal);
+      setBusinessAccounts(business);
     } catch (error) {
       console.error('Error loading bank accounts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load bank accounts",
+        variant: "destructive"
+      });
     } finally {
       setLoadingData(false);
+    }
+  };
+
+  const handleAddAccount = async () => {
+    try {
+      if (!user) return;
+
+      if (!newAccount.account_name || !newAccount.account_number || !newAccount.institution) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('bank_accounts')
+        .insert([{
+          user_id: user.id,
+          account_name: newAccount.account_name.trim(),
+          account_number: newAccount.account_number.trim(),
+          account_type: newAccount.account_type,
+          institution: newAccount.institution.trim(),
+          balance: parseFloat(newAccount.balance) || 0,
+          is_business: newAccount.is_business,
+          status: 'active'
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Bank account added successfully"
+      });
+
+      setIsAddDialogOpen(false);
+      setNewAccount({
+        account_name: '',
+        account_number: '',
+        account_type: 'Checking',
+        institution: '',
+        balance: '0',
+        is_business: false
+      });
+      
+      loadBankAccounts();
+    } catch (error) {
+      console.error('Error adding bank account:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add bank account",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!deleteAccountId) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('bank_accounts')
+        .delete()
+        .eq('id', deleteAccountId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Bank account deleted successfully"
+      });
+
+      setDeleteAccountId(null);
+      loadBankAccounts();
+    } catch (error) {
+      console.error('Error deleting bank account:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete bank account",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -147,22 +214,32 @@ const BankAccounts = () => {
           <div className="space-y-1">
             <CardTitle className="flex items-center gap-2">
               <Landmark className="w-5 h-5" />
-              {account.accountName}
+              {account.account_name}
             </CardTitle>
             <CardDescription>{account.institution}</CardDescription>
           </div>
-          {getStatusBadge(account.status)}
+          <div className="flex items-center gap-2">
+            {getStatusBadge(account.status)}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setDeleteAccountId(account.id)}
+              className="h-8 w-8 text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-muted-foreground mb-1">Account Number</p>
-            <p className="font-mono font-semibold">{account.accountNumber}</p>
+            <p className="font-mono font-semibold">{account.account_number}</p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground mb-1">Account Type</p>
-            <p className="font-semibold">{account.accountType}</p>
+            <p className="font-semibold">{account.account_type}</p>
           </div>
         </div>
         
@@ -181,7 +258,7 @@ const BankAccounts = () => {
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Calendar className="w-3 h-3" />
           <span>
-            Last updated: {new Date(account.lastUpdated).toLocaleDateString('en-US', {
+            Last updated: {new Date(account.updated_at).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -208,12 +285,126 @@ const BankAccounts = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto p-4 md:p-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Bank Accounts</h1>
-          <p className="text-muted-foreground">
-            View your connected personal and business bank account balances
-          </p>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">Bank Accounts</h1>
+            <p className="text-muted-foreground">
+              View and manage your personal and business bank accounts
+            </p>
+          </div>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Account
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Add Bank Account</DialogTitle>
+                <DialogDescription>
+                  Add a new personal or business bank account
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="account_name">Account Name *</Label>
+                  <Input
+                    id="account_name"
+                    placeholder="e.g., Personal Checking"
+                    value={newAccount.account_name}
+                    onChange={(e) => setNewAccount({ ...newAccount, account_name: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="institution">Institution *</Label>
+                  <Input
+                    id="institution"
+                    placeholder="e.g., Chase Bank"
+                    value={newAccount.institution}
+                    onChange={(e) => setNewAccount({ ...newAccount, institution: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="account_number">Account Number *</Label>
+                  <Input
+                    id="account_number"
+                    placeholder="e.g., ****1234"
+                    value={newAccount.account_number}
+                    onChange={(e) => setNewAccount({ ...newAccount, account_number: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="account_type">Account Type</Label>
+                  <Select
+                    value={newAccount.account_type}
+                    onValueChange={(value) => setNewAccount({ ...newAccount, account_type: value })}
+                  >
+                    <SelectTrigger id="account_type">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Checking">Checking</SelectItem>
+                      <SelectItem value="Savings">Savings</SelectItem>
+                      <SelectItem value="Business Checking">Business Checking</SelectItem>
+                      <SelectItem value="Business Savings">Business Savings</SelectItem>
+                      <SelectItem value="Money Market">Money Market</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="balance">Current Balance</Label>
+                  <Input
+                    id="balance"
+                    type="number"
+                    placeholder="0.00"
+                    value={newAccount.balance}
+                    onChange={(e) => setNewAccount({ ...newAccount, balance: e.target.value })}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="is_business"
+                    checked={newAccount.is_business}
+                    onChange={(e) => setNewAccount({ ...newAccount, is_business: e.target.checked })}
+                    className="h-4 w-4"
+                  />
+                  <Label htmlFor="is_business" className="cursor-pointer">
+                    This is a business account
+                  </Label>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddAccount}>Add Account</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
+
+        <AlertDialog open={!!deleteAccountId} onOpenChange={() => setDeleteAccountId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Bank Account</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this bank account? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <Tabs defaultValue="personal" className="w-full">
           <TabsList className="mb-6">

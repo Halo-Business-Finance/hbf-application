@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      bank_accounts: {
+        Row: {
+          account_name: string
+          account_number: string
+          account_type: string
+          balance: number
+          created_at: string
+          currency: string
+          external_id: string | null
+          id: string
+          institution: string
+          is_business: boolean
+          last_synced_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_name: string
+          account_number: string
+          account_type: string
+          balance?: number
+          created_at?: string
+          currency?: string
+          external_id?: string | null
+          id?: string
+          institution: string
+          is_business?: boolean
+          last_synced_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          account_type?: string
+          balance?: number
+          created_at?: string
+          currency?: string
+          external_id?: string | null
+          id?: string
+          institution?: string
+          is_business?: boolean
+          last_synced_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       borrower_documents: {
         Row: {
           description: string | null
