@@ -13,7 +13,7 @@ import {
 import { useUserRole } from '@/hooks/useUserRole';
 
 const items = [
-  { title: 'Home', url: '/', icon: Home },
+  { title: 'Dashboard', url: '/', icon: Home },
   { title: 'My Applications', url: '/portal?tab=applications', icon: FileText },
   { title: 'My Documents', url: '/documents', icon: FolderOpen },
   { title: 'My Credit Reports', url: '/credit-reports', icon: CreditCard },
