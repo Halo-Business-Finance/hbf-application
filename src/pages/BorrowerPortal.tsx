@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { loanApplicationService } from '@/services/loanApplicationService';
 import ApplicationsList from '@/components/ApplicationsList';
@@ -17,7 +19,11 @@ import {
   CheckCircle, 
   XCircle, 
   AlertCircle,
-  DollarSign
+  DollarSign,
+  User,
+  Mail,
+  Phone,
+  Building
 } from 'lucide-react';
 
 interface UserStats {
@@ -40,12 +46,22 @@ const BorrowerPortal = () => {
   const { authenticated, loading, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
 
   const [applications, setApplications] = useState<any[]>([]);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [userProfile, setUserProfile] = useState<{ first_name: string | null } | null>(null);
+  const [userProfile, setUserProfile] = useState<{ 
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+    phone: string | null;
+    business_name: string | null;
+  } | null>(null);
+  
+  // Get active tab from URL or default to 'account'
+  const activeTab = searchParams.get('tab') || 'account';
 
   useEffect(() => {
     if (!loading && !authenticated) {
@@ -64,12 +80,24 @@ const BorrowerPortal = () => {
       if (user) {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('first_name')
+          .select('first_name, last_name, phone, business_name')
           .eq('id', user.id)
           .single();
         
         if (profileData) {
-          setUserProfile(profileData);
+          setUserProfile({
+            ...profileData,
+            email: user.email || null
+          });
+        } else {
+          // If no profile exists, use user email
+          setUserProfile({
+            first_name: null,
+            last_name: null,
+            email: user.email || null,
+            phone: null,
+            business_name: null
+          });
         }
       }
       
@@ -190,12 +218,136 @@ const BorrowerPortal = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto p-4 md:p-8">
-        <Tabs defaultValue="applications" className="w-full">
+        <Tabs value={activeTab} onValueChange={(value) => navigate(`/portal?tab=${value}`)} className="w-full">
           <TabsList className="mb-6">
+            <TabsTrigger value="account">My Account</TabsTrigger>
             <TabsTrigger value="applications">My Applications</TabsTrigger>
             <TabsTrigger value="activity">Recent Activity</TabsTrigger>
             <TabsTrigger value="loans">Loans</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="account" className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight mb-2">My Account</h2>
+              <p className="text-muted-foreground">Manage your account information and preferences</p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5" />
+                    Personal Information
+                  </CardTitle>
+                  <CardDescription>Your personal details</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>First Name</Label>
+                    <Input 
+                      value={userProfile?.first_name || ''} 
+                      readOnly 
+                      className="bg-muted/50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Last Name</Label>
+                    <Input 
+                      value={userProfile?.last_name || ''} 
+                      readOnly 
+                      className="bg-muted/50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Email
+                    </Label>
+                    <Input 
+                      value={userProfile?.email || user?.email || ''} 
+                      readOnly 
+                      className="bg-muted/50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Phone className="w-4 h-4" />
+                      Phone
+                    </Label>
+                    <Input 
+                      value={userProfile?.phone || 'Not provided'} 
+                      readOnly 
+                      className="bg-muted/50"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Building className="w-5 h-5" />
+                    Business Information
+                  </CardTitle>
+                  <CardDescription>Your business details</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Business Name</Label>
+                    <Input 
+                      value={userProfile?.business_name || 'Not provided'} 
+                      readOnly 
+                      className="bg-muted/50"
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <Button variant="outline" className="w-full" onClick={() => toast({
+                      title: "Coming Soon",
+                      description: "Profile editing feature will be available soon."
+                    })}>
+                      Edit Profile
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Account Settings</CardTitle>
+                <CardDescription>Manage your account preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/change-password')}
+                >
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  Change Password
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/my-documents')}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  My Documents
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => toast({
+                    title: "Coming Soon",
+                    description: "Notification preferences will be available soon."
+                  })}
+                >
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  Notification Preferences
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="applications" className="space-y-6">
             <div className="flex items-center justify-between">
