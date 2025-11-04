@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark } from 'lucide-react';
+import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 const items = [
   { title: 'Dashboard', url: '/', icon: Home },
   { title: 'Loan Applications', url: '/portal?tab=applications', icon: FileText },
+  { title: 'Existing Loans', url: '/existing-loans', icon: Wallet },
   { title: 'My Documents', url: '/documents', icon: FolderOpen },
   { title: 'Credit Reports', url: '/credit-reports', icon: CreditCard },
   { title: 'Bank Accounts', url: '/bank-accounts', icon: Landmark },
