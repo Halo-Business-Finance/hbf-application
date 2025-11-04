@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban } from 'lucide-react';
+import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 const items = [
   { title: 'Home', url: '/', icon: Home },
   { title: 'My Applications', url: '/portal', icon: FileText },
+  { title: 'My Documents', url: '/documents', icon: FolderOpen },
 ];
 
 const adminItems = [
