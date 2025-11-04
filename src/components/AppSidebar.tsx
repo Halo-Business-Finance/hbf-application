@@ -16,7 +16,7 @@ const items = [
   { title: 'Dashboard', url: '/', icon: Home },
   { title: 'Loan Applications', url: '/portal?tab=applications', icon: FileText },
   { title: 'My Documents', url: '/documents', icon: FolderOpen },
-  { title: 'My Credit Reports', url: '/credit-reports', icon: CreditCard },
+  { title: 'Credit Reports', url: '/credit-reports', icon: CreditCard },
   { title: 'Bank Accounts', url: '/bank-accounts', icon: Landmark },
 ];
 
