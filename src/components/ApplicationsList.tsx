@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, DollarSign, FileText, User } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Calendar, DollarSign, FileText, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -26,9 +27,22 @@ interface LoanApplication {
 const ApplicationsList = () => {
   const [applications, setApplications] = useState<LoanApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [collapsedCards, setCollapsedCards] = useState<Set<string>>(new Set());
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const toggleCard = (id: string) => {
+    setCollapsedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   const fetchApplications = async () => {
     if (!user) return;
@@ -167,112 +181,148 @@ const ApplicationsList = () => {
       <div className="space-y-4">
         {applications.map((application) => {
           const statusInfo = getStatusMessage(application.status);
+          const isCollapsed = collapsedCards.has(application.id);
           
           return (
-            <Card key={application.id} className="overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
-              {/* Header Section */}
-              <div className="bg-muted/30 px-6 py-3 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm border-b">
-                <div>
-                  <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION DATE</div>
-                  <div className="font-medium">
-                    {format(new Date(application.application_started_date), 'MMMM d, yyyy')}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground font-medium mb-1">AMOUNT</div>
-                  <div className="font-medium">{formatCurrency(application.amount_requested)}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground font-medium mb-1">BUSINESS</div>
-                  <div className="font-medium truncate">{application.business_name}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION #</div>
-                  <div className="font-medium text-primary">{application.application_number}</div>
-                  <div className="flex gap-3 justify-end mt-1">
-                    <button className="text-xs text-primary hover:underline">View details</button>
-                    <button className="text-xs text-primary hover:underline">View documents</button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Content Section */}
-              <CardContent className="p-6">
-                <div className="flex gap-6">
-                  {/* Left side - Icon and details */}
-                  <div className="flex-1">
-                    <div className="mb-3">
-                      <div className={`text-lg font-semibold ${statusInfo.color}`}>
-                        {statusInfo.text}
-                      </div>
+            <Collapsible key={application.id} open={!isCollapsed} onOpenChange={() => toggleCard(application.id)}>
+              <Card className="overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
+                {/* Header Section */}
+                <div className="bg-muted/30 px-6 py-3 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm border-b">
+                  <div>
+                    <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION DATE</div>
+                    <div className="font-medium">
+                      {format(new Date(application.application_started_date), 'MMMM d, yyyy')}
                     </div>
-                    
-                    <div className="flex gap-4 mb-4">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-base mb-1">
-                          {getLoanTypeDisplay(application.loan_type)}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {application.first_name} {application.last_name} • {application.business_name}
-                        </p>
-                        {application.status === 'draft' && (
-                          <p className="text-xs text-muted-foreground">
-                            Started on {format(new Date(application.application_started_date), 'MMM d, yyyy')}
-                          </p>
-                        )}
-                        {application.application_submitted_date && (
-                          <p className="text-xs text-muted-foreground">
-                            Submitted on {format(new Date(application.application_submitted_date), 'MMM d, yyyy')}
-                          </p>
-                        )}
-                      </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground font-medium mb-1">AMOUNT</div>
+                    <div className="font-medium">{formatCurrency(application.amount_requested)}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground font-medium mb-1">BUSINESS</div>
+                    <div className="font-medium truncate">{application.business_name}</div>
+                  </div>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION #</div>
+                      <div className="font-medium text-primary">{application.application_number}</div>
                     </div>
-
-                    <div className="flex gap-2">
-                      {['draft', 'submitted', 'under_review'].includes(application.status) ? (
-                        <Button 
-                          variant="default"
-                          size="sm"
-                          onClick={() => {
-                            const programId = getProgramIdForLoanType(application.loan_type);
-                            if (programId) {
-                              navigate(`/?id=${programId}&app=${application.id}`);
-                            } else {
-                              navigate(`/?id=7&app=${application.id}`);
-                            }
-                          }}
-                        >
-                          Continue Application
-                        </Button>
-                      ) : (
-                        <Button variant="default" size="sm">
-                          View Application
-                        </Button>
-                      )}
-                      <Button variant="outline" size="sm">
-                        Download PDF
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
                       </Button>
-                    </div>
-                  </div>
-
-                  {/* Right side - Action buttons */}
-                  <div className="flex flex-col gap-2 min-w-[200px]">
-                    <Button variant="outline" size="sm" className="w-full justify-start">
-                      View Status
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start">
-                      Upload Documents
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start">
-                      Contact Support
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start">
-                      Print Application
-                    </Button>
+                    </CollapsibleTrigger>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {/* Collapsed Status Bar */}
+                {isCollapsed && (
+                  <div className="px-6 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Badge className={getStatusColor(application.status)}>
+                        {application.status.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                      <span className="text-sm font-medium">
+                        {getLoanTypeDisplay(application.loan_type)}
+                      </span>
+                    </div>
+                    <Button 
+                      variant="default"
+                      size="sm"
+                      onClick={() => {
+                        const programId = getProgramIdForLoanType(application.loan_type);
+                        if (programId) {
+                          navigate(`/?id=${programId}&app=${application.id}`);
+                        } else {
+                          navigate(`/?id=7&app=${application.id}`);
+                        }
+                      }}
+                    >
+                      View
+                    </Button>
+                  </div>
+                )}
+
+                {/* Expandable Content Section */}
+                <CollapsibleContent>
+                  <CardContent className="p-6">
+                    <div className="flex gap-6">
+                      {/* Left side - Icon and details */}
+                      <div className="flex-1">
+                        <div className="mb-3">
+                          <div className={`text-lg font-semibold ${statusInfo.color}`}>
+                            {statusInfo.text}
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-4 mb-4">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-base mb-1">
+                              {getLoanTypeDisplay(application.loan_type)}
+                            </h3>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              {application.first_name} {application.last_name} • {application.business_name}
+                            </p>
+                            {application.status === 'draft' && (
+                              <p className="text-xs text-muted-foreground">
+                                Started on {format(new Date(application.application_started_date), 'MMM d, yyyy')}
+                              </p>
+                            )}
+                            {application.application_submitted_date && (
+                              <p className="text-xs text-muted-foreground">
+                                Submitted on {format(new Date(application.application_submitted_date), 'MMM d, yyyy')}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          {['draft', 'submitted', 'under_review'].includes(application.status) ? (
+                            <Button 
+                              variant="default"
+                              size="sm"
+                              onClick={() => {
+                                const programId = getProgramIdForLoanType(application.loan_type);
+                                if (programId) {
+                                  navigate(`/?id=${programId}&app=${application.id}`);
+                                } else {
+                                  navigate(`/?id=7&app=${application.id}`);
+                                }
+                              }}
+                            >
+                              Continue Application
+                            </Button>
+                          ) : (
+                            <Button variant="default" size="sm">
+                              View Application
+                            </Button>
+                          )}
+                          <Button variant="outline" size="sm">
+                            Download PDF
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Right side - Action buttons */}
+                      <div className="flex flex-col gap-2 min-w-[200px]">
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          View Status
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Upload Documents
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Contact Support
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Print Application
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
           );
         })}
       </div>
