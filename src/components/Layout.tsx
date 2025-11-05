@@ -9,15 +9,15 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="min-h-screen bg-background">
-      <SidebarProvider>
+    <SidebarProvider>
+      <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <div className="flex w-full">
+        <div className="flex flex-1 w-full overflow-hidden">
           <AppSidebar />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 overflow-auto">{children}</main>
         </div>
-      </SidebarProvider>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
