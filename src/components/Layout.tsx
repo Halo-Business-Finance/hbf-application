@@ -10,8 +10,8 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <SidebarProvider>
+        <Navbar />
         <div className="flex w-full">
           <AppSidebar />
           <main className="flex-1">{children}</main>
