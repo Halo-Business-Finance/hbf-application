@@ -50,7 +50,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-16 px-6 border-b bg-card flex w-full justify-between items-center sticky top-0 z-50 backdrop-blur-sm bg-card/95">
+    <nav className="h-16 px-2 border-b bg-card flex w-full justify-between items-center sticky top-0 z-50 backdrop-blur-sm bg-card/95">
       {/* Left: Sidebar Trigger + Logo */}
       <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
         <SidebarTrigger className="m-0 text-blue-900" />
