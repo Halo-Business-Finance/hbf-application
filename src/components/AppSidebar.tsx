@@ -34,7 +34,7 @@ export function AppSidebar() {
     isActive ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' : 'hover:bg-sidebar-accent/60';
 
   return (
-    <Sidebar collapsible="offcanvas" className="top-16 md:top-16">
+    <Sidebar collapsible="offcanvas">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
