@@ -270,7 +270,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-12 rounded-full p-0 relative", className)}
+      className={cn("h-5 w-9 rounded-full p-0 relative", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -279,13 +279,13 @@ const SidebarTrigger = React.forwardRef<
     >
       {/* Switch background */}
       <div className={cn(
-        "w-12 h-7 rounded-full transition-colors duration-200",
+        "w-9 h-5 rounded-full transition-colors duration-200",
         isOpen ? "bg-primary" : "bg-border"
       )}>
         {/* Switch circle */}
         <div className={cn(
-          "absolute top-0.5 w-6 h-6 bg-white rounded-full transition-transform duration-200 shadow-sm",
-          isOpen ? "translate-x-5" : "translate-x-0.5"
+          "absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-200 shadow-sm",
+          isOpen ? "translate-x-4" : "translate-x-0.5"
         )} />
       </div>
       <span className="sr-only">Toggle Sidebar</span>
