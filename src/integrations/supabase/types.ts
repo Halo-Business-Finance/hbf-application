@@ -555,6 +555,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      update_profile: {
+        Args: { _first_name: string; _last_name: string; _phone: string }
+        Returns: undefined
+      }
     }
     Enums: {
       application_status:

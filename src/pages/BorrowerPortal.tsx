@@ -116,15 +116,11 @@ const BorrowerPortal = () => {
 
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          first_name: values.first_name,
-          last_name: values.last_name,
-          phone: values.phone || null,
-          updated_at: new Date().toISOString(),
-        });
+      const { error } = await supabase.rpc('update_profile', {
+        _first_name: values.first_name,
+        _last_name: values.last_name,
+        _phone: values.phone || '',
+      });
 
       if (error) throw error;
 
