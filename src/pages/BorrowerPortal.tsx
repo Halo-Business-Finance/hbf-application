@@ -99,103 +99,105 @@ const BorrowerPortal = () => {
             <p className="text-muted-foreground">Manage your account information and preferences</p>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Personal Information
-              </CardTitle>
-              <CardDescription>Your personal details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>First Name</Label>
-                <Input 
-                  value={userProfile?.first_name || ''} 
-                  readOnly 
-                  className="bg-muted/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Last Name</Label>
-                <Input 
-                  value={userProfile?.last_name || ''} 
-                  readOnly 
-                  className="bg-muted/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  Email
-                </Label>
-                <Input 
-                  value={userProfile?.email || user?.email || ''} 
-                  readOnly 
-                  className="bg-muted/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  Phone
-                </Label>
-                <Input 
-                  value={userProfile?.phone || 'Not provided'} 
-                  readOnly 
-                  className="bg-muted/50"
-                />
-              </div>
-              <div className="pt-4">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Personal Information
+                </CardTitle>
+                <CardDescription>Your personal details</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>First Name</Label>
+                  <Input 
+                    value={userProfile?.first_name || ''} 
+                    readOnly 
+                    className="bg-muted/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Last Name</Label>
+                  <Input 
+                    value={userProfile?.last_name || ''} 
+                    readOnly 
+                    className="bg-muted/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Email
+                  </Label>
+                  <Input 
+                    value={userProfile?.email || user?.email || ''} 
+                    readOnly 
+                    className="bg-muted/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Phone
+                  </Label>
+                  <Input 
+                    value={userProfile?.phone || 'Not provided'} 
+                    readOnly 
+                    className="bg-muted/50"
+                  />
+                </div>
+                <div className="pt-4">
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => toast({
+                      title: "Coming Soon",
+                      description: "Profile editing feature will be available soon."
+                    })}
+                  >
+                    Edit Profile
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Account Settings</CardTitle>
+                <CardDescription>Manage your account preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <Button 
                   variant="outline" 
-                  className="w-full" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/change-password')}
+                >
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  Change Password
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/document-storage')}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Document Storage
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
                   onClick={() => toast({
                     title: "Coming Soon",
-                    description: "Profile editing feature will be available soon."
+                    description: "Notification preferences will be available soon."
                   })}
                 >
-                  Edit Profile
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  Notification Preferences
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Account Settings</CardTitle>
-              <CardDescription>Manage your account preferences</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={() => navigate('/change-password')}
-              >
-                <AlertCircle className="w-4 h-4 mr-2" />
-                Change Password
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={() => navigate('/document-storage')}
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Document Storage
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={() => toast({
-                  title: "Coming Soon",
-                  description: "Notification preferences will be available soon."
-                })}
-              >
-                <AlertCircle className="w-4 h-4 mr-2" />
-                Notification Preferences
-              </Button>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
