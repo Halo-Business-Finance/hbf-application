@@ -179,7 +179,7 @@ const App = () => (
                   </ProtectedRoute>
                 </Layout>
               } />
-              <Route path="/documents" element={
+              <Route path="/document-storage" element={
                 <Layout>
                   <ProtectedRoute>
                     <MyDocuments />
