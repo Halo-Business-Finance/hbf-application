@@ -129,7 +129,7 @@ const Navbar = () => {
                   <Button 
                     variant="ghost" 
                     className="w-full text-xs"
-                    onClick={() => navigate('/portal?tab=notifications')}
+                    onClick={() => navigate('/myaccount?tab=notifications')}
                   >
                     View All Notifications
                   </Button>
@@ -177,7 +177,7 @@ const Navbar = () => {
                 className="w-56 bg-popover border shadow-lg z-50"
               >
                 <DropdownMenuItem 
-                  onClick={() => navigate('/portal?tab=account')}
+                  onClick={() => navigate('/myaccount?tab=account')}
                   className="cursor-pointer hover:bg-muted"
                 >
                   <FileText className="w-4 h-4 mr-2" />
