@@ -19,7 +19,8 @@ import {
   Building,
   Edit,
   Save,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
@@ -30,7 +31,7 @@ const profileSchema = z.object({
 });
 
 const BorrowerPortal = () => {
-  const { authenticated, loading, user } = useAuth();
+  const { authenticated, loading, user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -157,6 +158,24 @@ const BorrowerPortal = () => {
       phone: userProfile?.phone || '',
     });
     setIsEditing(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out",
+      });
+      navigate('/');
+    } catch (error: any) {
+      console.error('Error logging out:', error);
+      toast({
+        title: "Error",
+        description: "Failed to log out",
+        variant: "destructive"
+      });
+    }
   };
 
   if (loading || loadingData) {
@@ -328,7 +347,7 @@ const BorrowerPortal = () => {
                   <AlertCircle className="w-4 h-4 mr-2" />
                   Two-Factor Authentication
                 </Button>
-                <Button
+                <Button 
                   variant="outline" 
                   className="w-full justify-start"
                   onClick={() => toast({
@@ -338,6 +357,14 @@ const BorrowerPortal = () => {
                 >
                   <AlertCircle className="w-4 h-4 mr-2" />
                   Notification Preferences
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  className="w-full justify-start"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Log Out
                 </Button>
               </CardContent>
             </Card>
