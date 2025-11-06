@@ -48,132 +48,178 @@ const App = () => (
       <BrowserRouter>
         <AuthContextProvider>
           <RateLimitProvider>
-            <Layout>
             <Routes>
+              {/* Public routes without Layout */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/calculator" element={<LoanCalculator />} />
+              
+              {/* Protected routes with Layout */}
               <Route path="/admin" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminDashboard />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/applications" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AllApplications />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <AllApplications />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/review" element={
-                <ProtectedRoute requiredRole="admin">
-                  <ApplicationReview />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <ApplicationReview />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/analytics" element={
-                <ProtectedRoute requiredRole="admin">
-                  <Analytics />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <Analytics />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/settings" element={
-                <ProtectedRoute requiredRole="admin">
-                  <SystemSettings />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <SystemSettings />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/security" element={
-                <ProtectedRoute requiredRole="admin">
-                  <SecurityAudit />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <SecurityAudit />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/export" element={
-                <ProtectedRoute requiredRole="admin">
-                  <ExportData />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <ExportData />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/products" element={
-                <ProtectedRoute requiredRole="admin">
-                  <LoanProducts />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <LoanProducts />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/payments" element={
-                <ProtectedRoute requiredRole="admin">
-                  <PaymentManagement />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <PaymentManagement />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/notifications" element={
-                <ProtectedRoute requiredRole="admin">
-                  <Notifications />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <Notifications />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/support" element={
-                <ProtectedRoute requiredRole="admin">
-                  <SupportTickets />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <SupportTickets />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/database" element={
-                <ProtectedRoute requiredRole="admin">
-                  <DatabaseManagement />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <DatabaseManagement />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/integrations" element={
-                <ProtectedRoute requiredRole="admin">
-                  <ApiIntegrations />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <ApiIntegrations />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/users" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminUserManagement />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminUserManagement />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/admin/loans/:id" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminLoanDetail />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminLoanDetail />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/crm" element={
-                <ProtectedRoute requiredRole="admin">
-                  <CRM />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <CRM />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/crm/loanflow-integration" element={
-                <ProtectedRoute requiredRole="admin">
-                  <LoanflowCrmIntegration />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <LoanflowCrmIntegration />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/portal" element={
-                <ProtectedRoute>
-                  <BorrowerPortal />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute>
+                    <BorrowerPortal />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/documents" element={
-                <ProtectedRoute>
-                  <MyDocuments />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute>
+                    <MyDocuments />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/credit-reports" element={
-                <ProtectedRoute>
-                  <CreditReports />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute>
+                    <CreditReports />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/bank-accounts" element={
-                <ProtectedRoute>
-                  <BankAccounts />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute>
+                    <BankAccounts />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/existing-loans" element={
-                <ProtectedRoute>
-                  <ExistingLoans />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute>
+                    <ExistingLoans />
+                  </ProtectedRoute>
+                </Layout>
               } />
               <Route path="/support" element={
-                <ProtectedRoute>
-                  <Support />
-                </ProtectedRoute>
+                <Layout>
+                  <ProtectedRoute>
+                    <Support />
+                  </ProtectedRoute>
+                </Layout>
               } />
-              <Route path="/calculator" element={
-                <LoanCalculator />
-              } />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </Layout>
           </RateLimitProvider>
         </AuthContextProvider>
       </BrowserRouter>
