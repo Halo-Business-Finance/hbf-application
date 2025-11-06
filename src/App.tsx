@@ -173,7 +173,7 @@ const App = () => (
                   </ProtectedRoute>
                 </Layout>
               } />
-              <Route path="/portal" element={
+              <Route path="/my-account" element={
                 <Layout>
                   <ProtectedRoute>
                     <BorrowerPortal />
