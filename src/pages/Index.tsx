@@ -552,51 +552,29 @@ const Index = () => {
   // Show auth forms for unauthenticated users
   if (!authenticated && !loading) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
-          <div className="relative px-6 py-20 sm:px-8 lg:px-12">
-            <div className="max-w-5xl mx-auto text-center">
-              <div className="animate-fade-in">
-                <p className="text-sm font-semibold text-primary mb-6">Enterprise Loan Solutions</p>
-                <h1 className="font-playfair text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
-                  Commercial Loan
-                  <span className="text-primary"> Marketplace</span>
-                </h1>
-                <p className="text-lg text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-                  Your premier commercial loan marketplace. Access competitive financing solutions 
-                  tailored for your business growth and success.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <div className="min-h-screen bg-background flex items-center justify-center py-12">
         {/* Auth Card */}
-        <div className="px-6 pb-8 -mt-8">
-          <Card className="max-w-2xl mx-auto border-0 shadow-xl animate-scale-in">
-            <CardHeader className="text-center pb-6">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <LogIn className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="text-2xl font-bold text-foreground mb-2">
-                Get Started Today
+        <div className="px-6 w-full">
+          <Card className="max-w-xl mx-auto shadow-xl">
+            <CardHeader className="text-center pb-4 pt-8">
+              <CardTitle className="text-3xl font-bold text-foreground mb-2">
+                Welcome to Halo Business Finance
               </CardTitle>
               <CardDescription className="text-base text-muted-foreground">
-                {isLogin ? "Sign in to your account" : "Create your account to get started"}
+                Sign in to your account
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6 pt-2">
+            <CardContent className="px-8 pb-8">
               <Tabs value={isLogin ? "login" : "signup"} onValueChange={switchMode} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="login">Sign In</TabsTrigger>
                   <TabsTrigger value="signup">Sign Up</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="login" className="space-y-4 mt-6">
+                <TabsContent value="login" className="space-y-4 mt-0">
                   <form onSubmit={handleAuthSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email" className="text-foreground font-normal">Email</Label>
                       <Input
                         id="email"
                         type="email"
@@ -605,11 +583,12 @@ const Index = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={authLoading}
+                        className="h-11"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
+                      <Label htmlFor="password" className="text-foreground font-normal">Password</Label>
                       <div className="relative">
                         <Input
                           id="password"
@@ -619,19 +598,20 @@ const Index = () => {
                           onChange={(e) => setPassword(e.target.value)}
                           required
                           disabled={authLoading}
+                          className="h-11 pr-10"
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-11 px-3 hover:bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
                           disabled={authLoading}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
+                            <EyeOff className="h-5 w-5 text-muted-foreground" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-5 w-5 text-muted-foreground" />
                           )}
                         </Button>
                       </div>
@@ -643,17 +623,17 @@ const Index = () => {
                       </Alert>
                     )}
 
-                    <Button type="submit" className="w-full" disabled={authLoading} size="lg">
+                    <Button type="submit" className="w-full h-12 text-base font-medium" disabled={authLoading}>
                       {authLoading ? "Signing in..." : "Sign In"}
                     </Button>
                     
-                    <div className="relative">
+                    <div className="relative py-2">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">
-                          Or continue with
+                        <span className="bg-background px-3 text-muted-foreground tracking-wider">
+                          OR CONTINUE WITH
                         </span>
                       </div>
                     </div>
@@ -661,11 +641,11 @@ const Index = () => {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      className="w-full" 
+                      className="w-full h-12 text-base" 
                       onClick={handleMicrosoftSignIn}
                       disabled={authLoading}
                     >
-                      <svg className="w-4 h-4 mr-2" viewBox="0 0 23 23">
+                      <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23">
                         <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
                         <path fill="#f35325" d="M1 1h10v10H1z"/>
                         <path fill="#81bc06" d="M12 1h10v10H12z"/>
@@ -675,11 +655,11 @@ const Index = () => {
                       Continue with Microsoft
                     </Button>
                     
-                    <div className="text-center">
+                    <div className="text-center pt-2">
                       <Button 
                         type="button" 
                         variant="link" 
-                        className="text-sm text-muted-foreground"
+                        className="text-base text-muted-foreground hover:text-foreground p-0 h-auto"
                         onClick={async () => {
                           if (!email) {
                             setAuthError("Please enter your email address first");
@@ -706,11 +686,11 @@ const Index = () => {
                   </form>
                 </TabsContent>
                 
-                <TabsContent value="signup" className="space-y-4 mt-6">
+                <TabsContent value="signup" className="space-y-4 mt-0">
                   <form onSubmit={handleAuthSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
+                        <Label htmlFor="firstName" className="text-foreground font-normal">First Name</Label>
                         <Input
                           id="firstName"
                           type="text"
@@ -719,10 +699,11 @@ const Index = () => {
                           onChange={(e) => setFirstName(e.target.value)}
                           required
                           disabled={authLoading}
+                          className="h-11"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
+                        <Label htmlFor="lastName" className="text-foreground font-normal">Last Name</Label>
                         <Input
                           id="lastName"
                           type="text"
@@ -731,12 +712,13 @@ const Index = () => {
                           onChange={(e) => setLastName(e.target.value)}
                           required
                           disabled={authLoading}
+                          className="h-11"
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signupEmail">Email</Label>
+                      <Label htmlFor="signupEmail" className="text-foreground font-normal">Email</Label>
                       <Input
                         id="signupEmail"
                         type="email"
@@ -745,11 +727,12 @@ const Index = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={authLoading}
+                        className="h-11"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signupPassword">Password</Label>
+                      <Label htmlFor="signupPassword" className="text-foreground font-normal">Password</Label>
                       <div className="relative">
                         <Input
                           id="signupPassword"
@@ -760,26 +743,27 @@ const Index = () => {
                           required
                           disabled={authLoading}
                           minLength={6}
+                          className="h-11 pr-10"
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-11 px-3 hover:bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
                           disabled={authLoading}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
+                            <EyeOff className="h-5 w-5 text-muted-foreground" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-5 w-5 text-muted-foreground" />
                           )}
                         </Button>
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <Label htmlFor="confirmPassword" className="text-foreground font-normal">Confirm Password</Label>
                       <Input
                         id="confirmPassword"
                         type={showPassword ? "text" : "password"}
@@ -789,6 +773,7 @@ const Index = () => {
                         required
                         disabled={authLoading}
                         minLength={6}
+                        className="h-11"
                       />
                     </div>
 
@@ -798,17 +783,17 @@ const Index = () => {
                       </Alert>
                     )}
 
-                    <Button type="submit" className="w-full" disabled={authLoading} size="lg">
-                      {authLoading ? "Creating account..." : "Create Account"}
+                    <Button type="submit" className="w-full h-12 text-base font-medium" disabled={authLoading}>
+                      {authLoading ? "Creating account..." : "Sign Up"}
                     </Button>
                     
-                    <div className="relative">
+                    <div className="relative py-2">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">
-                          Or continue with
+                        <span className="bg-background px-3 text-muted-foreground tracking-wider">
+                          OR CONTINUE WITH
                         </span>
                       </div>
                     </div>
@@ -816,11 +801,11 @@ const Index = () => {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      className="w-full" 
+                      className="w-full h-12 text-base" 
                       onClick={handleMicrosoftSignIn}
                       disabled={authLoading}
                     >
-                      <svg className="w-4 h-4 mr-2" viewBox="0 0 23 23">
+                      <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23">
                         <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
                         <path fill="#f35325" d="M1 1h10v10H1z"/>
                         <path fill="#81bc06" d="M12 1h10v10H12z"/>
@@ -832,39 +817,15 @@ const Index = () => {
                   </form>
                 </TabsContent>
               </Tabs>
-              
-              <div className="flex items-center gap-3 text-sm text-muted-foreground pt-4">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <span>No credit check to apply</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <span>Fast approval process</span>
-                </div>
-              </div>
             </CardContent>
           </Card>
+          
+          {/* Terms text below card */}
+          <p className="text-center text-sm text-muted-foreground mt-6 max-w-xl mx-auto">
+            By signing up, you agree to our terms of service and privacy policy.
+          </p>
         </div>
 
-        {/* Features */}
-        <div className="px-6 pb-20 pt-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              { icon: CheckCircle, title: "Fast Approval", desc: "Get pre-approved in 24 hours", color: "text-success" },
-              { icon: Building2, title: "Expert Support", desc: "Dedicated loan specialists", color: "text-primary" },
-              { icon: TrendingUp, title: "Best Rates", desc: "Competitive market pricing", color: "text-accent" }
-            ].map((feature, index) => (
-              <Card key={index} className="p-6 text-center hover:shadow-lg transition-all duration-300 border-0">
-                <div className={`w-12 h-12 ${feature.color} bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4`}>
-                  <feature.icon className="w-6 h-6" />
-                </div>
-                <h3 className="font-semibold text-foreground mb-2 text-lg">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.desc}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
       </div>
     );
   }
