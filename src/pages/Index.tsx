@@ -203,8 +203,7 @@ const DashboardView = () => {
       {/* Welcome Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-xl font-bold text-foreground mb-2">Welcome{firstName ? `, ${firstName}` : ''}!</h1>
-          <p className="text-muted-foreground">Manage your loan applications and track your progress</p>
+          <h1 className="text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress</h1>
         </div>
         <Button size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
           + New Application
