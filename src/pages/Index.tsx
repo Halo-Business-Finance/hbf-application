@@ -695,7 +695,7 @@ const Index = () => {
                       <Button 
                         type="button" 
                         variant="link" 
-                        className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto"
+                        className="text-sm text-foreground hover:text-foreground/80 p-0 h-auto"
                         onClick={async () => {
                           if (!email) {
                             setAuthError("Please enter your email address first");
