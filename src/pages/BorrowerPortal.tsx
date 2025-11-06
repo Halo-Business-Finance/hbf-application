@@ -217,7 +217,6 @@ const BorrowerPortal = () => {
                     </Button>
                   )}
                 </CardTitle>
-                <CardDescription>Your personal details</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
