@@ -136,11 +136,11 @@ const BorrowerPortal = () => {
         title: "Success",
         description: "Your profile has been updated successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: `Failed to update profile: ${error?.message || JSON.stringify(error)}`,
         variant: "destructive"
       });
     } finally {
