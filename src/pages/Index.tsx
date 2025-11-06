@@ -604,7 +604,7 @@ const Index = () => {
             <p className="text-lg font-semibold text-foreground mb-4">
               Nationwide SBA & Commercial Financing
             </p>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-4">
               Comprehensive Business Financing Solutions
             </h1>
             <p className="text-sm text-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
