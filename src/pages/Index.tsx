@@ -959,8 +959,8 @@ const Index = () => {
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
             </Card>
             <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">24-48 Hours</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
+              <div className="text-3xl font-bold text-primary mb-1">24 Hours</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
             </Card>
           </div>
         </div>
@@ -1008,8 +1008,8 @@ const Index = () => {
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
               </Card>
               <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">24-48 Hours</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
+                <div className="text-3xl font-bold text-primary mb-1">24 Hours</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
               </Card>
             </div>
           </div>
