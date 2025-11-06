@@ -552,7 +552,7 @@ const Index = () => {
   // Show auth forms for unauthenticated users
   if (!authenticated && !loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center py-12">
+      <div className="min-h-screen bg-white flex items-center justify-center py-12">
         {/* Auth Card */}
         <div className="px-6 w-full">
           <Card className="max-w-xl mx-auto shadow-xl">
