@@ -65,7 +65,7 @@ const BorrowerPortal = () => {
 
   useEffect(() => {
     if (!loading && !authenticated) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
 

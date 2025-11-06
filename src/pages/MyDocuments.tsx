@@ -67,7 +67,7 @@ const MyDocuments = () => {
 
   useEffect(() => {
     if (!loading && !authenticated) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
 

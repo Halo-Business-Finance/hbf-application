@@ -79,7 +79,7 @@ const AdminUserManagement = () => {
 
   useEffect(() => {
     if (!loading && !authenticated) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
 

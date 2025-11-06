@@ -683,7 +683,7 @@ const Index = () => {
                           }
                           setAuthLoading(true);
                           const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                            redirectTo: `${window.location.origin}/auth?type=recovery`
+                            redirectTo: `${window.location.origin}/?type=recovery`
                           });
                           setAuthLoading(false);
                           if (error) {

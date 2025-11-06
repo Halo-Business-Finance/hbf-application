@@ -155,7 +155,7 @@ class NotificationService {
       template: 'welcome',
       data: {
         userName,
-        loginUrl: `${window.location.origin}/auth`
+        loginUrl: `${window.location.origin}/`
       }
     };
 

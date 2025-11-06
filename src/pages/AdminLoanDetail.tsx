@@ -82,7 +82,7 @@ const AdminLoanDetail = () => {
 
   useEffect(() => {
     if (!loading && !authenticated) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
 

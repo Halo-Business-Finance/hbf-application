@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLoanDetail from "./pages/AdminLoanDetail";
 import AdminUserManagement from "./pages/AdminUserManagement";
@@ -51,7 +50,6 @@ const App = () => (
             <Routes>
               {/* Public routes without Layout */}
               <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
               <Route path="/calculator" element={<LoanCalculator />} />
               
               {/* Protected routes with Layout */}

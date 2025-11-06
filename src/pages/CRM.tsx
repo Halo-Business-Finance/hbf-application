@@ -100,7 +100,7 @@ const CRM = () => {
   const isEmployee = user?.email?.includes('@halibusinessfinance.com') || user?.email?.includes('@admin.com');
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!isEmployee) {

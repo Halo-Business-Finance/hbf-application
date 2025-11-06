@@ -57,7 +57,7 @@ const BankAccounts = () => {
 
   useEffect(() => {
     if (!loading && !authenticated) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
 

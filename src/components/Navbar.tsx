@@ -26,7 +26,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate('/auth');
+      navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -63,15 +63,7 @@ const Navbar = () => {
 
       {/* Right: Navigation Items */}
       <div className="flex items-center space-x-6 ml-auto">
-        {!authenticated ? (
-          <Button 
-            size="lg" 
-            onClick={() => navigate('/auth')}
-            className="shadow-sm"
-          >
-            Login
-          </Button>
-        ) : (
+        {authenticated && (
           <div className="flex items-center space-x-4">
             {/* Notifications Dropdown */}
             <DropdownMenu>

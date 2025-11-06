@@ -28,7 +28,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!loading && !authenticated) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
   }, [authenticated, loading, navigate]);
