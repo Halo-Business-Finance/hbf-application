@@ -947,19 +947,19 @@ const Index = () => {
           {/* Company Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
             <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
+              <div className="text-2xl font-bold text-primary mb-1">2,500+</div>
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
             </Card>
             <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
+              <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
             </Card>
             <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">95%</div>
+              <div className="text-2xl font-bold text-primary mb-1">95%</div>
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
             </Card>
             <Card className="p-6 border-0">
-              <div className="text-3xl font-bold text-primary mb-1">24 Hours</div>
+              <div className="text-2xl font-bold text-primary mb-1">24 Hours</div>
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
             </Card>
           </div>
@@ -996,19 +996,19 @@ const Index = () => {
             {/* Company Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
               <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
+                <div className="text-2xl font-bold text-primary mb-1">2,500+</div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
               </Card>
               <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
+                <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
               </Card>
               <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">95%</div>
+                <div className="text-2xl font-bold text-primary mb-1">95%</div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
               </Card>
               <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">24 Hours</div>
+                <div className="text-2xl font-bold text-primary mb-1">24 Hours</div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
               </Card>
             </div>
