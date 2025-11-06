@@ -1,5 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet } from 'lucide-react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -11,6 +11,8 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const items = [
   { title: 'My Dashboard', url: '/', icon: LayoutDashboard },
@@ -27,8 +29,29 @@ const adminItems = [
 
 export function AppSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAdmin } = useUserRole();
+  const { signOut } = useAuth();
+  const { toast } = useToast();
   const currentPath = location.pathname;
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out",
+      });
+      navigate('/');
+    } catch (error: any) {
+      console.error('Error logging out:', error);
+      toast({
+        title: "Error",
+        description: "Failed to log out",
+        variant: "destructive"
+      });
+    }
+  };
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     `${isActive 
@@ -52,6 +75,15 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={handleLogout}
+                  className="hover:bg-destructive/10 hover:text-destructive transition-all duration-200 group cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                  <span>Log Out</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {isAdmin() && (
                 <>
                   <SidebarGroupLabel>Admin</SidebarGroupLabel>
