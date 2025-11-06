@@ -221,9 +221,7 @@ const BorrowerPortal = () => {
         <Tabs value={activeTab} onValueChange={(value) => navigate(`/portal?tab=${value}`)} className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="account">My Account</TabsTrigger>
-            <TabsTrigger value="applications">My Applications</TabsTrigger>
             <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-            <TabsTrigger value="loans">Loans</TabsTrigger>
           </TabsList>
 
           <TabsContent value="account" className="space-y-6">
@@ -349,19 +347,6 @@ const BorrowerPortal = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="applications" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-3xl font-bold tracking-tight">Your Applications</h2>
-                <p className="text-muted-foreground mt-1">
-                  {applications.length} application{applications.length !== 1 ? 's' : ''} in total
-                </p>
-              </div>
-            </div>
-            
-            <ApplicationsList />
-          </TabsContent>
-
           <TabsContent value="activity" className="space-y-6">
             <div>
               <h2 className="text-3xl font-bold tracking-tight mb-2">Recent Activity</h2>
@@ -413,103 +398,6 @@ const BorrowerPortal = () => {
                     <p className="text-sm text-muted-foreground">
                       Your recent application activities will appear here
                     </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="loans" className="space-y-6">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight mb-2">Loans</h2>
-              <p className="text-muted-foreground">View your loan details and history</p>
-            </div>
-
-            {userStats && (
-              <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{userStats.totalApplications}</div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Approved Amount</CardTitle>
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      ${userStats.approvedAmount.toLocaleString()}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{userStats.pendingApplications}</div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {applications.length > 0 ? (
-                applications.map((app) => (
-                  <Card key={app.id}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="text-lg">{app.business_name}</CardTitle>
-                          <CardDescription className="mt-1">
-                            {app.loan_type.replace('_', ' ').toUpperCase()} • {app.application_number}
-                          </CardDescription>
-                        </div>
-                        {getStatusBadge(app.status)}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                          <p className="text-sm text-muted-foreground mb-1">Amount Requested</p>
-                          <p className="text-xl font-semibold">
-                            ${app.amount_requested.toLocaleString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground mb-1">Application Date</p>
-                          <p className="text-xl font-semibold">
-                            {new Date(app.created_at).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric'
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">No Loans Yet</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Start your first loan application to see it here
-                    </p>
-                    <Button onClick={() => navigate('/')}>
-                      <Plus className="w-4 h-4 mr-2" />
-                      New Application
-                    </Button>
                   </CardContent>
                 </Card>
               )}
