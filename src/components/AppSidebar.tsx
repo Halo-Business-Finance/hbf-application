@@ -62,7 +62,10 @@ export function AppSidebar() {
     <Sidebar collapsible="offcanvas">
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
-          <SidebarGroup className="mt-8">
+          <SidebarGroup className="mt-4">
+            <div className="px-4 py-3 mb-4">
+              <h2 className="text-lg font-semibold text-sidebar-foreground">Welcome!</h2>
+            </div>
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
