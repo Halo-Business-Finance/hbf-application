@@ -556,16 +556,16 @@ const Index = () => {
       <div className="min-h-screen bg-white flex items-center justify-center py-12">
         {/* Auth Card */}
         <div className="px-6 w-full">
-          <Card className="max-w-xl mx-auto shadow-xl">
-            <CardHeader className="text-center pb-4 pt-8">
-              <CardTitle className="text-3xl font-bold text-foreground mb-2">
+          <Card className="max-w-md mx-auto shadow-lg">
+            <CardHeader className="text-center pb-3 pt-6">
+              <CardTitle className="text-2xl font-bold text-foreground mb-1">
                 Welcome to Halo Business Finance
               </CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
+              <CardDescription className="text-sm text-muted-foreground">
                 Sign in to your account
               </CardDescription>
             </CardHeader>
-            <CardContent className="px-8 pb-8">
+            <CardContent className="px-6 pb-6">
               <Tabs value={isLogin ? "login" : "signup"} onValueChange={switchMode} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="login">Sign In</TabsTrigger>
@@ -575,7 +575,7 @@ const Index = () => {
                 <TabsContent value="login" className="space-y-4 mt-0">
                   <form onSubmit={handleAuthSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-foreground font-normal">Email</Label>
+                      <Label htmlFor="email" className="text-foreground font-normal text-sm">Email</Label>
                       <Input
                         id="email"
                         type="email"
@@ -584,12 +584,12 @@ const Index = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={authLoading}
-                        className="h-11"
+                        className="h-10"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-foreground font-normal">Password</Label>
+                      <Label htmlFor="password" className="text-foreground font-normal text-sm">Password</Label>
                       <div className="relative">
                         <Input
                           id="password"
@@ -599,20 +599,20 @@ const Index = () => {
                           onChange={(e) => setPassword(e.target.value)}
                           required
                           disabled={authLoading}
-                          className="h-11 pr-10"
+                          className="h-10 pr-10"
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-11 px-3 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-10 px-3 hover:bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
                           disabled={authLoading}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-5 w-5 text-muted-foreground" />
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <Eye className="h-5 w-5 text-muted-foreground" />
+                            <Eye className="h-4 w-4 text-muted-foreground" />
                           )}
                         </Button>
                       </div>
@@ -624,7 +624,7 @@ const Index = () => {
                       </Alert>
                     )}
 
-                    <Button type="submit" className="w-full h-12 text-base font-medium" disabled={authLoading}>
+                    <Button type="submit" className="w-full h-11 text-base font-medium" disabled={authLoading}>
                       {authLoading ? "Signing in..." : "Sign In"}
                     </Button>
                     
@@ -642,7 +642,7 @@ const Index = () => {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      className="w-full h-12 text-base" 
+                      className="w-full h-11 text-sm" 
                       onClick={handleMicrosoftSignIn}
                       disabled={authLoading}
                     >
@@ -660,7 +660,7 @@ const Index = () => {
                       <Button 
                         type="button" 
                         variant="link" 
-                        className="text-base text-muted-foreground hover:text-foreground p-0 h-auto"
+                        className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto"
                         onClick={async () => {
                           if (!email) {
                             setAuthError("Please enter your email address first");
@@ -691,7 +691,7 @@ const Index = () => {
                   <form onSubmit={handleAuthSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-foreground font-normal">First Name</Label>
+                        <Label htmlFor="firstName" className="text-foreground font-normal text-sm">First Name</Label>
                         <Input
                           id="firstName"
                           type="text"
@@ -700,11 +700,11 @@ const Index = () => {
                           onChange={(e) => setFirstName(e.target.value)}
                           required
                           disabled={authLoading}
-                          className="h-11"
+                          className="h-10"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-foreground font-normal">Last Name</Label>
+                        <Label htmlFor="lastName" className="text-foreground font-normal text-sm">Last Name</Label>
                         <Input
                           id="lastName"
                           type="text"
@@ -713,13 +713,13 @@ const Index = () => {
                           onChange={(e) => setLastName(e.target.value)}
                           required
                           disabled={authLoading}
-                          className="h-11"
+                          className="h-10"
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signupEmail" className="text-foreground font-normal">Email</Label>
+                      <Label htmlFor="signupEmail" className="text-foreground font-normal text-sm">Email</Label>
                       <Input
                         id="signupEmail"
                         type="email"
@@ -728,12 +728,12 @@ const Index = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={authLoading}
-                        className="h-11"
+                        className="h-10"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signupPassword" className="text-foreground font-normal">Password</Label>
+                      <Label htmlFor="signupPassword" className="text-foreground font-normal text-sm">Password</Label>
                       <div className="relative">
                         <Input
                           id="signupPassword"
@@ -744,27 +744,27 @@ const Index = () => {
                           required
                           disabled={authLoading}
                           minLength={6}
-                          className="h-11 pr-10"
+                          className="h-10 pr-10"
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-11 px-3 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-10 px-3 hover:bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
                           disabled={authLoading}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-5 w-5 text-muted-foreground" />
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <Eye className="h-5 w-5 text-muted-foreground" />
+                            <Eye className="h-4 w-4 text-muted-foreground" />
                           )}
                         </Button>
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-foreground font-normal">Confirm Password</Label>
+                      <Label htmlFor="confirmPassword" className="text-foreground font-normal text-sm">Confirm Password</Label>
                       <Input
                         id="confirmPassword"
                         type={showPassword ? "text" : "password"}
@@ -774,7 +774,7 @@ const Index = () => {
                         required
                         disabled={authLoading}
                         minLength={6}
-                        className="h-11"
+                        className="h-10"
                       />
                     </div>
 
@@ -784,7 +784,7 @@ const Index = () => {
                       </Alert>
                     )}
 
-                    <Button type="submit" className="w-full h-12 text-base font-medium" disabled={authLoading}>
+                    <Button type="submit" className="w-full h-11 text-base font-medium" disabled={authLoading}>
                       {authLoading ? "Creating account..." : "Sign Up"}
                     </Button>
                     
@@ -802,7 +802,7 @@ const Index = () => {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      className="w-full h-12 text-base" 
+                      className="w-full h-11 text-sm" 
                       onClick={handleMicrosoftSignIn}
                       disabled={authLoading}
                     >
