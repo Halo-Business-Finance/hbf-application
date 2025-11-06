@@ -311,16 +311,36 @@ const ApplicationsList = () => {
 
                       {/* Right side - Action buttons */}
                       <div className="flex flex-col gap-2 w-full lg:min-w-[200px]">
-                        <Button variant="outline" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => toggleCard(application.id)}
+                        >
                           View Status
                         </Button>
-                        <Button variant="outline" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => navigate('/my-documents')}
+                        >
                           Upload Documents
                         </Button>
-                        <Button variant="outline" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => navigate('/support')}
+                        >
                           Contact Support
                         </Button>
-                        <Button variant="outline" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => window.print()}
+                        >
                           Print Application
                         </Button>
                       </div>
