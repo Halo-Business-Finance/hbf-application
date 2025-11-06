@@ -305,6 +305,14 @@ const BorrowerPortal = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
+                  onClick={() => navigate('/change-email')}
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Change Email
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
                   onClick={() => navigate('/change-password')}
                 >
                   <AlertCircle className="w-4 h-4 mr-2" />

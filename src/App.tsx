@@ -11,6 +11,7 @@ import AdminLoanDetail from "./pages/AdminLoanDetail";
 import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
 import ChangePassword from "./pages/ChangePassword";
+import ChangeEmail from "./pages/ChangeEmail";
 import TwoFactorAuth from "./pages/TwoFactorAuth";
 import LoanApplications from "./pages/LoanApplications";
 import CRM from "./pages/CRM";
@@ -186,6 +187,13 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute>
                     <ChangePassword />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/change-email" element={
+                <Layout>
+                  <ProtectedRoute>
+                    <ChangeEmail />
                   </ProtectedRoute>
                 </Layout>
               } />
