@@ -563,7 +563,7 @@ const Index = () => {
             <p className="text-sm font-semibold text-primary mb-6">
               Nationwide SBA & Commercial Financing
             </p>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
+            <p className="text-base text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
               We provide credit, financing, treasury and payment solutions to help your business succeed. 
               Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
             </p>
