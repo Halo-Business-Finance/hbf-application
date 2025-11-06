@@ -315,7 +315,10 @@ const ApplicationsList = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full justify-start"
-                          onClick={() => toggleCard(application.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCard(application.id);
+                          }}
                         >
                           View Status
                         </Button>
@@ -323,7 +326,10 @@ const ApplicationsList = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full justify-start"
-                          onClick={() => navigate('/my-documents')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/my-documents');
+                          }}
                         >
                           Upload Documents
                         </Button>
@@ -331,7 +337,10 @@ const ApplicationsList = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full justify-start"
-                          onClick={() => navigate('/support')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/support');
+                          }}
                         >
                           Contact Support
                         </Button>
@@ -339,7 +348,10 @@ const ApplicationsList = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full justify-start"
-                          onClick={() => window.print()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.print();
+                          }}
                         >
                           Print Application
                         </Button>
