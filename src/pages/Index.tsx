@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake, FileText, RotateCcw, Zap, DollarSign, Clock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake, FileText, RotateCcw, Zap, DollarSign, Clock, Eye, EyeOff } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import ApplicationsList from "@/components/ApplicationsList";
 import RefinanceForm from "@/components/forms/RefinanceForm";
 import BridgeLoanForm from "@/components/forms/BridgeLoanForm";
@@ -426,8 +429,127 @@ const Index = () => {
     );
   }
 
-  // Show auth prompt for unauthenticated users
+  // Show auth forms for unauthenticated users
   if (!authenticated && !loading) {
+    const [isLogin, setIsLogin] = useState(true);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [authLoading, setAuthLoading] = useState(false);
+    const [authError, setAuthError] = useState("");
+    const { signIn, signUp } = useAuth();
+    const { toast } = useToast();
+
+    const handleAuthSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setAuthError("");
+      setAuthLoading(true);
+
+      try {
+        if (!isLogin) {
+          // Validation for signup
+          if (password !== confirmPassword) {
+            setAuthError("Passwords do not match");
+            setAuthLoading(false);
+            return;
+          }
+          if (password.length < 6) {
+            setAuthError("Password must be at least 6 characters long");
+            setAuthLoading(false);
+            return;
+          }
+          if (!firstName.trim() || !lastName.trim()) {
+            setAuthError("First name and last name are required");
+            setAuthLoading(false);
+            return;
+          }
+
+          const { error } = await signUp(email, password);
+          
+          if (error) {
+            if (error.message?.includes("User already registered")) {
+              setAuthError("An account with this email already exists. Please sign in instead.");
+            } else if (error.message?.includes("Invalid email")) {
+              setAuthError("Please enter a valid email address");
+            } else {
+              setAuthError(error.message || "Failed to create account");
+            }
+          } else {
+            setTimeout(() => {
+              toast({
+                title: "Account created successfully!",
+                description: "Please check your email to verify your account, then sign in.",
+              });
+            }, 7000);
+            setIsLogin(true);
+            setPassword("");
+            setConfirmPassword("");
+          }
+        } else {
+          // Sign in
+          const { error } = await signIn(email, password);
+          
+          if (error) {
+            if (error.message?.includes("Invalid login credentials")) {
+              setAuthError("Invalid email or password. Please check your credentials and try again.");
+            } else if (error.message?.includes("Email not confirmed")) {
+              setAuthError("Please check your email and click the confirmation link before signing in.");
+            } else {
+              setAuthError(error.message || "Failed to sign in");
+            }
+          } else {
+            toast({
+              title: "Welcome back!",
+              description: "You have successfully signed in.",
+            });
+          }
+        }
+      } catch (err) {
+        setAuthError("An unexpected error occurred. Please try again.");
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    const handleMicrosoftSignIn = async () => {
+      setAuthLoading(true);
+      setAuthError("");
+      
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'azure',
+          options: {
+            redirectTo: `${window.location.origin}/`
+          }
+        });
+        
+        if (error) {
+          setAuthError(error.message || "Failed to sign in with Microsoft");
+        }
+      } catch (err) {
+        setAuthError("An unexpected error occurred. Please try again.");
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    const resetForm = () => {
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setFirstName("");
+      setLastName("");
+      setAuthError("");
+    };
+
+    const switchMode = (mode: string) => {
+      setIsLogin(mode === "login");
+      resetForm();
+    };
+
     return (
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
@@ -445,7 +567,6 @@ const Index = () => {
                   tailored for your business growth and success.
                 </p>
               </div>
-
             </div>
           </div>
         </div>
@@ -461,25 +582,265 @@ const Index = () => {
                 Get Started Today
               </CardTitle>
               <CardDescription className="text-base text-muted-foreground">
-                Sign in or create your account to access our loan marketplace and start your application journey.
+                {isLogin ? "Sign in to your account" : "Create your account to get started"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 pt-2">
-              <Button 
-                size="lg" 
-                className="w-full text-base font-semibold py-7 group shadow-md hover:shadow-lg"
-                onClick={() => navigate('/auth')}
-              >
-                Access Loan Marketplace
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <div className="text-center pt-2">
-                <p className="text-sm text-muted-foreground mb-2">
-                  New to our platform?
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Create your account in under 2 minutes - completely secure and confidential.
-                </p>
+              <Tabs value={isLogin ? "login" : "signup"} onValueChange={switchMode} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="login">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="login" className="space-y-4 mt-6">
+                  <form onSubmit={handleAuthSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={authLoading}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          disabled={authLoading}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                          disabled={authLoading}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {authError && (
+                      <Alert variant="destructive">
+                        <AlertDescription>{authError}</AlertDescription>
+                      </Alert>
+                    )}
+
+                    <Button type="submit" className="w-full" disabled={authLoading} size="lg">
+                      {authLoading ? "Signing in..." : "Sign In"}
+                    </Button>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full" 
+                      onClick={handleMicrosoftSignIn}
+                      disabled={authLoading}
+                    >
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 23 23">
+                        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                        <path fill="#f35325" d="M1 1h10v10H1z"/>
+                        <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                        <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                      </svg>
+                      Continue with Microsoft
+                    </Button>
+                    
+                    <div className="text-center">
+                      <Button 
+                        type="button" 
+                        variant="link" 
+                        className="text-sm text-muted-foreground"
+                        onClick={async () => {
+                          if (!email) {
+                            setAuthError("Please enter your email address first");
+                            return;
+                          }
+                          setAuthLoading(true);
+                          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                            redirectTo: `${window.location.origin}/auth?type=recovery`
+                          });
+                          setAuthLoading(false);
+                          if (error) {
+                            setAuthError(error.message);
+                          } else {
+                            toast({
+                              title: "Password reset email sent!",
+                              description: "Check your email for the reset link.",
+                            });
+                          }
+                        }}
+                      >
+                        Forgot your password?
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+                
+                <TabsContent value="signup" className="space-y-4 mt-6">
+                  <form onSubmit={handleAuthSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName">First Name</Label>
+                        <Input
+                          id="firstName"
+                          type="text"
+                          placeholder="First name"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          required
+                          disabled={authLoading}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName">Last Name</Label>
+                        <Input
+                          id="lastName"
+                          type="text"
+                          placeholder="Last name"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          required
+                          disabled={authLoading}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signupEmail">Email</Label>
+                      <Input
+                        id="signupEmail"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={authLoading}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signupPassword">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="signupPassword"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Create a password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          disabled={authLoading}
+                          minLength={6}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                          disabled={authLoading}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <Input
+                        id="confirmPassword"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Confirm your password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        disabled={authLoading}
+                        minLength={6}
+                      />
+                    </div>
+
+                    {authError && (
+                      <Alert variant="destructive">
+                        <AlertDescription>{authError}</AlertDescription>
+                      </Alert>
+                    )}
+
+                    <Button type="submit" className="w-full" disabled={authLoading} size="lg">
+                      {authLoading ? "Creating account..." : "Create Account"}
+                    </Button>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full" 
+                      onClick={handleMicrosoftSignIn}
+                      disabled={authLoading}
+                    >
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 23 23">
+                        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                        <path fill="#f35325" d="M1 1h10v10H1z"/>
+                        <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                        <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                      </svg>
+                      Continue with Microsoft
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+              
+              <div className="flex items-center gap-3 text-sm text-muted-foreground pt-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <span>No credit check to apply</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <span>Fast approval process</span>
+                </div>
               </div>
             </CardContent>
           </Card>
