@@ -7,14 +7,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { 
   FileText, 
   AlertCircle,
   User,
   Mail,
   Phone,
-  Building
+  Building,
+  Edit,
+  Save,
+  X
 } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+const profileSchema = z.object({
+  first_name: z.string().trim().min(1, "First name is required").max(100, "First name must be less than 100 characters"),
+  last_name: z.string().trim().min(1, "Last name is required").max(100, "Last name must be less than 100 characters"),
+  phone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(20, "Phone number must be less than 20 characters").optional().or(z.literal('')),
+  business_name: z.string().trim().max(200, "Business name must be less than 200 characters").optional().or(z.literal('')),
+});
 
 const BorrowerPortal = () => {
   const { authenticated, loading, user } = useAuth();
@@ -22,6 +36,8 @@ const BorrowerPortal = () => {
   const { toast } = useToast();
   
   const [loadingData, setLoadingData] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [userProfile, setUserProfile] = useState<{ 
     first_name: string | null;
     last_name: string | null;
@@ -29,6 +45,16 @@ const BorrowerPortal = () => {
     phone: string | null;
     business_name: string | null;
   } | null>(null);
+
+  const form = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      phone: '',
+      business_name: '',
+    },
+  });
 
   useEffect(() => {
     if (!loading && !authenticated) {
@@ -56,6 +82,12 @@ const BorrowerPortal = () => {
             ...profileData,
             email: user.email || null
           });
+          form.reset({
+            first_name: profileData.first_name || '',
+            last_name: profileData.last_name || '',
+            phone: profileData.phone || '',
+            business_name: profileData.business_name || '',
+          });
         } else {
           // If no profile exists, use user email
           setUserProfile({
@@ -64,6 +96,12 @@ const BorrowerPortal = () => {
             email: user.email || null,
             phone: null,
             business_name: null
+          });
+          form.reset({
+            first_name: '',
+            last_name: '',
+            phone: '',
+            business_name: '',
           });
         }
       }
@@ -77,6 +115,59 @@ const BorrowerPortal = () => {
     } finally {
       setLoadingData(false);
     }
+  };
+
+  const onSubmit = async (values: z.infer<typeof profileSchema>) => {
+    if (!user) return;
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          first_name: values.first_name,
+          last_name: values.last_name,
+          phone: values.phone || null,
+          business_name: values.business_name || null,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+
+      setUserProfile({
+        ...userProfile,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        phone: values.phone || null,
+        business_name: values.business_name || null,
+      });
+
+      setIsEditing(false);
+      toast({
+        title: "Success",
+        description: "Your profile has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    form.reset({
+      first_name: userProfile?.first_name || '',
+      last_name: userProfile?.last_name || '',
+      phone: userProfile?.phone || '',
+      business_name: userProfile?.business_name || '',
+    });
+    setIsEditing(false);
   };
 
   if (loading || loadingData) {
@@ -102,63 +193,138 @@ const BorrowerPortal = () => {
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Personal Information
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <User className="w-5 h-5" />
+                    Personal Information
+                  </div>
+                  {!isEditing && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </Button>
+                  )}
                 </CardTitle>
                 <CardDescription>Your personal details</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>First Name</Label>
-                  <Input 
-                    value={userProfile?.first_name || ''} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Last Name</Label>
-                  <Input 
-                    value={userProfile?.last_name || ''} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Email
-                  </Label>
-                  <Input 
-                    value={userProfile?.email || user?.email || ''} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    Phone
-                  </Label>
-                  <Input 
-                    value={userProfile?.phone || 'Not provided'} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="pt-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={() => toast({
-                      title: "Coming Soon",
-                      description: "Profile editing feature will be available soon."
-                    })}
-                  >
-                    Edit Profile
-                  </Button>
-                </div>
+              <CardContent>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="first_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>First Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              disabled={!isEditing}
+                              className={!isEditing ? "bg-muted/50" : ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="last_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field}
+                              disabled={!isEditing}
+                              className={!isEditing ? "bg-muted/50" : ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Email
+                      </Label>
+                      <Input 
+                        value={userProfile?.email || user?.email || ''} 
+                        readOnly 
+                        className="bg-muted/50"
+                      />
+                      <p className="text-xs text-muted-foreground">Email cannot be changed here</p>
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Phone className="w-4 h-4" />
+                            Phone
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field}
+                              disabled={!isEditing}
+                              className={!isEditing ? "bg-muted/50" : ""}
+                              placeholder="Not provided"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="business_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Building className="w-4 h-4" />
+                            Business Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field}
+                              disabled={!isEditing}
+                              className={!isEditing ? "bg-muted/50" : ""}
+                              placeholder="Not provided"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {isEditing && (
+                      <div className="flex gap-2 pt-4">
+                        <Button 
+                          type="submit" 
+                          className="flex-1"
+                          disabled={isSaving}
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          {isSaving ? "Saving..." : "Save Changes"}
+                        </Button>
+                        <Button 
+                          type="button"
+                          variant="outline"
+                          onClick={handleCancelEdit}
+                          disabled={isSaving}
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
+                  </form>
+                </Form>
               </CardContent>
             </Card>
 
