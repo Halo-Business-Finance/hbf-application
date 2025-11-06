@@ -60,21 +60,45 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="offcanvas">
-      <SidebarContent>
+      <SidebarContent className="flex flex-col">
+        <div className="flex-1">
+          <SidebarGroup className="mt-8">
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink to={item.url} end className={getNavCls}>
+                        <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                {isAdmin() && (
+                  <>
+                    <SidebarGroupLabel className="mt-4">Admin</SidebarGroupLabel>
+                    {adminItems.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={item.url} end className={getNavCls}>
+                            <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                            <span>{item.title}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
+        
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} end className={getNavCls}>
-                      <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={handleLogout}
@@ -84,21 +108,6 @@ export function AppSidebar() {
                   <span>Log Out</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {isAdmin() && (
-                <>
-                  <SidebarGroupLabel>Admin</SidebarGroupLabel>
-                  {adminItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <NavLink to={item.url} end className={getNavCls}>
-                          <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                          <span>{item.title}</span>
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
