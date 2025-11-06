@@ -232,7 +232,7 @@ const CRM = () => {
         <div className="mb-8 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-bold font-display text-foreground mb-2">
+              <h1 className="text-2xl font-bold font-display text-foreground mb-2">
                 Employee CRM Portal
               </h1>
               <p className="text-lg text-muted-foreground">

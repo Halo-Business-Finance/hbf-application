@@ -50,7 +50,7 @@ const ExportData = () => {
           <Button variant="ghost" onClick={() => navigate('/admin')} className="mb-4">
             ← Back to Dashboard
           </Button>
-          <h1 className="text-4xl font-bold mb-2">Export Data</h1>
+          <h1 className="text-2xl font-bold mb-2">Export Data</h1>
           <p className="text-muted-foreground">Export applications, users, and reports</p>
         </div>
 

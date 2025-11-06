@@ -185,7 +185,7 @@ const CRMIntegration = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold font-display text-foreground">CRM Integration</h1>
+            <h1 className="text-xl font-bold font-display text-foreground">CRM Integration</h1>
             <p className="text-muted-foreground">Connect and sync with your loanflow-nexus CRM</p>
           </div>
           <div className="flex items-center gap-3">

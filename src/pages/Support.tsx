@@ -58,7 +58,7 @@ const Support = () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-2 text-blue-900">Support Center</h1>
+          <h1 className="text-2xl font-bold mb-2 text-blue-900">Support Center</h1>
           <p className="text-muted-foreground">Get help with your loan applications and account</p>
         </div>
 

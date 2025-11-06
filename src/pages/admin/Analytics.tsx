@@ -13,7 +13,7 @@ const Analytics = () => {
           <Button variant="ghost" onClick={() => navigate('/admin')} className="mb-4">
             ← Back to Dashboard
           </Button>
-          <h1 className="text-4xl font-bold mb-2">Analytics & Reports</h1>
+          <h1 className="text-2xl font-bold mb-2">Analytics & Reports</h1>
           <p className="text-muted-foreground">View detailed analytics and generate reports</p>
         </div>
 

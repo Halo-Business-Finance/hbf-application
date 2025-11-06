@@ -203,7 +203,7 @@ const DashboardView = () => {
       {/* Welcome Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back{firstName ? `, ${firstName}` : ''}!</h1>
+          <h1 className="text-xl font-bold text-foreground mb-2">Welcome back{firstName ? `, ${firstName}` : ''}!</h1>
           <p className="text-muted-foreground">Manage your loan applications and track your progress</p>
         </div>
         <Button size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
@@ -981,7 +981,7 @@ const Index = () => {
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
+            <h1 className="text-xl sm:text-xl font-bold tracking-tight text-foreground mb-4">
               Comprehensive Business Financing Solutions
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">

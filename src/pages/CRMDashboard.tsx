@@ -126,7 +126,7 @@ const CRMDashboard = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold font-display text-foreground">CRM Dashboard</h1>
+            <h1 className="text-xl font-bold font-display text-foreground">CRM Dashboard</h1>
             <p className="text-muted-foreground">Manage your customer relationships and opportunities</p>
           </div>
           <div className="flex gap-3">

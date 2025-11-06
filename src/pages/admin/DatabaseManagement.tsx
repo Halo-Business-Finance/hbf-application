@@ -13,7 +13,7 @@ const DatabaseManagement = () => {
           <Button variant="ghost" onClick={() => navigate('/admin')} className="mb-4">
             ← Back to Dashboard
           </Button>
-          <h1 className="text-4xl font-bold mb-2">Database Management</h1>
+          <h1 className="text-2xl font-bold mb-2">Database Management</h1>
           <p className="text-muted-foreground">Monitor database health and perform maintenance</p>
         </div>
 

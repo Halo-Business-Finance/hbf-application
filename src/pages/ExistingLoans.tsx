@@ -330,7 +330,7 @@ const ExistingLoans = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto p-4 md:p-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Existing Loans</h1>
+          <h1 className="text-xl font-bold tracking-tight mb-2">Existing Loans</h1>
           <p className="text-muted-foreground">
             View your commercial and business loans funded by us, partners, or third parties
           </p>

@@ -163,7 +163,7 @@ const ApiIntegrations = () => {
           <Button variant="ghost" onClick={() => navigate('/admin')} className="mb-4">
             ← Back to Dashboard
           </Button>
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-2">
+          <h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
             <Plug className="w-8 h-8 text-blue-900" />
             API Integrations
           </h1>

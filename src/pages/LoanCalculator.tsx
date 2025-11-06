@@ -155,7 +155,7 @@ const LoanCalculator = () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-blue-900 flex items-center justify-center gap-2">
+          <h1 className="text-2xl font-bold mb-2 text-blue-900 flex items-center justify-center gap-2">
             <Calculator className="w-8 h-8" />
             Loan Calculator
           </h1>
