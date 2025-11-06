@@ -617,15 +617,15 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">
             <Card className="p-6 border-0">
               <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-foreground">Funding Provided</div>
             </Card>
             <Card className="p-6 border-0">
               <div className="text-2xl font-bold text-primary mb-1">95%</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-foreground">Approval Rate</div>
             </Card>
             <Card className="p-6 border-0">
               <div className="text-2xl font-bold text-primary mb-1">24 Hours</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-foreground">Avg Loan Processing</div>
             </Card>
           </div>
 
