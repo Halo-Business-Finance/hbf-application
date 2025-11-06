@@ -171,13 +171,6 @@ const ApplicationsList = () => {
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-1">Your Applications</h2>
-        <p className="text-muted-foreground text-sm">
-          {applications.length} application{applications.length !== 1 ? 's' : ''} in total
-        </p>
-      </div>
-
       <div className="space-y-4">
         {applications.map((application) => {
           const statusInfo = getStatusMessage(application.status);
