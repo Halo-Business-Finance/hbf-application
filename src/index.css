@@ -6,7 +6,7 @@
 @layer base {
   :root {
     /* Enterprise Light Theme */
-    --background: 220 17% 97%; /* Soft gray background */
+    --background: 0 0% 100%; /* Pure white background */
     --foreground: 222 47% 11%; /* Deep navy text */
     
     --card: 0 0% 100%; /* Pure white cards */
