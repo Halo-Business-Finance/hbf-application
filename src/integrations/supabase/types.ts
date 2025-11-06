@@ -407,6 +407,36 @@ export type Database = {
         }
         Relationships: []
       }
+      loan_application_status_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          created_at: string
+          id: string
+          loan_application_id: string
+          notes: string | null
+          status: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          loan_application_id: string
+          notes?: string | null
+          status: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          loan_application_id?: string
+          notes?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       loan_applications: {
         Row: {
           amount_requested: number | null

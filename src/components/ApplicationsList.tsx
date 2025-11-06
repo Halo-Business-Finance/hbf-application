@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { LoanProgressBar } from '@/components/LoanProgressBar';
+import { LoanTimeline } from '@/components/LoanTimeline';
 
 interface LoanApplication {
   id: string;
@@ -242,10 +243,16 @@ const ApplicationsList = () => {
                 <CollapsibleContent>
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex flex-col lg:flex-row gap-6">
-                      {/* Left side - Icon and details */}
-                      <div className="flex-1">
+                      {/* Left side - Timeline and details */}
+                      <div className="flex-1 space-y-6">
+                        {/* Timeline */}
+                        <LoanTimeline 
+                          loanApplicationId={application.id} 
+                          currentStatus={application.status}
+                        />
+                        
                         {/* Progress Bar */}
-                        <LoanProgressBar status={application.status} className="mb-6" />
+                        <LoanProgressBar status={application.status} />
                         
                         <div className="mb-3">
                           <div className={`text-base sm:text-lg font-semibold ${statusInfo.color}`}>
