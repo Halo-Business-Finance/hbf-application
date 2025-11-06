@@ -601,7 +601,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6">
           {/* Header with Stats */}
           <div className="text-center mb-12 animate-fade-in">
-            <p className="text-2xl font-semibold text-foreground mb-4">
+            <p className="text-2xl font-bold text-foreground mb-4">
               Nationwide SBA & Commercial Financing
             </p>
             <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground mb-4">
