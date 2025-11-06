@@ -557,7 +557,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6">
           {/* Header with Stats */}
           <div className="text-center mb-12 animate-fade-in">
-            <h1 className="font-playfair text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
               Comprehensive Business Financing Solutions
             </h1>
             <p className="text-sm font-semibold text-primary mb-6">
@@ -883,7 +883,7 @@ const Index = () => {
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
             </div>
-            <h1 className="font-playfair text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
               Comprehensive Business Financing Solutions
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
