@@ -190,12 +190,12 @@ const MyDocuments = () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <FileText className="w-6 h-6 text-foreground" />
-            <h1 className="text-2xl font-bold">Loan Documents</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-foreground" />
+            <h1 className="text-xl font-bold">Loan Documents</h1>
           </div>
-          <Button onClick={() => setUploadDialogOpen(true)} className="flex items-center gap-2">
+          <Button onClick={() => setUploadDialogOpen(true)} className="flex items-center gap-2 h-9 text-sm">
             <Upload className="w-4 h-4" />
             Upload
           </Button>
@@ -211,28 +211,28 @@ const MyDocuments = () => {
             return (
               <div key={folder.id}>
                 <div
-                  className="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
+                  className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 transition-all duration-200"
                   onClick={() => setExpandedFolder(isExpanded ? null : folder.id)}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <ChevronRight
-                      className={`w-5 h-5 text-gray-400 transition-transform ${
+                      className={`w-4 h-4 text-gray-400 transition-transform ${
                         isExpanded ? 'rotate-90' : ''
                       }`}
                     />
-                    <Folder className="w-6 h-6 text-yellow-500" />
-                    <span className="font-medium">{folder.name}</span>
+                    <Folder className="w-5 h-5 text-yellow-500" />
+                    <span className="text-sm font-medium">{folder.name}</span>
                   </div>
-                  <span className="text-gray-500">{count}</span>
+                  <span className="text-sm text-gray-500">{count}</span>
                 </div>
 
                 {/* Expanded folder content */}
                 {isExpanded && categoryDocs.length > 0 && (
-                  <div className="bg-gray-50 px-4 py-2 border-b">
+                  <div className="bg-gray-50 px-3 py-2 border-b">
                     {categoryDocs.map((doc) => (
                       <div
                         key={doc.id}
-                        className="flex items-center gap-3 py-2 px-8 hover:bg-white rounded"
+                        className="flex items-center gap-2 py-2 px-6 hover:bg-white rounded transition-colors duration-200"
                       >
                         <FileText className="w-4 h-4 text-gray-400" />
                         <span className="flex-1 text-sm">{doc.file_name}</span>
