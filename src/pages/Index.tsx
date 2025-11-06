@@ -858,7 +858,7 @@ const Index = () => {
           </div>
           
           {/* Terms text below card */}
-          <p className="text-center text-sm text-muted-foreground mt-6 max-w-xl mx-auto">
+          <p className="text-center text-sm text-foreground mt-6 max-w-xl mx-auto">
             By signing up, you agree to our terms of service and privacy policy.
           </p>
         </div>
