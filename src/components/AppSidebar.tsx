@@ -1,5 +1,6 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -13,6 +14,7 @@ import {
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const items = [
   { title: 'My Dashboard', url: '/', icon: LayoutDashboard },
@@ -31,9 +33,32 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAdmin } = useUserRole();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { toast } = useToast();
   const currentPath = location.pathname;
+  const [firstName, setFirstName] = useState<string>('');
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (!user) return;
+      
+      try {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('id', user.id)
+          .maybeSingle();
+        
+        if (profileData?.first_name) {
+          setFirstName(profileData.first_name);
+        }
+      } catch (error) {
+        console.error('Error fetching user name:', error);
+      }
+    };
+
+    fetchUserName();
+  }, [user]);
 
   const handleLogout = async () => {
     try {
@@ -64,7 +89,9 @@ export function AppSidebar() {
         <div className="flex-1">
           <SidebarGroup className="mt-4">
             <div className="px-4 py-3 mb-4">
-              <h2 className="text-lg font-semibold text-sidebar-foreground">Welcome!</h2>
+              <h2 className="text-lg font-semibold text-sidebar-foreground">
+                Welcome{firstName ? `, ${firstName}` : ''}!
+              </h2>
             </div>
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
