@@ -128,7 +128,8 @@
   }
   
   .metric-card:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px) scale(1.01);
   }
   
   .metric-value {
@@ -174,12 +175,18 @@
   }
   
   .enterprise-card:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px) scale(1.01);
   }
   
   .enterprise-card-elevated {
-    @apply bg-card border border-border rounded-lg;
+    @apply bg-card border border-border rounded-lg transition-all duration-200;
     box-shadow: var(--shadow-lg);
+  }
+  
+  .enterprise-card-elevated:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-3px) scale(1.01);
   }
   
   /* Enterprise Buttons */
