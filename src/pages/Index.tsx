@@ -596,7 +596,7 @@ const Index = () => {
               <CardTitle className="text-2xl font-bold text-foreground mb-1">
                 Welcome to Halo Business Finance
               </CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
+              <CardDescription className="text-sm text-foreground">
                 Sign in to your account
               </CardDescription>
             </CardHeader>
