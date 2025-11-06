@@ -193,7 +193,7 @@ const MyDocuments = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-foreground" />
-            <h1 className="text-xl font-bold">Loan Documents</h1>
+            <h1 className="text-xl font-bold">Document Storage</h1>
           </div>
           <Button onClick={() => setUploadDialogOpen(true)} className="flex items-center gap-2 h-9 text-sm">
             <Upload className="w-4 h-4" />
