@@ -31,9 +31,9 @@ export function AppSidebar() {
   const currentPath = location.pathname;
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive 
-      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium transition-all duration-200' 
-      : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground transition-all duration-200';
+    `${isActive 
+      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
+      : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'} transition-all duration-200 group`;
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -46,7 +46,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} end className={getNavCls}>
-                      <item.icon className="mr-2 h-4 w-4" />
+                      <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                       <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -59,7 +59,7 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
                         <NavLink to={item.url} end className={getNavCls}>
-                          <item.icon className="mr-2 h-4 w-4" />
+                          <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                           <span>{item.title}</span>
                         </NavLink>
                       </SidebarMenuButton>
