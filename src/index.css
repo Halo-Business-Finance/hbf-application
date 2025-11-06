@@ -44,12 +44,12 @@
     --gradient-hero: linear-gradient(135deg, hsl(222 47% 11% / 0.97), hsl(221 39% 23% / 0.95));
     
     /* Professional Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -1px hsl(222 47% 11% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -2px hsl(222 47% 11% / 0.05);
-    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 10px 10px -5px hsl(222 47% 11% / 0.04);
-    --shadow-primary: 0 10px 30px -10px hsl(221 83% 53% / 0.3);
-    --shadow-card: 0 2px 8px -2px hsl(222 47% 11% / 0.08);
+    --shadow-sm: 0 1px 3px 0 hsl(222 47% 11% / 0.08);
+    --shadow-md: 0 4px 8px -2px hsl(222 47% 11% / 0.12), 0 2px 4px -1px hsl(222 47% 11% / 0.08);
+    --shadow-lg: 0 10px 20px -5px hsl(222 47% 11% / 0.15), 0 4px 8px -2px hsl(222 47% 11% / 0.08);
+    --shadow-xl: 0 20px 30px -8px hsl(222 47% 11% / 0.15), 0 10px 15px -5px hsl(222 47% 11% / 0.08);
+    --shadow-primary: 0 10px 30px -10px hsl(221 83% 53% / 0.4);
+    --shadow-card: 0 2px 8px 0 hsl(222 47% 11% / 0.1), 0 1px 3px 0 hsl(222 47% 11% / 0.06);
     
     --radius: 0.5rem;
 
