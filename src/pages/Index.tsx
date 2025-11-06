@@ -567,26 +567,6 @@ const Index = () => {
               We provide credit, financing, treasury and payment solutions to help your business succeed. 
               Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
             </p>
-            
-            {/* Company Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
-              <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
-              </Card>
-              <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
-              </Card>
-              <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">95%</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
-              </Card>
-              <Card className="p-6 border-0">
-                <div className="text-3xl font-bold text-primary mb-1">7 Days</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
-              </Card>
-            </div>
           </div>
 
           {/* Auth Card */}
@@ -861,6 +841,26 @@ const Index = () => {
           <p className="text-center text-sm text-foreground mt-6 max-w-xl mx-auto">
             By signing up, you agree to our terms of service and privacy policy.
           </p>
+
+          {/* Company Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">2,500+</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Happy Clients</div>
+            </Card>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">$2.5B+</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
+            </Card>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">95%</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
+            </Card>
+            <Card className="p-6 border-0">
+              <div className="text-3xl font-bold text-primary mb-1">7 Days</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Processing</div>
+            </Card>
+          </div>
         </div>
 
       </div>
