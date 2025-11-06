@@ -326,15 +326,7 @@ const BorrowerPortal = () => {
                   <AlertCircle className="w-4 h-4 mr-2" />
                   Two-Factor Authentication
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => navigate('/document-storage')}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Document Storage
-                </Button>
-                <Button 
+                <Button
                   variant="outline" 
                   className="w-full justify-start"
                   onClick={() => toast({
