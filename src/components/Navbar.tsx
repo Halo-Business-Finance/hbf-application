@@ -50,17 +50,19 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-16 px-2 border-b bg-white flex w-full justify-between items-center sticky top-0 z-50">
-      {/* Left: Sidebar Trigger + Logo */}
-      <div className="flex items-center gap-3 cursor-pointer h-full" onClick={handleLogoClick}>
+    <nav className="h-16 px-2 border-b bg-white flex w-full items-center sticky top-0 z-50 relative">
+      {/* Left: Sidebar Trigger */}
+      <div className="flex items-center">
         <SidebarTrigger className="m-0 text-blue-900" />
-        <div className="flex items-center h-full">
-          <span className="text-blue-900 font-bold text-xl tracking-tight">Halo Business Finance</span>
-        </div>
       </div>
 
-      {/* Navigation Items */}
-      <div className="flex items-center space-x-6">
+      {/* Center: Logo */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 cursor-pointer" onClick={handleLogoClick}>
+        <span className="text-blue-900 font-bold text-xl tracking-tight">Halo Business Finance</span>
+      </div>
+
+      {/* Right: Navigation Items */}
+      <div className="flex items-center space-x-6 ml-auto">
         {!authenticated ? (
           <Button 
             size="lg" 
