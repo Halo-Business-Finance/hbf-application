@@ -613,9 +613,26 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Auth Card */}
-          <div className="px-6 w-full flex justify-center">
-          <Card className="max-w-md mx-auto shadow-lg">
+          {/* Auth Card with Stats on Left */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-center gap-8 px-6 w-full">
+            {/* Company Stats - Vertical on Left */}
+            <div className="flex flex-col gap-6 lg:mr-8">
+              <Card className="p-6 border-0">
+                <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
+              </Card>
+              <Card className="p-6 border-0">
+                <div className="text-2xl font-bold text-primary mb-1">95%</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
+              </Card>
+              <Card className="p-6 border-0">
+                <div className="text-2xl font-bold text-primary mb-1">24 Hours</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
+              </Card>
+            </div>
+
+            {/* Auth Card */}
+          <Card className="max-w-md w-full shadow-lg">
             <CardHeader className="text-center pb-3 pt-6">
               <CardTitle className="text-2xl font-bold text-foreground mb-1">
                 Welcome to Halo Business Finance
@@ -944,23 +961,7 @@ const Index = () => {
             By signing up, you agree to our terms of service and privacy policy.
           </p>
 
-          {/* Company Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-12">
-            <Card className="p-6 border-0">
-              <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
-            </Card>
-            <Card className="p-6 border-0">
-              <div className="text-2xl font-bold text-primary mb-1">95%</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
-            </Card>
-            <Card className="p-6 border-0">
-              <div className="text-2xl font-bold text-primary mb-1">24 Hours</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
-            </Card>
-          </div>
         </div>
-
       </div>
     );
   }
