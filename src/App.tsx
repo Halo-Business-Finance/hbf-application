@@ -10,6 +10,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLoanDetail from "./pages/AdminLoanDetail";
 import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
+import LoanApplications from "./pages/LoanApplications";
 import CRM from "./pages/CRM";
 import Support from "./pages/Support";
 import LoanCalculator from "./pages/LoanCalculator";
@@ -176,6 +177,13 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute>
                     <BorrowerPortal />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/loan-applications" element={
+                <Layout>
+                  <ProtectedRoute>
+                    <LoanApplications />
                   </ProtectedRoute>
                 </Layout>
               } />
