@@ -199,13 +199,17 @@ const DashboardView = () => {
   }, [user]);
 
   return (
-    <div className="space-y-8 mb-12">
+    <div className="space-y-6 sm:space-y-8 mb-12">
       {/* Welcome Header */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex-1">
+          <h1 className="text-lg sm:text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress</h1>
         </div>
-        <Button size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
+        <Button 
+          size="lg" 
+          onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+          className="w-full sm:w-auto"
+        >
           + New Application
         </Button>
       </div>
@@ -251,10 +255,10 @@ const DashboardView = () => {
 
       {/* Tabs Section */}
       <Tabs defaultValue="applications" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-3">
-          <TabsTrigger value="applications">My Applications</TabsTrigger>
-          <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-          <TabsTrigger value="loans">Loans</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-md">
+          <TabsTrigger value="applications" className="text-xs sm:text-sm">My Applications</TabsTrigger>
+          <TabsTrigger value="activity" className="text-xs sm:text-sm">Recent Activity</TabsTrigger>
+          <TabsTrigger value="loans" className="text-xs sm:text-sm">Loans</TabsTrigger>
         </TabsList>
 
         <TabsContent value="applications" className="mt-6">

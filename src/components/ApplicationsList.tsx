@@ -180,25 +180,25 @@ const ApplicationsList = () => {
             <Collapsible key={application.id} open={!isCollapsed} onOpenChange={() => toggleCard(application.id)}>
               <Card className="overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
                 {/* Header Section */}
-                <div className="bg-muted/30 px-6 py-3 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm border-b">
+                <div className="bg-muted/30 px-3 sm:px-6 py-3 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-sm border-b">
                   <div>
-                    <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION DATE</div>
-                    <div className="font-medium">
-                      {format(new Date(application.application_started_date), 'MMMM d, yyyy')}
+                    <div className="text-xs text-muted-foreground font-medium mb-1">DATE</div>
+                    <div className="font-medium text-xs sm:text-sm">
+                      {format(new Date(application.application_started_date), 'MMM d, yyyy')}
                     </div>
                   </div>
                   <div>
                     <div className="text-xs text-muted-foreground font-medium mb-1">AMOUNT</div>
-                    <div className="font-medium">{formatCurrency(application.amount_requested)}</div>
+                    <div className="font-medium text-xs sm:text-sm">{formatCurrency(application.amount_requested)}</div>
                   </div>
-                  <div>
+                  <div className="hidden sm:block">
                     <div className="text-xs text-muted-foreground font-medium mb-1">BUSINESS</div>
-                    <div className="font-medium truncate">{application.business_name}</div>
+                    <div className="font-medium text-xs sm:text-sm truncate">{application.business_name}</div>
                   </div>
-                  <div className="flex items-start justify-between">
+                  <div className="col-span-2 sm:col-span-1 flex items-start justify-between">
                     <div className="flex-1">
                       <div className="text-xs text-muted-foreground font-medium mb-1">APPLICATION #</div>
-                      <div className="font-medium text-primary">{application.application_number}</div>
+                      <div className="font-medium text-primary text-xs sm:text-sm">{application.application_number}</div>
                     </div>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -210,12 +210,12 @@ const ApplicationsList = () => {
 
                 {/* Collapsed Status Bar */}
                 {isCollapsed && (
-                  <div className="px-6 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="px-3 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       <Badge className={getStatusColor(application.status)}>
                         {application.status.replace('_', ' ').toUpperCase()}
                       </Badge>
-                      <span className="text-sm font-medium">
+                      <span className="text-xs sm:text-sm font-medium">
                         {getLoanTypeDisplay(application.loan_type)}
                       </span>
                     </div>
@@ -230,6 +230,7 @@ const ApplicationsList = () => {
                           navigate(`/?id=7&app=${application.id}`);
                         }
                       }}
+                      className="w-full sm:w-auto"
                     >
                       View
                     </Button>
@@ -238,22 +239,22 @@ const ApplicationsList = () => {
 
                 {/* Expandable Content Section */}
                 <CollapsibleContent>
-                  <CardContent className="p-6">
-                    <div className="flex gap-6">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex flex-col lg:flex-row gap-6">
                       {/* Left side - Icon and details */}
                       <div className="flex-1">
                         <div className="mb-3">
-                          <div className={`text-lg font-semibold ${statusInfo.color}`}>
+                          <div className={`text-base sm:text-lg font-semibold ${statusInfo.color}`}>
                             {statusInfo.text}
                           </div>
                         </div>
                         
                         <div className="flex gap-4 mb-4">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-base mb-1">
+                            <h3 className="font-semibold text-sm sm:text-base mb-1">
                               {getLoanTypeDisplay(application.loan_type)}
                             </h3>
-                            <p className="text-sm text-muted-foreground mb-2">
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                               {application.first_name} {application.last_name} • {application.business_name}
                             </p>
                             {application.status === 'draft' && (
@@ -269,7 +270,7 @@ const ApplicationsList = () => {
                           </div>
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                           {['draft', 'submitted', 'under_review'].includes(application.status) ? (
                             <Button 
                               variant="default"
@@ -282,22 +283,23 @@ const ApplicationsList = () => {
                                   navigate(`/?id=7&app=${application.id}`);
                                 }
                               }}
+                              className="w-full sm:w-auto"
                             >
                               Continue Application
                             </Button>
                           ) : (
-                            <Button variant="default" size="sm">
+                            <Button variant="default" size="sm" className="w-full sm:w-auto">
                               View Application
                             </Button>
                           )}
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="w-full sm:w-auto">
                             Download PDF
                           </Button>
                         </div>
                       </div>
 
                       {/* Right side - Action buttons */}
-                      <div className="flex flex-col gap-2 min-w-[200px]">
+                      <div className="flex flex-col gap-2 w-full lg:min-w-[200px]">
                         <Button variant="outline" size="sm" className="w-full justify-start">
                           View Status
                         </Button>
