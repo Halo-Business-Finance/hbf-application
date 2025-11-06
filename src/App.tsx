@@ -11,6 +11,7 @@ import AdminLoanDetail from "./pages/AdminLoanDetail";
 import AdminUserManagement from "./pages/AdminUserManagement";
 import BorrowerPortal from "./pages/BorrowerPortal";
 import ChangePassword from "./pages/ChangePassword";
+import TwoFactorAuth from "./pages/TwoFactorAuth";
 import LoanApplications from "./pages/LoanApplications";
 import CRM from "./pages/CRM";
 import Support from "./pages/Support";
@@ -185,6 +186,13 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute>
                     <ChangePassword />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/two-factor-auth" element={
+                <Layout>
+                  <ProtectedRoute>
+                    <TwoFactorAuth />
                   </ProtectedRoute>
                 </Layout>
               } />

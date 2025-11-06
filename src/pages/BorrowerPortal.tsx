@@ -313,6 +313,14 @@ const BorrowerPortal = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
+                  onClick={() => navigate('/two-factor-auth')}
+                >
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  Two-Factor Authentication
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
                   onClick={() => navigate('/document-storage')}
                 >
                   <FileText className="w-4 h-4 mr-2" />
