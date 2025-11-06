@@ -31,7 +31,9 @@ export function AppSidebar() {
   const currentPath = location.pathname;
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' : 'hover:bg-sidebar-accent/60';
+    isActive 
+      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium transition-all duration-200' 
+      : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground transition-all duration-200';
 
   return (
     <Sidebar collapsible="offcanvas">
