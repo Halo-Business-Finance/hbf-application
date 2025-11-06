@@ -283,7 +283,19 @@ const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { authenticated, loading } = useAuth();
+  const { authenticated, loading, signIn, signUp } = useAuth();
+  const { toast } = useToast();
+  
+  // Auth form state - must be at top level, not conditional
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
   
   const loanTypeId = searchParams.get('id');
 
@@ -429,21 +441,8 @@ const Index = () => {
     );
   }
 
-  // Show auth forms for unauthenticated users
-  if (!authenticated && !loading) {
-    const [isLogin, setIsLogin] = useState(true);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [authLoading, setAuthLoading] = useState(false);
-    const [authError, setAuthError] = useState("");
-    const { signIn, signUp } = useAuth();
-    const { toast } = useToast();
-
-    const handleAuthSubmit = async (e: React.FormEvent) => {
+  // Auth form handlers
+  const handleAuthSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setAuthError("");
       setAuthLoading(true);
@@ -512,9 +511,9 @@ const Index = () => {
       } finally {
         setAuthLoading(false);
       }
-    };
+  };
 
-    const handleMicrosoftSignIn = async () => {
+  const handleMicrosoftSignIn = async () => {
       setAuthLoading(true);
       setAuthError("");
       
@@ -534,22 +533,24 @@ const Index = () => {
       } finally {
         setAuthLoading(false);
       }
-    };
+  };
 
-    const resetForm = () => {
+  const resetForm = () => {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setFirstName("");
       setLastName("");
       setAuthError("");
-    };
+  };
 
-    const switchMode = (mode: string) => {
-      setIsLogin(mode === "login");
-      resetForm();
-    };
+  const switchMode = (mode: string) => {
+    setIsLogin(mode === "login");
+    resetForm();
+  };
 
+  // Show auth forms for unauthenticated users
+  if (!authenticated && !loading) {
     return (
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
