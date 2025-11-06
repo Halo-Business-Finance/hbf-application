@@ -668,7 +668,7 @@ const Index = () => {
                         <span className="w-full border-t" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-3 text-muted-foreground tracking-wider">
+                        <span className="bg-background px-3 text-foreground tracking-wider">
                           OR CONTINUE WITH
                         </span>
                       </div>
@@ -828,7 +828,7 @@ const Index = () => {
                         <span className="w-full border-t" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-3 text-muted-foreground tracking-wider">
+                        <span className="bg-background px-3 text-foreground tracking-wider">
                           OR CONTINUE WITH
                         </span>
                       </div>
