@@ -27,7 +27,6 @@ const profileSchema = z.object({
   first_name: z.string().trim().min(1, "First name is required").max(100, "First name must be less than 100 characters"),
   last_name: z.string().trim().min(1, "Last name is required").max(100, "Last name must be less than 100 characters"),
   phone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(20, "Phone number must be less than 20 characters").optional().or(z.literal('')),
-  business_name: z.string().trim().max(200, "Business name must be less than 200 characters").optional().or(z.literal('')),
 });
 
 const BorrowerPortal = () => {
@@ -43,7 +42,6 @@ const BorrowerPortal = () => {
     last_name: string | null;
     email: string | null;
     phone: string | null;
-    business_name: string | null;
   } | null>(null);
 
   const form = useForm<z.infer<typeof profileSchema>>({
@@ -52,7 +50,6 @@ const BorrowerPortal = () => {
       first_name: '',
       last_name: '',
       phone: '',
-      business_name: '',
     },
   });
 
@@ -73,9 +70,9 @@ const BorrowerPortal = () => {
       if (user) {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('first_name, last_name, phone, business_name')
+          .select('first_name, last_name, phone')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
         
         if (profileData) {
           setUserProfile({
@@ -86,7 +83,6 @@ const BorrowerPortal = () => {
             first_name: profileData.first_name || '',
             last_name: profileData.last_name || '',
             phone: profileData.phone || '',
-            business_name: profileData.business_name || '',
           });
         } else {
           // If no profile exists, use user email
@@ -95,13 +91,11 @@ const BorrowerPortal = () => {
             last_name: null,
             email: user.email || null,
             phone: null,
-            business_name: null
           });
           form.reset({
             first_name: '',
             last_name: '',
             phone: '',
-            business_name: '',
           });
         }
       }
@@ -129,7 +123,6 @@ const BorrowerPortal = () => {
           first_name: values.first_name,
           last_name: values.last_name,
           phone: values.phone || null,
-          business_name: values.business_name || null,
           updated_at: new Date().toISOString(),
         });
 
@@ -140,7 +133,6 @@ const BorrowerPortal = () => {
         first_name: values.first_name,
         last_name: values.last_name,
         phone: values.phone || null,
-        business_name: values.business_name || null,
       });
 
       setIsEditing(false);
@@ -165,7 +157,6 @@ const BorrowerPortal = () => {
       first_name: userProfile?.first_name || '',
       last_name: userProfile?.last_name || '',
       phone: userProfile?.phone || '',
-      business_name: userProfile?.business_name || '',
     });
     setIsEditing(false);
   };
@@ -268,27 +259,6 @@ const BorrowerPortal = () => {
                           <FormLabel className="flex items-center gap-2">
                             <Phone className="w-4 h-4" />
                             Phone
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              {...field}
-                              disabled={!isEditing}
-                              className={!isEditing ? "bg-muted/50" : ""}
-                              placeholder="Not provided"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="business_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Building className="w-4 h-4" />
-                            Business Name
                           </FormLabel>
                           <FormControl>
                             <Input 
