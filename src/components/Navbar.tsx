@@ -52,9 +52,11 @@ const Navbar = () => {
   return (
     <nav className="h-16 px-2 border-b bg-white flex w-full justify-between items-center sticky top-0 z-50">
       {/* Left: Sidebar Trigger + Logo */}
-      <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
+      <div className="flex items-center gap-3 cursor-pointer h-full" onClick={handleLogoClick}>
         <SidebarTrigger className="m-0 text-blue-900" />
-        <span className="text-blue-900 font-bold text-xl tracking-tight flex items-center">Halo Business Finance</span>
+        <div className="flex items-center h-full">
+          <span className="text-blue-900 font-bold text-xl tracking-tight">Halo Business Finance</span>
+        </div>
       </div>
 
       {/* Navigation Items */}
