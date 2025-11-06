@@ -183,7 +183,7 @@ const BorrowerPortal = () => {
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your portal...</p>
+          <p className="text-foreground">Loading your portal...</p>
         </div>
       </div>
     );
@@ -195,7 +195,7 @@ const BorrowerPortal = () => {
         <div className="space-y-6">
           <div>
             <h2 className="text-3xl font-bold tracking-tight mb-2">My Account</h2>
-            <p className="text-muted-foreground">Manage your account information and preferences</p>
+            <p className="text-foreground">Manage your account information and preferences</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -268,7 +268,7 @@ const BorrowerPortal = () => {
                         readOnly 
                         className="bg-muted/50"
                       />
-                      <p className="text-xs text-muted-foreground">Email cannot be changed here</p>
+                      <p className="text-xs text-foreground">Email cannot be changed here</p>
                     </div>
                     <FormField
                       control={form.control}
