@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { LoanProgressBar } from '@/components/LoanProgressBar';
 
 interface LoanApplication {
   id: string;
@@ -243,6 +244,9 @@ const ApplicationsList = () => {
                     <div className="flex flex-col lg:flex-row gap-6">
                       {/* Left side - Icon and details */}
                       <div className="flex-1">
+                        {/* Progress Bar */}
+                        <LoanProgressBar status={application.status} className="mb-6" />
+                        
                         <div className="mb-3">
                           <div className={`text-base sm:text-lg font-semibold ${statusInfo.color}`}>
                             {statusInfo.text}
