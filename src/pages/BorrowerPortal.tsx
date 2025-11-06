@@ -99,89 +99,67 @@ const BorrowerPortal = () => {
             <p className="text-muted-foreground">Manage your account information and preferences</p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Personal Information
-                </CardTitle>
-                <CardDescription>Your personal details</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>First Name</Label>
-                  <Input 
-                    value={userProfile?.first_name || ''} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Last Name</Label>
-                  <Input 
-                    value={userProfile?.last_name || ''} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Email
-                  </Label>
-                  <Input 
-                    value={userProfile?.email || user?.email || ''} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    Phone
-                  </Label>
-                  <Input 
-                    value={userProfile?.phone || 'Not provided'} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building className="w-5 h-5" />
-                  Business Information
-                </CardTitle>
-                <CardDescription>Your business details</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Business Name</Label>
-                  <Input 
-                    value={userProfile?.business_name || 'Not provided'} 
-                    readOnly 
-                    className="bg-muted/50"
-                  />
-                </div>
-                <div className="pt-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={() => toast({
-                      title: "Coming Soon",
-                      description: "Profile editing feature will be available soon."
-                    })}
-                  >
-                    Edit Profile
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Personal Information
+              </CardTitle>
+              <CardDescription>Your personal details</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>First Name</Label>
+                <Input 
+                  value={userProfile?.first_name || ''} 
+                  readOnly 
+                  className="bg-muted/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Last Name</Label>
+                <Input 
+                  value={userProfile?.last_name || ''} 
+                  readOnly 
+                  className="bg-muted/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  Email
+                </Label>
+                <Input 
+                  value={userProfile?.email || user?.email || ''} 
+                  readOnly 
+                  className="bg-muted/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  Phone
+                </Label>
+                <Input 
+                  value={userProfile?.phone || 'Not provided'} 
+                  readOnly 
+                  className="bg-muted/50"
+                />
+              </div>
+              <div className="pt-4">
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={() => toast({
+                    title: "Coming Soon",
+                    description: "Profile editing feature will be available soon."
+                  })}
+                >
+                  Edit Profile
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader>
