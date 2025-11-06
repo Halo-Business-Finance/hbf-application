@@ -306,6 +306,12 @@ const Index = () => {
     }
   }, [loanTypeId]);
 
+  useEffect(() => {
+    if (authenticated && !loading) {
+      navigate('/my-account');
+    }
+  }, [authenticated, loading, navigate]);
+
   const loanPrograms = [
     {
       id: 1,
@@ -505,6 +511,7 @@ const Index = () => {
               title: "Welcome back!",
               description: "You have successfully signed in.",
             });
+            navigate('/my-account');
           }
         }
       } catch (err) {
@@ -522,7 +529,7 @@ const Index = () => {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'azure',
           options: {
-            redirectTo: `${window.location.origin}/`
+            redirectTo: `${window.location.origin}/my-account`
           }
         });
         
@@ -544,7 +551,7 @@ const Index = () => {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: `${window.location.origin}/`
+            redirectTo: `${window.location.origin}/my-account`
           }
         });
         
