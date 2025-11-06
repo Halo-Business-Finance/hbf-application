@@ -945,7 +945,7 @@ const Index = () => {
           </p>
 
           {/* Company Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-12">
             <Card className="p-6 border-0">
               <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
@@ -990,7 +990,7 @@ const Index = () => {
             </p>
             
             {/* Company Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
               <Card className="p-6 border-0">
                 <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
