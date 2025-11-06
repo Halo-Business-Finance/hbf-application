@@ -58,7 +58,7 @@ const Navbar = () => {
 
       {/* Center: Logo */}
       <div className="absolute left-1/2 transform -translate-x-1/2 cursor-pointer" onClick={handleLogoClick}>
-        <span className="text-blue-900 font-bold text-xl tracking-tight">Halo Business Finance</span>
+        <span className="text-blue-900 font-bold text-2xl tracking-tight">Halo Business Finance</span>
       </div>
 
       {/* Right: Navigation Items */}
