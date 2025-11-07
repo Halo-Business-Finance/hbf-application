@@ -88,7 +88,7 @@ export function AppSidebar() {
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
-            <div className="px-4 py-3 mb-4">
+            <div className="px-4 py-3 mb-4 pt-8">
               <h2 className="text-lg font-semibold text-sidebar-foreground">
                 Welcome{firstName ? `, ${firstName}` : ''}!
               </h2>
