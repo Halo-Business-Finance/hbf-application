@@ -41,6 +41,7 @@ import Notifications from "./pages/admin/Notifications";
 import SupportTickets from "./pages/admin/SupportTickets";
 import DatabaseManagement from "./pages/admin/DatabaseManagement";
 import ApiIntegrations from "./pages/admin/ApiIntegrations";
+import ExistingLoansManagement from "./pages/admin/ExistingLoansManagement";
 
 const queryClient = new QueryClient();
 
@@ -146,6 +147,13 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute requiredRole="admin">
                     <ApiIntegrations />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/admin/existing-loans" element={
+                <Layout>
+                  <ProtectedRoute requiredRole="admin">
+                    <ExistingLoansManagement />
                   </ProtectedRoute>
                 </Layout>
               } />

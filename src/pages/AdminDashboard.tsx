@@ -61,6 +61,12 @@ const AdminDashboard = () => {
       onClick: () => navigate('/admin/applications')
     },
     {
+      icon: Building2,
+      title: 'Existing Loans',
+      description: 'Create and manage existing loans for all users in the database',
+      onClick: () => navigate('/admin/existing-loans')
+    },
+    {
       icon: Users,
       title: 'User Management',
       description: 'Manage user accounts, roles, and permissions across the platform',
@@ -97,7 +103,7 @@ const AdminDashboard = () => {
       onClick: () => navigate('/admin/export')
     },
     {
-      icon: Building2,
+      icon: Plug,
       title: 'Loan Products',
       description: 'Manage available loan products, types, and their configurations',
       onClick: () => navigate('/admin/products')
