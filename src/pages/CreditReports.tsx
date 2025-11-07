@@ -1,241 +1,280 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { FileText, Building2, User, TrendingUp, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
+import { TrendingUp, TrendingDown, ArrowRight, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function CreditReports() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading credit reports
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
 
-  // Mock data - this will be replaced with actual API data
-  const personalCreditReport = {
-    score: 720,
-    provider: 'Experian',
-    pulledDate: '2024-01-15',
-    status: 'Good',
-    accounts: [
-      { type: 'Credit Card', balance: 5000, limit: 10000, status: 'Current' },
-      { type: 'Auto Loan', balance: 15000, limit: 25000, status: 'Current' },
+  // Mock credit data matching Credit Karma style
+  const creditData = {
+    transUnion: {
+      score: 677,
+      change: 1,
+      rating: 'Fair',
+      maxScore: 850
+    },
+    equifax: {
+      score: 710,
+      change: 21,
+      rating: 'Good',
+      maxScore: 850
+    },
+    scoreHistory: [
+      { date: 'Sep 21', score: 670 },
+      { date: 'Sep 28', score: 675 },
+      { date: 'Oct 05', score: 672 },
+      { date: 'Oct 12', score: 676 },
+      { date: 'Oct 19', score: 680 },
+      { date: 'Oct 26', score: 685 },
+      { date: 'Nov 02', score: 677 }
     ],
-    inquiries: 2,
-    publicRecords: 0,
+    factors: [
+      { name: 'Payment history', value: 95, status: 'Needs work', impact: 'High impact', icon: 'warning' },
+      { name: 'Credit card use', value: 29, status: 'Good', impact: 'High impact', icon: 'check' },
+      { name: 'Derogatory marks', value: 0, status: 'Excellent', impact: 'High impact', icon: 'check' },
+      { name: 'Credit age', value: '3 yrs, 2 mos', status: 'Needs work', impact: 'Medium impact', icon: 'warning' },
+      { name: 'Total accounts', value: 8, status: 'Needs work', impact: 'Low impact', icon: 'warning' },
+      { name: 'Hard inquiries', value: 5, status: 'Needs work', impact: 'Low impact', icon: 'warning' }
+    ],
+    upcomingReports: [
+      { account: 'Capital One Credit Card', dueDate: 'Nov 10', balance: '$1,234' }
+    ]
   };
 
-  const businessCreditReport = {
-    score: 75,
-    provider: 'Dun & Bradstreet',
-    pulledDate: '2024-01-15',
-    rating: 'Low Risk',
-    tradelines: [
-      { vendor: 'Office Supplies Inc', balance: 2500, terms: 'Net 30', status: 'Current' },
-      { vendor: 'Equipment Leasing Co', balance: 8000, terms: 'Net 45', status: 'Current' },
-    ],
-    paymentHistory: 'Excellent',
-    yearsInBusiness: 5,
+  const getScoreRating = (score: number) => {
+    if (score >= 750) return { label: 'Excellent', color: 'text-green-600' };
+    if (score >= 700) return { label: 'Good', color: 'text-green-500' };
+    if (score >= 650) return { label: 'Fair', color: 'text-yellow-600' };
+    if (score >= 600) return { label: 'Poor', color: 'text-orange-600' };
+    return { label: 'Very Poor', color: 'text-red-600' };
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 700) return 'text-green-600';
-    if (score >= 600) return 'text-yellow-600';
-    return 'text-red-600';
+  const getImpactColor = (impact: string) => {
+    if (impact.includes('High')) return 'text-red-600';
+    if (impact.includes('Medium')) return 'text-yellow-600';
+    return 'text-muted-foreground';
+  };
+
+  const getStatusIcon = (icon: string) => {
+    if (icon === 'check') return <CheckCircle2 className="h-5 w-5 text-green-600" />;
+    if (icon === 'warning') return <AlertCircle className="h-5 w-5 text-yellow-600" />;
+    return <XCircle className="h-5 w-5 text-red-600" />;
   };
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4"></div>
-          <div className="h-64 bg-muted rounded"></div>
+      <div className="container mx-auto p-6 max-w-7xl">
+        <div className="space-y-6 animate-pulse">
+          <div className="h-8 bg-muted rounded w-48"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="h-48 bg-muted rounded-lg"></div>
+            <div className="h-48 bg-muted rounded-lg"></div>
+          </div>
+          <div className="h-96 bg-muted rounded-lg"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight">My Credit Reports</h1>
-          <p className="text-muted-foreground">View your personal and business credit information</p>
-        </div>
+    <div className="container mx-auto p-6 max-w-7xl space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Credit Health</h1>
       </div>
 
-      <Alert>
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Credit Report Information</AlertTitle>
-        <AlertDescription>
-          Credit reports are pulled through our secure third-party APIs. Your information is protected and only accessible to authorized parties.
-        </AlertDescription>
-      </Alert>
+      {/* Dual Credit Score Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* TransUnion Card */}
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold">TransUnion</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-end gap-3">
+              <div className={`text-5xl font-bold ${getScoreRating(creditData.transUnion.score).color}`}>
+                {creditData.transUnion.score}
+              </div>
+              <div className="pb-2 text-sm text-muted-foreground">
+                out of {creditData.transUnion.maxScore}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              {creditData.transUnion.change > 0 ? (
+                <TrendingUp className="h-4 w-4 text-green-600" />
+              ) : (
+                <TrendingDown className="h-4 w-4 text-red-600" />
+              )}
+              <span className={creditData.transUnion.change > 0 ? 'text-green-600' : 'text-red-600'}>
+                {creditData.transUnion.change > 0 ? '+' : ''}{creditData.transUnion.change} Point
+              </span>
+              <span className="text-muted-foreground">• {creditData.transUnion.rating}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">Checked daily</p>
+          </CardContent>
+        </Card>
 
-      <Tabs defaultValue="personal" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
-          <TabsTrigger value="personal" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            Personal Credit
-          </TabsTrigger>
-          <TabsTrigger value="business" className="flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
-            Business Credit
-          </TabsTrigger>
-        </TabsList>
+        {/* Equifax Card */}
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold">Equifax</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-end gap-3">
+              <div className={`text-5xl font-bold ${getScoreRating(creditData.equifax.score).color}`}>
+                {creditData.equifax.score}
+              </div>
+              <div className="pb-2 text-sm text-muted-foreground">
+                out of {creditData.equifax.maxScore}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              {creditData.equifax.change > 0 ? (
+                <TrendingUp className="h-4 w-4 text-green-600" />
+              ) : (
+                <TrendingDown className="h-4 w-4 text-red-600" />
+              )}
+              <span className={creditData.equifax.change > 0 ? 'text-green-600' : 'text-red-600'}>
+                {creditData.equifax.change > 0 ? '+' : ''}{creditData.equifax.change} Points
+              </span>
+              <span className="text-muted-foreground">• {creditData.equifax.rating}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">Checked daily</p>
+          </CardContent>
+        </Card>
+      </div>
 
-        <TabsContent value="personal" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Credit Score</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${getScoreColor(personalCreditReport.score)}`}>
-                  {personalCreditReport.score}
+      <p className="text-sm text-muted-foreground">
+        Scores checked daily with VantageScore 3.0
+      </p>
+
+      {/* Score History Chart */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Score Trend</CardTitle>
+              <CardDescription>Your credit score over the last 3 months</CardDescription>
+            </div>
+            <Button variant="link" className="text-sm">
+              See what's changed <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Simple visual score history */}
+            <div className="flex items-end justify-between h-32 gap-2">
+              {creditData.scoreHistory.map((point, index) => {
+                const maxScore = Math.max(...creditData.scoreHistory.map(p => p.score));
+                const height = (point.score / maxScore) * 100;
+                return (
+                  <div key={index} className="flex flex-col items-center flex-1 gap-1">
+                    <div className="w-full bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
+                      <div className="w-full h-2 bg-primary rounded-t"></div>
+                    </div>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">{point.date}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Upcoming Bureau Reports */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Upcoming bureau reports</CardTitle>
+          <CardDescription>
+            Based on your last credit report, we estimate these accounts will be reported to TransUnion in the next 7 days.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {creditData.upcomingReports.map((report, index) => (
+              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div>
+                  <p className="font-medium text-sm">{report.account}</p>
+                  <p className="text-xs text-muted-foreground">Due: {report.dueDate}</p>
                 </div>
-                <p className="text-xs text-muted-foreground">{personalCreditReport.status}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Provider</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{personalCreditReport.provider}</div>
-                <p className="text-xs text-muted-foreground">Report Date: {personalCreditReport.pulledDate}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Credit Inquiries</CardTitle>
-                <AlertCircle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{personalCreditReport.inquiries}</div>
-                <p className="text-xs text-muted-foreground">Last 12 months</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Public Records</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{personalCreditReport.publicRecords}</div>
-                <p className="text-xs text-muted-foreground">None found</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Credit Accounts</CardTitle>
-              <CardDescription>Your open credit accounts and their status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {personalCreditReport.accounts.map((account, index) => (
-                  <div key={index}>
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">{account.type}</p>
-                        <p className="text-sm text-muted-foreground">
-                          ${account.balance.toLocaleString()} / ${account.limit.toLocaleString()}
-                        </p>
-                      </div>
-                      <Badge variant="outline">{account.status}</Badge>
-                    </div>
-                    {index < personalCreditReport.accounts.length - 1 && <Separator className="my-4" />}
-                  </div>
-                ))}
+                <Badge variant="secondary">{report.balance}</Badge>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="business" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Business Score</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">{businessCreditReport.score}</div>
-                <p className="text-xs text-muted-foreground">{businessCreditReport.rating}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Provider</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{businessCreditReport.provider}</div>
-                <p className="text-xs text-muted-foreground">Report Date: {businessCreditReport.pulledDate}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Payment History</CardTitle>
-                <AlertCircle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{businessCreditReport.paymentHistory}</div>
-                <p className="text-xs text-muted-foreground">On-time payments</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Years in Business</CardTitle>
-                <Building2 className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{businessCreditReport.yearsInBusiness}</div>
-                <p className="text-xs text-muted-foreground">Established business</p>
-              </CardContent>
-            </Card>
+            ))}
           </div>
+          <Button variant="link" className="mt-4 p-0 h-auto text-sm">
+            Learn how debt reporting works <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
+        </CardContent>
+      </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Trade Lines</CardTitle>
-              <CardDescription>Your business credit accounts and payment terms</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {businessCreditReport.tradelines.map((trade, index) => (
-                  <div key={index}>
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">{trade.vendor}</p>
-                        <p className="text-sm text-muted-foreground">
-                          ${trade.balance.toLocaleString()} • {trade.terms}
-                        </p>
+      {/* Credit Factors */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Credit factors</CardTitle>
+          <CardDescription>
+            See what's helping or hurting your score, and what to fix first. Try digging into your credit card use and payment history first. You can improve those factors more quickly.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {creditData.factors.map((factor, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1">
+                    {getStatusIcon(factor.icon)}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-medium text-sm">{factor.name}</p>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-semibold">
+                            {typeof factor.value === 'number' && factor.name.includes('use') ? `${factor.value}%` : factor.value}
+                          </span>
+                        </div>
                       </div>
-                      <Badge variant="outline">{trade.status}</Badge>
+                      {typeof factor.value === 'number' && factor.name.includes('use') && (
+                        <Progress value={factor.value} className="h-2 mb-2" />
+                      )}
+                      <div className="flex items-center gap-2 text-xs">
+                        <Badge variant={factor.status === 'Excellent' || factor.status === 'Good' ? 'default' : 'secondary'}>
+                          {factor.status}
+                        </Badge>
+                        <span className={getImpactColor(factor.impact)}>{factor.impact}</span>
+                      </div>
                     </div>
-                    {index < businessCreditReport.tradelines.length - 1 && <Separator className="my-4" />}
                   </div>
-                ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            ))}
+          </div>
+          <Button variant="outline" className="w-full mt-6">
+            View full credit report
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Suggested Offers Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Suggested for your credit</CardTitle>
+          <CardDescription>
+            We suggest offers based on your credit, Approval Odds, and money we make from our partners.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            <p className="text-sm">Credit card and loan offers will appear here based on your credit profile.</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
