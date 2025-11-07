@@ -484,6 +484,45 @@ export type Database = {
           },
         ]
       }
+      external_notification_webhooks: {
+        Row: {
+          channels: Json | null
+          created_at: string | null
+          description: string | null
+          event_types: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          platform: string
+          updated_at: string | null
+          webhook_url: string
+        }
+        Insert: {
+          channels?: Json | null
+          created_at?: string | null
+          description?: string | null
+          event_types?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          platform: string
+          updated_at?: string | null
+          webhook_url: string
+        }
+        Update: {
+          channels?: Json | null
+          created_at?: string | null
+          description?: string | null
+          event_types?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          platform?: string
+          updated_at?: string | null
+          webhook_url?: string
+        }
+        Relationships: []
+      }
       loan_application_status_history: {
         Row: {
           changed_at: string

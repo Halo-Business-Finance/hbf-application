@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,10 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { externalNotificationService, ExternalWebhook } from '@/services/externalNotificationService';
 import { 
   Plug, 
   Webhook, 
@@ -20,7 +24,9 @@ import {
   Mail,
   MessageSquare,
   Database,
-  Cloud
+  Cloud,
+  Plus,
+  Trash2
 } from 'lucide-react';
 
 interface Integration {
@@ -37,6 +43,27 @@ const ApiIntegrations = () => {
   const { toast } = useToast();
   const [zapierWebhook, setZapierWebhook] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [webhooks, setWebhooks] = useState<ExternalWebhook[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newWebhook, setNewWebhook] = useState({
+    platform: 'slack' as 'slack' | 'discord',
+    name: '',
+    webhook_url: '',
+    description: '',
+  });
+
+  useEffect(() => {
+    loadWebhooks();
+  }, []);
+
+  const loadWebhooks = async () => {
+    try {
+      const data = await externalNotificationService.getWebhooks();
+      setWebhooks(data);
+    } catch (error) {
+      console.error('Error loading webhooks:', error);
+    }
+  };
 
   const [integrations, setIntegrations] = useState<Integration[]>([
     {
@@ -78,6 +105,22 @@ const ApiIntegrations = () => {
       icon: Database,
       isActive: false,
       category: 'data'
+    },
+    {
+      id: 'slack',
+      name: 'Slack',
+      description: 'Team communication and notifications',
+      icon: MessageSquare,
+      isActive: webhooks.some(w => w.platform === 'slack' && w.is_active),
+      category: 'communication'
+    },
+    {
+      id: 'discord',
+      name: 'Discord',
+      description: 'Community and team notifications',
+      icon: MessageSquare,
+      isActive: webhooks.some(w => w.platform === 'discord' && w.is_active),
+      category: 'communication'
     },
     {
       id: 'webhook',
@@ -143,6 +186,90 @@ const ApiIntegrations = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCreateWebhook = async () => {
+    if (!newWebhook.name || !newWebhook.webhook_url) {
+      toast({
+        title: 'Error',
+        description: 'Name and webhook URL are required',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await externalNotificationService.createWebhook(newWebhook);
+      await loadWebhooks();
+      setIsDialogOpen(false);
+      setNewWebhook({ platform: 'slack', name: '', webhook_url: '', description: '' });
+      toast({
+        title: 'Success',
+        description: `${newWebhook.platform} webhook created successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to create webhook',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleTestWebhook = async (webhook: ExternalWebhook) => {
+    setIsLoading(true);
+    try {
+      await externalNotificationService.testWebhook(webhook.webhook_url, webhook.platform);
+      toast({
+        title: 'Success',
+        description: `Test notification sent to ${webhook.platform}`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to send test notification',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteWebhook = async (id: string) => {
+    try {
+      await externalNotificationService.deleteWebhook(id);
+      await loadWebhooks();
+      toast({
+        title: 'Success',
+        description: 'Webhook deleted successfully',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete webhook',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleToggleWebhook = async (id: string, isActive: boolean) => {
+    try {
+      await externalNotificationService.toggleWebhook(id, !isActive);
+      await loadWebhooks();
+      toast({
+        title: 'Success',
+        description: `Webhook ${!isActive ? 'enabled' : 'disabled'}`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to toggle webhook',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -263,7 +390,152 @@ const ApiIntegrations = () => {
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-blue-900">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <MessageSquare className="w-5 h-5" />
+                        External Notification Webhooks
+                      </CardTitle>
+                      <CardDescription>
+                        Send notifications to Slack, Discord, and other platforms
+                      </CardDescription>
+                    </div>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button>
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Webhook
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Add External Webhook</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="platform">Platform</Label>
+                            <Select
+                              value={newWebhook.platform}
+                              onValueChange={(value: 'slack' | 'discord') =>
+                                setNewWebhook({ ...newWebhook, platform: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="slack">Slack</SelectItem>
+                                <SelectItem value="discord">Discord</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                              id="name"
+                              placeholder="e.g., Main Team Channel"
+                              value={newWebhook.name}
+                              onChange={(e) => setNewWebhook({ ...newWebhook, name: e.target.value })}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="webhook_url">Webhook URL</Label>
+                            <Input
+                              id="webhook_url"
+                              type="url"
+                              placeholder={
+                                newWebhook.platform === 'slack'
+                                  ? 'https://hooks.slack.com/services/...'
+                                  : 'https://discord.com/api/webhooks/...'
+                              }
+                              value={newWebhook.webhook_url}
+                              onChange={(e) =>
+                                setNewWebhook({ ...newWebhook, webhook_url: e.target.value })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="description">Description (Optional)</Label>
+                            <Textarea
+                              id="description"
+                              placeholder="Description of this webhook"
+                              value={newWebhook.description}
+                              onChange={(e) =>
+                                setNewWebhook({ ...newWebhook, description: e.target.value })
+                              }
+                            />
+                          </div>
+                          <Button onClick={handleCreateWebhook} disabled={isLoading} className="w-full">
+                            {isLoading ? 'Creating...' : 'Create Webhook'}
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {webhooks.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                        <p>No webhooks configured yet</p>
+                        <p className="text-sm">Add your first webhook to get started</p>
+                      </div>
+                    ) : (
+                      webhooks.map((webhook) => (
+                        <div key={webhook.id} className="p-4 border rounded-lg">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium">{webhook.name}</span>
+                                <Badge variant="outline" className="capitalize">
+                                  {webhook.platform}
+                                </Badge>
+                                {webhook.is_active ? (
+                                  <Badge className="bg-green-100 text-green-800">Active</Badge>
+                                ) : (
+                                  <Badge variant="secondary">Inactive</Badge>
+                                )}
+                              </div>
+                              {webhook.description && (
+                                <p className="text-sm text-muted-foreground">{webhook.description}</p>
+                              )}
+                              <p className="text-xs text-muted-foreground mt-1 truncate max-w-md">
+                                {webhook.webhook_url}
+                              </p>
+                            </div>
+                            <Switch
+                              checked={webhook.is_active}
+                              onCheckedChange={() => handleToggleWebhook(webhook.id, webhook.is_active)}
+                            />
+                          </div>
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleTestWebhook(webhook)}
+                              disabled={!webhook.is_active}
+                            >
+                              Test
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteWebhook(webhook.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
                     <Zap className="w-5 h-5" />
                     Zapier Integration
                   </CardTitle>
@@ -291,39 +563,6 @@ const ApiIntegrations = () => {
                       {isLoading ? 'Sending...' : 'Test Webhook'}
                     </Button>
                   </form>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-blue-900">
-                    <Webhook className="w-5 h-5" />
-                    Custom Webhooks
-                  </CardTitle>
-                  <CardDescription>
-                    Configure custom webhook endpoints for your applications
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-4 border rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium">Application Status Updates</span>
-                        <Badge variant="outline">Active</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Receives notifications when loan application status changes
-                      </p>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button variant="outline" size="sm">Test</Button>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full">
-                      <Webhook className="w-4 h-4 mr-2" />
-                      Add New Webhook
-                    </Button>
-                  </div>
                 </CardContent>
               </Card>
             </div>

@@ -60,6 +60,9 @@ serve(async (req) => {
       case 'loan-funded':
         return await handleLoanFunded(supabase, notificationData);
 
+      case 'send-external':
+        return await sendExternalNotifications(supabase, notificationData);
+
       default:
         return new Response(
           JSON.stringify({ error: 'Invalid action' }),
@@ -239,6 +242,26 @@ async function handleLoanFunded(supabase: any, notificationData: any): Promise<R
 
     console.log('Sending loan funded notification to:', applicantEmail);
 
+    // Send to external webhooks (Slack/Discord)
+    try {
+      await sendExternalNotifications(supabase, {
+        eventType: 'loan_funded',
+        title: '🎉 Loan Funded',
+        message: `${loanType} loan of ${formatCurrency(loanAmount)} has been funded for ${applicantName}`,
+        data: {
+          loanAmount: formatCurrency(loanAmount),
+          loanType,
+          applicantName,
+          loanNumber,
+          monthlyPayment: formatCurrency(monthlyPayment),
+          interestRate: `${interestRate.toFixed(2)}%`,
+          termMonths: `${termMonths} months`
+        }
+      });
+    } catch (error) {
+      console.error('Error sending to external webhooks:', error);
+    }
+
     // Create in-app notification
     if (userId) {
       try {
@@ -309,6 +332,149 @@ function formatCurrency(amount: number): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(amount);
+}
+
+async function sendExternalNotifications(supabase: any, notificationData: any): Promise<Response> {
+  try {
+    const { eventType, title, message, data } = notificationData;
+
+    // Get all active webhooks for this event type
+    const { data: webhooks, error } = await supabase
+      .from('external_notification_webhooks')
+      .select('*')
+      .eq('is_active', true)
+      .contains('event_types', [eventType]);
+
+    if (error) {
+      console.error('Error fetching webhooks:', error);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Failed to fetch webhooks' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!webhooks || webhooks.length === 0) {
+      return new Response(
+        JSON.stringify({ success: true, message: 'No active webhooks for this event type' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const results = [];
+
+    for (const webhook of webhooks) {
+      try {
+        const payload = webhook.platform === 'slack' 
+          ? formatSlackMessage(title, message, data)
+          : formatDiscordMessage(title, message, data);
+
+        const response = await fetch(webhook.webhook_url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        results.push({
+          webhook: webhook.name,
+          platform: webhook.platform,
+          success: response.ok,
+          status: response.status,
+        });
+
+        console.log(`Sent notification to ${webhook.platform} webhook: ${webhook.name}`, response.ok);
+      } catch (error) {
+        console.error(`Error sending to ${webhook.platform} webhook ${webhook.name}:`, error);
+        results.push({
+          webhook: webhook.name,
+          platform: webhook.platform,
+          success: false,
+          error: error.message,
+        });
+      }
+    }
+
+    return new Response(
+      JSON.stringify({ success: true, results }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Error in sendExternalNotifications:', error);
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+function formatSlackMessage(title: string, message: string, data: any) {
+  const fields = [];
+  
+  if (data) {
+    if (data.loanAmount) fields.push({ type: 'mrkdwn', text: `*Amount:*\n${data.loanAmount}` });
+    if (data.loanType) fields.push({ type: 'mrkdwn', text: `*Type:*\n${data.loanType}` });
+    if (data.applicantName) fields.push({ type: 'mrkdwn', text: `*Applicant:*\n${data.applicantName}` });
+    if (data.applicationNumber) fields.push({ type: 'mrkdwn', text: `*Application #:*\n${data.applicationNumber}` });
+  }
+
+  return {
+    text: `${title}: ${message}`,
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: title,
+          emoji: true
+        }
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: message
+        }
+      },
+      ...(fields.length > 0 ? [{
+        type: 'section',
+        fields: fields
+      }] : []),
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `Heritage Business Funding • ${new Date().toLocaleString()}`
+          }
+        ]
+      }
+    ]
+  };
+}
+
+function formatDiscordMessage(title: string, message: string, data: any) {
+  const fields = [];
+  
+  if (data) {
+    if (data.loanAmount) fields.push({ name: 'Amount', value: data.loanAmount, inline: true });
+    if (data.loanType) fields.push({ name: 'Type', value: data.loanType, inline: true });
+    if (data.applicantName) fields.push({ name: 'Applicant', value: data.applicantName, inline: true });
+    if (data.applicationNumber) fields.push({ name: 'Application #', value: data.applicationNumber, inline: true });
+  }
+
+  return {
+    content: `**${title}**`,
+    embeds: [{
+      title: title,
+      description: message,
+      color: 3447003,
+      fields: fields,
+      footer: {
+        text: 'Heritage Business Funding'
+      },
+      timestamp: new Date().toISOString()
+    }]
+  };
 }
 
 async function sendBulkNotifications(notifications: NotificationData[]): Promise<Response> {
