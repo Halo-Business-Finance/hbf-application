@@ -1000,48 +1000,49 @@ const Index = () => {
 
         {/* Loan Type Selection */}
         {!selectedLoanType && (
-          <Card className="mb-12 border-0 shadow-lg animate-scale-in">
-            <CardHeader className="text-center pb-8">
-              <CardTitle className="text-2xl font-bold text-foreground mb-3">
-                Explore Our 12 Comprehensive Financing Programs
+          <Card className="mb-12 border shadow-sm animate-scale-in">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl font-bold text-foreground mb-2">
+                Choose Your Financing Solution
               </CardTitle>
               <CardDescription className="text-base text-muted-foreground">
-                Select the financing solution that best fits your business needs
+                Select the loan type that best fits your business needs
               </CardDescription>
-              <p className="text-sm text-muted-foreground mt-2">Click on any option to get started with your application</p>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
                   const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(program.id);
                   return (
                     <Card
                       key={program.id}
-                      className={`cursor-pointer transition-all duration-300 overflow-hidden border-0 flex flex-col h-full ${
+                      className={`cursor-pointer transition-all duration-200 flex flex-col h-full border ${
                         isComingSoon 
                           ? 'opacity-60 cursor-not-allowed' 
-                          : 'hover:scale-[1.02] hover:shadow-xl'
+                          : 'hover:shadow-lg hover:border-primary/50'
                       }`}
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      {/* Blue Header Section */}
-                      <div className="bg-primary p-4 text-white">
-                        <div className="flex justify-center mb-2">
-                          <IconComponent className="w-10 h-10" />
+                      <CardContent className="p-5 flex-1 flex flex-col">
+                        {/* Icon and Title */}
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="p-2 bg-primary/10 rounded-lg">
+                            <IconComponent className="w-6 h-6 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-base mb-1 leading-tight">
+                              {program.title}
+                            </h3>
+                            <p className="text-xs text-muted-foreground leading-snug line-clamp-2">
+                              {program.description}
+                            </p>
+                          </div>
                         </div>
-                        <h3 className="font-bold text-lg mb-2 text-center">
-                          {program.title}
-                        </h3>
-                        <p className="text-xs text-center leading-relaxed opacity-90 line-clamp-2">
-                          {program.description}
-                        </p>
-                      </div>
 
-                      {/* White Body Section */}
-                      <CardContent className="p-4 flex-1 flex flex-col">
-                        <div className="mb-4">
-                          <div className="text-xl font-bold text-foreground mb-0.5">
+                        {/* Rate Badge */}
+                        <div className="mb-4 pb-4 border-b">
+                          <div className="text-2xl font-bold text-primary mb-1">
                             {program.badge}
                           </div>
                           <div className="text-xs text-muted-foreground">
@@ -1049,26 +1050,25 @@ const Index = () => {
                           </div>
                         </div>
 
-                        <div className="mb-4">
-                          <div className="font-semibold text-sm text-foreground mb-1">
-                            Loan Terms
+                        {/* Details */}
+                        <div className="space-y-2 mb-4 flex-1">
+                          <div className="text-xs">
+                            <span className="font-medium text-foreground">
+                              {program.details?.split('|')[0]?.trim() || 'Contact for details'}
+                            </span>
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {program.details?.split('|')[0]?.trim() || 'Contact for details'}
-                          </div>
+                          {program.details?.split('|').slice(1, 3).map((detail, i) => (
+                            <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1 flex-shrink-0" />
+                              <span className="line-clamp-1">{detail.trim()}</span>
+                            </div>
+                          ))}
                         </div>
 
-                        <ul className="space-y-1.5 mb-4 flex-1">
-                          {program.details?.split('|').slice(1, 3).map((detail, i) => (
-                            <li key={i} className="flex items-start gap-2 text-xs text-foreground">
-                              <div className="w-1 h-1 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                              <span className="line-clamp-1">{detail.trim()}</span>
-                            </li>
-                          ))}
-                        </ul>
-
+                        {/* Apply Button */}
                         <Button 
-                          className="w-full font-semibold text-sm py-2"
+                          className="w-full"
+                          size="sm"
                           onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)}
                           disabled={isComingSoon}
                         >
