@@ -19,6 +19,7 @@ import Support from "./pages/Support";
 import LoanCalculator from "./pages/LoanCalculator";
 import MyDocuments from "./pages/MyDocuments";
 import CreditReports from "./pages/CreditReports";
+import CreditScoreSimulator from "./pages/CreditScoreSimulator";
 import BankAccounts from "./pages/BankAccounts";
 import ExistingLoans from "./pages/ExistingLoans";
 import Layout from "./components/Layout";
@@ -229,6 +230,13 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute>
                     <CreditReports />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/credit-score-simulator" element={
+                <Layout>
+                  <ProtectedRoute>
+                    <CreditScoreSimulator />
                   </ProtectedRoute>
                 </Layout>
               } />

@@ -169,7 +169,7 @@ export default function CreditReports() {
             <Button 
               variant="link" 
               className="text-sm"
-              onClick={() => navigate('/support')}
+              onClick={() => navigate('/credit-score-simulator')}
             >
               See what's changed <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
@@ -219,7 +219,7 @@ export default function CreditReports() {
           <Button 
             variant="link" 
             className="mt-4 p-0 h-auto text-sm"
-            onClick={() => navigate('/support')}
+            onClick={() => navigate('/credit-score-simulator')}
           >
             Learn how debt reporting works <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
