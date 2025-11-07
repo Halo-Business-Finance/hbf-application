@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { 
   Wallet, 
   Building2, 
@@ -56,108 +58,54 @@ const ExistingLoans = () => {
 
   const loadExistingLoans = async () => {
     try {
-      // Simulate API call - In production, this would fetch from your third-party API or database
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error('Please log in to view your loans');
+        return;
+      }
 
-      // Mock commercial loans data
-      const mockCommercialLoans: ExistingLoan[] = [
-        {
-          id: '1',
-          loanType: 'commercial',
-          loanName: 'Commercial Real Estate Loan',
-          lender: 'Heritage Bank Funding',
-          loanBalance: 1250000,
-          originalAmount: 1500000,
-          monthlyPayment: 12500,
-          interestRate: 6.5,
-          termMonths: 240,
-          remainingMonths: 180,
-          maturityDate: '2039-01-15',
-          originationDate: '2019-01-15',
-          hasPrepaymentPenalty: true,
-          prepaymentPeriodEndDate: '2026-01-15',
-          status: 'funded_by_us',
-          loanPurpose: 'Property Acquisition'
-        },
-        {
-          id: '2',
-          loanType: 'commercial',
-          loanName: 'Bridge Loan - Downtown Property',
-          lender: 'Lending Partner - ABC Capital',
-          loanBalance: 450000,
-          originalAmount: 500000,
-          monthlyPayment: 3750,
-          interestRate: 8.25,
-          termMonths: 24,
-          remainingMonths: 14,
-          maturityDate: '2026-03-01',
-          originationDate: '2024-01-01',
-          hasPrepaymentPenalty: false,
-          status: 'partner_funded',
-          loanPurpose: 'Bridge Financing'
-        }
-      ];
+      const { data: loans, error } = await supabase
+        .from('existing_loans')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-      // Mock business loans data
-      const mockBusinessLoans: ExistingLoan[] = [
-        {
-          id: '3',
-          loanType: 'business',
-          loanName: 'SBA 7(a) Business Loan',
-          lender: 'Third Party - Wells Fargo',
-          loanBalance: 325000,
-          originalAmount: 400000,
-          monthlyPayment: 3200,
-          interestRate: 7.0,
-          termMonths: 120,
-          remainingMonths: 95,
-          maturityDate: '2032-12-01',
-          originationDate: '2021-01-01',
-          hasPrepaymentPenalty: false,
-          status: 'current',
-          loanPurpose: 'Business Expansion'
-        },
-        {
-          id: '4',
-          loanType: 'business',
-          loanName: 'Equipment Financing',
-          lender: 'Heritage Bank Funding',
-          loanBalance: 85000,
-          originalAmount: 120000,
-          monthlyPayment: 1850,
-          interestRate: 5.75,
-          termMonths: 60,
-          remainingMonths: 42,
-          maturityDate: '2028-06-15',
-          originationDate: '2021-12-15',
-          hasPrepaymentPenalty: true,
-          prepaymentPeriodEndDate: '2026-12-15',
-          status: 'funded_by_us',
-          loanPurpose: 'Equipment Purchase'
-        },
-        {
-          id: '5',
-          loanType: 'business',
-          loanName: 'Working Capital Line',
-          lender: 'Lending Partner - XYZ Finance',
-          loanBalance: 150000,
-          originalAmount: 200000,
-          monthlyPayment: 2100,
-          interestRate: 9.5,
-          termMonths: 36,
-          remainingMonths: 22,
-          maturityDate: '2026-11-01',
-          originationDate: '2023-01-01',
-          hasPrepaymentPenalty: false,
-          status: 'partner_funded',
-          loanPurpose: 'Working Capital'
-        }
-      ];
+      if (error) {
+        console.error('Error fetching existing loans:', error);
+        toast.error('Failed to load existing loans');
+        return;
+      }
 
-      setCommercialLoans(mockCommercialLoans);
-      setBusinessLoans(mockBusinessLoans);
+      // Transform database records to component format
+      const transformedLoans: ExistingLoan[] = (loans || []).map(loan => ({
+        id: loan.id,
+        loanType: loan.loan_type as 'commercial' | 'business',
+        loanName: loan.loan_name,
+        lender: loan.lender,
+        loanBalance: Number(loan.loan_balance),
+        originalAmount: Number(loan.original_amount),
+        monthlyPayment: Number(loan.monthly_payment),
+        interestRate: Number(loan.interest_rate),
+        termMonths: loan.term_months,
+        remainingMonths: loan.remaining_months,
+        maturityDate: loan.maturity_date,
+        originationDate: loan.origination_date,
+        hasPrepaymentPenalty: loan.has_prepayment_penalty,
+        prepaymentPeriodEndDate: loan.prepayment_period_end_date,
+        status: loan.status as 'current' | 'funded_by_us' | 'partner_funded',
+        loanPurpose: loan.loan_purpose
+      }));
+
+      // Separate by loan type
+      const commercial = transformedLoans.filter(loan => loan.loanType === 'commercial');
+      const business = transformedLoans.filter(loan => loan.loanType === 'business');
+
+      setCommercialLoans(commercial);
+      setBusinessLoans(business);
     } catch (error) {
       console.error('Error loading existing loans:', error);
+      toast.error('An unexpected error occurred');
     } finally {
       setLoadingData(false);
     }

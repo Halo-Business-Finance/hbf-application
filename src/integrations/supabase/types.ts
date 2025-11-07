@@ -407,6 +407,83 @@ export type Database = {
         }
         Relationships: []
       }
+      existing_loans: {
+        Row: {
+          created_at: string
+          has_prepayment_penalty: boolean
+          id: string
+          interest_rate: number
+          lender: string
+          loan_application_id: string | null
+          loan_balance: number
+          loan_name: string
+          loan_purpose: string
+          loan_type: string
+          maturity_date: string
+          monthly_payment: number
+          original_amount: number
+          origination_date: string
+          prepayment_period_end_date: string | null
+          remaining_months: number
+          status: string
+          term_months: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          has_prepayment_penalty?: boolean
+          id?: string
+          interest_rate: number
+          lender: string
+          loan_application_id?: string | null
+          loan_balance: number
+          loan_name: string
+          loan_purpose: string
+          loan_type: string
+          maturity_date: string
+          monthly_payment: number
+          original_amount: number
+          origination_date: string
+          prepayment_period_end_date?: string | null
+          remaining_months: number
+          status?: string
+          term_months: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          has_prepayment_penalty?: boolean
+          id?: string
+          interest_rate?: number
+          lender?: string
+          loan_application_id?: string | null
+          loan_balance?: number
+          loan_name?: string
+          loan_purpose?: string
+          loan_type?: string
+          maturity_date?: string
+          monthly_payment?: number
+          original_amount?: number
+          origination_date?: string
+          prepayment_period_end_date?: string | null
+          remaining_months?: number
+          status?: string
+          term_months?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "existing_loans_loan_application_id_fkey"
+            columns: ["loan_application_id"]
+            isOneToOne: false
+            referencedRelation: "loan_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loan_application_status_history: {
         Row: {
           changed_at: string
