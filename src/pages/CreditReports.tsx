@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 
 export default function CreditReports() {
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 800);
@@ -164,7 +166,11 @@ export default function CreditReports() {
               <CardTitle>Score Trend</CardTitle>
               <CardDescription>Your credit score over the last 3 months</CardDescription>
             </div>
-            <Button variant="link" className="text-sm">
+            <Button 
+              variant="link" 
+              className="text-sm"
+              onClick={() => navigate('/support')}
+            >
               See what's changed <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </div>
@@ -210,7 +216,11 @@ export default function CreditReports() {
               </div>
             ))}
           </div>
-          <Button variant="link" className="mt-4 p-0 h-auto text-sm">
+          <Button 
+            variant="link" 
+            className="mt-4 p-0 h-auto text-sm"
+            onClick={() => navigate('/support')}
+          >
             Learn how debt reporting works <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         </CardContent>
