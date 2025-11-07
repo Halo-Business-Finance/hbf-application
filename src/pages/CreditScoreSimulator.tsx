@@ -17,6 +17,7 @@ export default function CreditScoreSimulator() {
   const [creditLimit, setCreditLimit] = useState(25000);
   const [paymentHistory, setPaymentHistory] = useState(95);
   const [debtPayoff, setDebtPayoff] = useState(0);
+  const [creditAge, setCreditAge] = useState(5); // in years
   
   // Calculate credit utilization
   const currentUtilization = Math.round((totalDebt / creditLimit) * 100);
@@ -48,8 +49,19 @@ export default function CreditScoreSimulator() {
       baseScore += 30;
     }
     
-    // Credit age, mix, and new credit (35% combined) - fixed bonus
-    baseScore += 140;
+    // Credit age impact (15% weight) - up to 60 points
+    if (creditAge >= 10) {
+      baseScore += 60;
+    } else if (creditAge >= 7) {
+      baseScore += 45;
+    } else if (creditAge >= 5) {
+      baseScore += 30;
+    } else if (creditAge >= 3) {
+      baseScore += 15;
+    }
+    
+    // Credit mix and new credit (20% combined) - fixed bonus
+    baseScore += 80;
     
     return Math.min(850, Math.max(450, baseScore));
   };
@@ -81,8 +93,19 @@ export default function CreditScoreSimulator() {
       projectedScore += 30;
     }
     
-    // Credit age, mix, and new credit (35% combined)
-    projectedScore += 140;
+    // Credit age impact (15% weight)
+    if (creditAge >= 10) {
+      projectedScore += 60;
+    } else if (creditAge >= 7) {
+      projectedScore += 45;
+    } else if (creditAge >= 5) {
+      projectedScore += 30;
+    } else if (creditAge >= 3) {
+      projectedScore += 15;
+    }
+    
+    // Credit mix and new credit (20% combined)
+    projectedScore += 80;
     
     return Math.min(850, Math.max(450, projectedScore));
   };
@@ -91,11 +114,14 @@ export default function CreditScoreSimulator() {
   const projectedScore = calculateProjectedScore();
   const scoreIncrease = projectedScore - currentScore;
   
+  // Calculate credit age as a percentage score
+  const creditAgeScore = creditAge >= 10 ? 100 : creditAge >= 7 ? 75 : creditAge >= 5 ? 50 : creditAge >= 3 ? 25 : Math.round((creditAge / 3) * 25);
+  
   // Credit factors breakdown
   const currentFactors = [
     { name: 'Payment History', percentage: 35, value: paymentHistory, color: 'bg-blue-500' },
     { name: 'Credit Utilization', percentage: 30, value: currentUtilization, color: 'bg-green-500' },
-    { name: 'Credit Age', percentage: 15, value: 60, color: 'bg-yellow-500' },
+    { name: 'Credit Age', percentage: 15, value: creditAgeScore, color: 'bg-yellow-500' },
     { name: 'Credit Mix', percentage: 10, value: 70, color: 'bg-purple-500' },
     { name: 'New Credit', percentage: 10, value: 50, color: 'bg-red-500' }
   ];
@@ -103,7 +129,7 @@ export default function CreditScoreSimulator() {
   const projectedFactors = [
     { name: 'Payment History', percentage: 35, value: Math.min(100, paymentHistory + (debtPayoff > 0 ? 5 : 0)), color: 'bg-blue-500' },
     { name: 'Credit Utilization', percentage: 30, value: newUtilization, color: 'bg-green-500' },
-    { name: 'Credit Age', percentage: 15, value: 60, color: 'bg-yellow-500' },
+    { name: 'Credit Age', percentage: 15, value: creditAgeScore, color: 'bg-yellow-500' },
     { name: 'Credit Mix', percentage: 10, value: 70, color: 'bg-purple-500' },
     { name: 'New Credit', percentage: 10, value: 50, color: 'bg-red-500' }
   ];
@@ -270,6 +296,25 @@ export default function CreditScoreSimulator() {
               step={5}
               className="w-full"
             />
+          </div>
+
+          {/* Credit Age */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Average Age of Credit Accounts</Label>
+              <span className="font-semibold">{creditAge} {creditAge === 1 ? 'year' : 'years'}</span>
+            </div>
+            <Slider
+              value={[creditAge]}
+              onValueChange={([value]) => setCreditAge(value)}
+              min={0}
+              max={30}
+              step={1}
+              className="w-full"
+            />
+            <p className="text-sm text-foreground">
+              Longer credit history typically improves your score
+            </p>
           </div>
         </CardContent>
       </Card>
