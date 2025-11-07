@@ -3,9 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, ArrowRight, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight, AlertCircle, CheckCircle2, XCircle, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
 
 export default function CreditReports() {
   const [loading, setLoading] = useState(true);
@@ -125,6 +133,22 @@ export default function CreditReports() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl space-y-6">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/" className="flex items-center gap-1">
+              <Home className="h-4 w-4" />
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Credit Reports Dashboard</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Credit Reports Dashboard</h1>
