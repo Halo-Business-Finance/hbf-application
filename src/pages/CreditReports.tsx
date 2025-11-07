@@ -207,14 +207,14 @@ export default function CreditReports() {
           {/* Score History Chart */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <CardTitle>Score Trend</CardTitle>
                   <CardDescription className="text-foreground">Your credit score over the last 3 months</CardDescription>
                 </div>
                 <Button 
                   variant="link" 
-                  className="text-sm"
+                  className="text-sm w-fit"
                   onClick={() => navigate('/credit-score-simulator')}
                 >
                   See what's changed <ArrowRight className="ml-1 h-4 w-4" />
@@ -223,7 +223,7 @@ export default function CreditReports() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-end justify-between h-32 gap-2">
+                <div className="flex items-end justify-between h-32 gap-1 sm:gap-2">
                   {creditData.scoreHistory.map((point, index) => {
                     const maxScore = Math.max(...creditData.scoreHistory.map(p => p.score));
                     const height = (point.score / maxScore) * 100;
@@ -232,7 +232,7 @@ export default function CreditReports() {
                         <div className="w-full bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
                           <div className="w-full h-2 bg-primary rounded-t"></div>
                         </div>
-                        <span className="text-xs text-foreground whitespace-nowrap">{point.date}</span>
+                        <span className="text-[10px] sm:text-xs text-foreground whitespace-nowrap">{point.date}</span>
                       </div>
                     );
                   })}
@@ -252,18 +252,18 @@ export default function CreditReports() {
             <CardContent>
               <div className="space-y-3">
                 {creditData.upcomingReports.map((report, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 border rounded-lg">
+                    <div className="flex-1">
                       <p className="font-medium text-sm">{report.account}</p>
                       <p className="text-xs text-foreground">Due: {report.dueDate}</p>
                     </div>
-                    <Badge variant="secondary">{report.balance}</Badge>
+                    <Badge variant="secondary" className="w-fit">{report.balance}</Badge>
                   </div>
                 ))}
               </div>
               <Button 
                 variant="link" 
-                className="mt-4 p-0 h-auto text-sm"
+                className="mt-4 p-0 h-auto text-sm w-fit"
                 onClick={() => navigate('/credit-score-simulator')}
               >
                 Learn how debt reporting works <ArrowRight className="ml-1 h-4 w-4" />
@@ -402,7 +402,7 @@ export default function CreditReports() {
           {/* Business Score History Chart */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <CardTitle>Business Score Trend</CardTitle>
                   <CardDescription className="text-foreground">Your business credit score over the last 3 months</CardDescription>
@@ -411,7 +411,7 @@ export default function CreditReports() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-end justify-between h-32 gap-2">
+                <div className="flex items-end justify-between h-32 gap-1 sm:gap-2">
                   {businessCreditData.scoreHistory.map((point, index) => {
                     const maxScore = Math.max(...businessCreditData.scoreHistory.map(p => p.score));
                     const height = (point.score / maxScore) * 100;
@@ -420,7 +420,7 @@ export default function CreditReports() {
                         <div className="w-full bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
                           <div className="w-full h-2 bg-primary rounded-t"></div>
                         </div>
-                        <span className="text-xs text-foreground whitespace-nowrap">{point.date}</span>
+                        <span className="text-[10px] sm:text-xs text-foreground whitespace-nowrap">{point.date}</span>
                       </div>
                     );
                   })}
@@ -440,12 +440,12 @@ export default function CreditReports() {
             <CardContent>
               <div className="space-y-3">
                 {businessCreditData.upcomingReports.map((report, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 border rounded-lg">
+                    <div className="flex-1">
                       <p className="font-medium text-sm">{report.account}</p>
                       <p className="text-xs text-foreground">Due: {report.dueDate}</p>
                     </div>
-                    <Badge variant="secondary">{report.balance}</Badge>
+                    <Badge variant="secondary" className="w-fit">{report.balance}</Badge>
                   </div>
                 ))}
               </div>
