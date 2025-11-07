@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell, Calculator } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell, Calculator, BellRing } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -222,6 +222,14 @@ const Navbar = () => {
                 >
                   <FileText className="w-4 h-4 mr-2" />
                   My Account
+                </DropdownMenuItem>
+
+                <DropdownMenuItem 
+                  onClick={() => navigate('/notification-preferences')}
+                  className="cursor-pointer hover:bg-muted"
+                >
+                  <BellRing className="w-4 h-4 mr-2" />
+                  Notification Preferences
                 </DropdownMenuItem>
 
                 {isAdmin() && (

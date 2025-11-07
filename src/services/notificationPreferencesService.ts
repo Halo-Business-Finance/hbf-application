@@ -1,0 +1,152 @@
+import { supabase } from '@/integrations/supabase/client';
+
+export interface NotificationPreference {
+  email: boolean;
+  in_app: boolean;
+  sms: boolean;
+}
+
+export interface NotificationPreferences {
+  loan_funded: NotificationPreference;
+  application_submitted: NotificationPreference;
+  application_approved: NotificationPreference;
+  application_rejected: NotificationPreference;
+  application_under_review: NotificationPreference;
+  document_required: NotificationPreference;
+  payment_reminder: NotificationPreference;
+  payment_received: NotificationPreference;
+  status_update: NotificationPreference;
+}
+
+export const notificationEventLabels: Record<keyof NotificationPreferences, string> = {
+  loan_funded: 'Loan Funded',
+  application_submitted: 'Application Submitted',
+  application_approved: 'Application Approved',
+  application_rejected: 'Application Rejected',
+  application_under_review: 'Application Under Review',
+  document_required: 'Document Required',
+  payment_reminder: 'Payment Reminder',
+  payment_received: 'Payment Received',
+  status_update: 'Status Update',
+};
+
+export const notificationEventDescriptions: Record<keyof NotificationPreferences, string> = {
+  loan_funded: 'When your loan application is approved and funded',
+  application_submitted: 'When you submit a new loan application',
+  application_approved: 'When your loan application is approved',
+  application_rejected: 'When your loan application is rejected',
+  application_under_review: 'When your application moves to review status',
+  document_required: 'When additional documents are needed',
+  payment_reminder: 'Reminders for upcoming loan payments',
+  payment_received: 'Confirmation when payments are processed',
+  status_update: 'General status updates on your applications',
+};
+
+class NotificationPreferencesService {
+  /**
+   * Get user notification preferences
+   */
+  async getPreferences(): Promise<NotificationPreferences | null> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Use RPC to get or create preferences
+      const { data, error } = await supabase.rpc('get_user_notification_preferences', {
+        _user_id: user.id
+      });
+
+      if (error) throw error;
+
+      return data as unknown as NotificationPreferences;
+    } catch (error) {
+      console.error('Error fetching notification preferences:', error);
+      throw new Error('Failed to fetch notification preferences');
+    }
+  }
+
+  /**
+   * Update user notification preferences
+   */
+  async updatePreferences(preferences: NotificationPreferences) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const { data, error } = await supabase
+        .from('notification_preferences')
+        .upsert({
+          user_id: user.id,
+          preferences: preferences as any,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      console.error('Error updating notification preferences:', error);
+      throw new Error('Failed to update notification preferences');
+    }
+  }
+
+  /**
+   * Update a single event preference
+   */
+  async updateEventPreference(
+    eventType: keyof NotificationPreferences,
+    channel: 'email' | 'in_app' | 'sms',
+    enabled: boolean
+  ) {
+    try {
+      const preferences = await this.getPreferences();
+      
+      if (!preferences) {
+        throw new Error('Failed to load preferences');
+      }
+
+      // Update the specific preference
+      preferences[eventType][channel] = enabled;
+
+      return await this.updatePreferences(preferences);
+    } catch (error) {
+      console.error('Error updating event preference:', error);
+      throw new Error('Failed to update event preference');
+    }
+  }
+
+  /**
+   * Enable/disable all notifications for a channel
+   */
+  async toggleChannel(channel: 'email' | 'in_app' | 'sms', enabled: boolean) {
+    try {
+      const preferences = await this.getPreferences();
+      
+      if (!preferences) {
+        throw new Error('Failed to load preferences');
+      }
+
+      // Update all events for this channel
+      Object.keys(preferences).forEach((key) => {
+        preferences[key as keyof NotificationPreferences][channel] = enabled;
+      });
+
+      return await this.updatePreferences(preferences);
+    } catch (error) {
+      console.error('Error toggling channel:', error);
+      throw new Error('Failed to toggle channel');
+    }
+  }
+}
+
+export const notificationPreferencesService = new NotificationPreferencesService();

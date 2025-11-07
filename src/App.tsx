@@ -39,6 +39,7 @@ import LoanProducts from "./pages/admin/LoanProducts";
 import PaymentManagement from "./pages/admin/PaymentManagement";
 import AdminNotifications from "./pages/admin/Notifications";
 import Notifications from "./pages/Notifications";
+import NotificationPreferences from "./pages/NotificationPreferences";
 import SupportTickets from "./pages/admin/SupportTickets";
 import DatabaseManagement from "./pages/admin/DatabaseManagement";
 import ApiIntegrations from "./pages/admin/ApiIntegrations";
@@ -134,6 +135,13 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute>
                     <Notifications />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/notification-preferences" element={
+                <Layout>
+                  <ProtectedRoute>
+                    <NotificationPreferences />
                   </ProtectedRoute>
                 </Layout>
               } />

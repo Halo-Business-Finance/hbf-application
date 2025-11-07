@@ -586,6 +586,30 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          preferences: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          preferences?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          preferences?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           action_url: string | null
@@ -693,6 +717,10 @@ export type Database = {
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
+      }
+      get_user_notification_preferences: {
+        Args: { _user_id: string }
+        Returns: Json
       }
       has_role: {
         Args: {

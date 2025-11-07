@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Check, CheckCheck, Trash2 } from 'lucide-react';
+import { Bell, Check, CheckCheck, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -122,17 +122,28 @@ export const NotificationCenter = ({ maxHeight = '400px', showHeader = true }: N
               </Badge>
             )}
           </div>
-          {notifications.filter((n) => !n.read).length > 0 && (
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleMarkAllAsRead}
+              onClick={() => navigate('/notification-preferences')}
               className="text-xs"
             >
-              <CheckCheck className="w-4 h-4 mr-1" />
-              Mark all read
+              <Settings className="w-4 h-4 mr-1" />
+              Preferences
             </Button>
-          )}
+            {notifications.filter((n) => !n.read).length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleMarkAllAsRead}
+                className="text-xs"
+              >
+                <CheckCheck className="w-4 h-4 mr-1" />
+                Mark all read
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
