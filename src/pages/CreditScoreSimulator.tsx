@@ -27,21 +27,50 @@ export default function CreditScoreSimulator() {
   const calculateProjectedScore = () => {
     let scoreChange = 0;
     
-    // Credit utilization impact (high impact)
+    // Credit utilization impact (30% of score weight - high impact)
     const utilizationDiff = currentUtilization - newUtilization;
-    if (utilizationDiff > 0) {
-      if (newUtilization < 10) scoreChange += 40;
-      else if (newUtilization < 30) scoreChange += 30;
-      else if (newUtilization < 50) scoreChange += 20;
-      else scoreChange += 10;
+    
+    // Scale score change based on utilization improvement
+    if (newUtilization <= 10) {
+      scoreChange += 50; // Excellent range
+    } else if (newUtilization <= 30) {
+      scoreChange += 35; // Good range
+    } else if (newUtilization <= 50) {
+      scoreChange += 20; // Fair range
+    } else if (newUtilization <= 75) {
+      scoreChange += 10; // Poor range
     }
     
-    // Payment history bonus (if paying off debt)
-    if (debtPayoff > 0 && paymentHistory < 100) {
+    // Subtract penalty for current utilization
+    if (currentUtilization > 75) {
+      scoreChange -= 10;
+    } else if (currentUtilization > 50) {
+      scoreChange -= 5;
+    } else if (currentUtilization > 30) {
+      scoreChange -= 0;
+    }
+    
+    // Additional bonus for large utilization improvements
+    if (utilizationDiff >= 30) {
+      scoreChange += 15;
+    } else if (utilizationDiff >= 20) {
+      scoreChange += 10;
+    } else if (utilizationDiff >= 10) {
       scoreChange += 5;
     }
     
-    return Math.min(850, currentScore + scoreChange);
+    // Payment history impact (35% of score weight)
+    if (paymentHistory >= 95) {
+      scoreChange += 20;
+    } else if (paymentHistory >= 85) {
+      scoreChange += 10;
+    } else if (paymentHistory >= 75) {
+      scoreChange += 5;
+    } else {
+      scoreChange -= 10;
+    }
+    
+    return Math.min(850, Math.max(300, currentScore + scoreChange));
   };
   
   const projectedScore = calculateProjectedScore();
