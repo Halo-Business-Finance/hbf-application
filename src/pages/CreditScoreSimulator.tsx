@@ -13,7 +13,6 @@ export default function CreditScoreSimulator() {
   const navigate = useNavigate();
   
   // Current state
-  const [currentScore, setCurrentScore] = useState(677);
   const [totalDebt, setTotalDebt] = useState(15000);
   const [creditLimit, setCreditLimit] = useState(25000);
   const [paymentHistory, setPaymentHistory] = useState(95);
@@ -23,56 +22,72 @@ export default function CreditScoreSimulator() {
   const currentUtilization = Math.round((totalDebt / creditLimit) * 100);
   const newUtilization = Math.round(((totalDebt - debtPayoff) / creditLimit) * 100);
   
-  // Calculate projected score based on debt payoff
-  const calculateProjectedScore = () => {
-    let scoreChange = 0;
+  // Calculate base score from current situation
+  const calculateBaseScore = () => {
+    let baseScore = 450; // Minimum score
     
-    // Credit utilization impact (30% of score weight - high impact)
-    const utilizationDiff = currentUtilization - newUtilization;
-    
-    // Scale score change based on utilization improvement
-    if (newUtilization <= 10) {
-      scoreChange += 50; // Excellent range
-    } else if (newUtilization <= 30) {
-      scoreChange += 35; // Good range
-    } else if (newUtilization <= 50) {
-      scoreChange += 20; // Fair range
-    } else if (newUtilization <= 75) {
-      scoreChange += 10; // Poor range
-    }
-    
-    // Subtract penalty for current utilization
-    if (currentUtilization > 75) {
-      scoreChange -= 10;
-    } else if (currentUtilization > 50) {
-      scoreChange -= 5;
-    } else if (currentUtilization > 30) {
-      scoreChange -= 0;
-    }
-    
-    // Additional bonus for large utilization improvements
-    if (utilizationDiff >= 30) {
-      scoreChange += 15;
-    } else if (utilizationDiff >= 20) {
-      scoreChange += 10;
-    } else if (utilizationDiff >= 10) {
-      scoreChange += 5;
-    }
-    
-    // Payment history impact (35% of score weight)
+    // Payment history impact (35% weight) - up to 140 points
     if (paymentHistory >= 95) {
-      scoreChange += 20;
+      baseScore += 140;
     } else if (paymentHistory >= 85) {
-      scoreChange += 10;
+      baseScore += 105;
     } else if (paymentHistory >= 75) {
-      scoreChange += 5;
-    } else {
-      scoreChange -= 10;
+      baseScore += 70;
+    } else if (paymentHistory >= 65) {
+      baseScore += 35;
     }
     
-    return Math.min(850, Math.max(300, currentScore + scoreChange));
+    // Credit utilization impact (30% weight) - up to 120 points
+    if (currentUtilization <= 10) {
+      baseScore += 120;
+    } else if (currentUtilization <= 30) {
+      baseScore += 90;
+    } else if (currentUtilization <= 50) {
+      baseScore += 60;
+    } else if (currentUtilization <= 75) {
+      baseScore += 30;
+    }
+    
+    // Credit age, mix, and new credit (35% combined) - fixed bonus
+    baseScore += 140;
+    
+    return Math.min(850, Math.max(450, baseScore));
   };
   
+  // Calculate projected score with changes
+  const calculateProjectedScore = () => {
+    let projectedScore = 450;
+    
+    // Payment history with potential improvement
+    const improvedPaymentHistory = Math.min(100, paymentHistory + (debtPayoff > 0 ? 5 : 0));
+    if (improvedPaymentHistory >= 95) {
+      projectedScore += 140;
+    } else if (improvedPaymentHistory >= 85) {
+      projectedScore += 105;
+    } else if (improvedPaymentHistory >= 75) {
+      projectedScore += 70;
+    } else if (improvedPaymentHistory >= 65) {
+      projectedScore += 35;
+    }
+    
+    // New utilization impact
+    if (newUtilization <= 10) {
+      projectedScore += 120;
+    } else if (newUtilization <= 30) {
+      projectedScore += 90;
+    } else if (newUtilization <= 50) {
+      projectedScore += 60;
+    } else if (newUtilization <= 75) {
+      projectedScore += 30;
+    }
+    
+    // Credit age, mix, and new credit (35% combined)
+    projectedScore += 140;
+    
+    return Math.min(850, Math.max(450, projectedScore));
+  };
+  
+  const currentScore = calculateBaseScore();
   const projectedScore = calculateProjectedScore();
   const scoreIncrease = projectedScore - currentScore;
   
