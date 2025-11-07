@@ -977,39 +977,6 @@ const Index = () => {
           <DashboardView />
         )}
 
-        {/* Header for Unauthenticated Users Only */}
-        {!authenticated && (
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">Nationwide SBA & Commercial Financing</span>
-            </div>
-            <h1 className="text-xl sm:text-xl font-bold tracking-tight text-foreground mb-4">
-              Comprehensive Business Financing Solutions
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
-              We provide credit, financing, treasury and payment solutions to help your business succeed. 
-              Discover our comprehensive range of SBA-backed and conventional financing options designed to fuel your business growth.
-            </p>
-            
-            {/* Company Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              <Card className="p-6 border-0">
-                <div className="text-2xl font-bold text-primary mb-1">$2.5B+</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Funding Provided</div>
-              </Card>
-              <Card className="p-6 border-0">
-                <div className="text-2xl font-bold text-primary mb-1">95%</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</div>
-              </Card>
-              <Card className="p-6 border-0">
-                <div className="text-2xl font-bold text-primary mb-1">24 Hours</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Loan Processing</div>
-              </Card>
-            </div>
-          </div>
-        )}
-
         {/* Back Button */}
         {selectedLoanType && (
           <div className="mb-8 animate-slide-up">
