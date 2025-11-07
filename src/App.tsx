@@ -37,7 +37,8 @@ import SecurityAudit from "./pages/admin/SecurityAudit";
 import ExportData from "./pages/admin/ExportData";
 import LoanProducts from "./pages/admin/LoanProducts";
 import PaymentManagement from "./pages/admin/PaymentManagement";
-import Notifications from "./pages/admin/Notifications";
+import AdminNotifications from "./pages/admin/Notifications";
+import Notifications from "./pages/Notifications";
 import SupportTickets from "./pages/admin/SupportTickets";
 import DatabaseManagement from "./pages/admin/DatabaseManagement";
 import ApiIntegrations from "./pages/admin/ApiIntegrations";
@@ -125,6 +126,13 @@ const App = () => (
               <Route path="/admin/notifications" element={
                 <Layout>
                   <ProtectedRoute requiredRole="admin">
+                    <AdminNotifications />
+                  </ProtectedRoute>
+                </Layout>
+              } />
+              <Route path="/notifications" element={
+                <Layout>
+                  <ProtectedRoute>
                     <Notifications />
                   </ProtectedRoute>
                 </Layout>

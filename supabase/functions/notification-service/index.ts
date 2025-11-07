@@ -58,7 +58,7 @@ serve(async (req) => {
         return await handleApplicationStatusChange(supabase, notificationData);
 
       case 'loan-funded':
-        return await handleLoanFunded(notificationData);
+        return await handleLoanFunded(supabase, notificationData);
 
       default:
         return new Response(
@@ -233,12 +233,44 @@ async function handleApplicationStatusChange(supabase: any, notificationData: an
   }
 }
 
-async function handleLoanFunded(notificationData: any): Promise<Response> {
+async function handleLoanFunded(supabase: any, notificationData: any): Promise<Response> {
   try {
-    const { applicantEmail, applicantName, loanNumber, loanAmount, loanType, monthlyPayment, interestRate, termMonths } = notificationData;
+    const { applicantEmail, applicantName, loanNumber, loanAmount, loanType, monthlyPayment, interestRate, termMonths, userId } = notificationData;
 
     console.log('Sending loan funded notification to:', applicantEmail);
 
+    // Create in-app notification
+    if (userId) {
+      try {
+        const { error: notifError } = await supabase
+          .from('notifications')
+          .insert({
+            user_id: userId,
+            title: 'Loan Funded Successfully!',
+            message: `Your ${loanType} loan of ${formatCurrency(loanAmount)} has been approved and funded. Monthly payment: ${formatCurrency(monthlyPayment)}`,
+            type: 'success',
+            action_url: '/existing-loans',
+            metadata: {
+              loanNumber,
+              loanAmount,
+              loanType,
+              monthlyPayment,
+              interestRate,
+              termMonths,
+            },
+          });
+
+        if (notifError) {
+          console.error('Error creating in-app notification:', notifError);
+        } else {
+          console.log('In-app notification created successfully for user:', userId);
+        }
+      } catch (error) {
+        console.error('Error creating in-app notification:', error);
+      }
+    }
+
+    // Send email notification
     const emailNotification: NotificationData = {
       type: 'email',
       recipient: applicantEmail,

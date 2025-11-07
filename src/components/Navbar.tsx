@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,13 +15,51 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { LoanCalculatorDialog } from '@/components/LoanCalculatorDialog';
+import { userNotificationService, Notification } from '@/services/userNotificationService';
+import { formatDistanceToNow } from 'date-fns';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { authenticated, loading, username, signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  const [notificationCount] = useState(3); // Mock notification count
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [recentNotifications, setRecentNotifications] = useState<Notification[]>([]);
   const [calculatorOpen, setCalculatorOpen] = useState(false);
+
+  useEffect(() => {
+    if (authenticated) {
+      loadNotifications();
+
+      // Subscribe to real-time notifications
+      const unsubscribe = userNotificationService.subscribeToNotifications(() => {
+        loadNotifications();
+      });
+
+      return unsubscribe;
+    }
+  }, [authenticated]);
+
+  const loadNotifications = async () => {
+    try {
+      const count = await userNotificationService.getUnreadCount();
+      setNotificationCount(count);
+
+      const notifications = await userNotificationService.getUserNotifications(5);
+      setRecentNotifications(notifications);
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  };
+
+  const handleNotificationClick = async (notification: Notification) => {
+    if (!notification.read) {
+      await userNotificationService.markAsRead(notification.id);
+      loadNotifications();
+    }
+    if (notification.action_url) {
+      navigate(notification.action_url);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -93,46 +131,45 @@ const Navbar = () => {
               >
                 <div className="px-4 py-3 border-b">
                   <h3 className="font-semibold text-blue-900">Notifications</h3>
-                  <p className="text-xs text-muted-foreground">You have {notificationCount} unread notifications</p>
+                  <p className="text-xs text-muted-foreground">
+                    {notificationCount > 0 
+                      ? `You have ${notificationCount} unread notification${notificationCount > 1 ? 's' : ''}`
+                      : 'No unread notifications'
+                    }
+                  </p>
                 </div>
                 
                 <div className="max-h-[400px] overflow-y-auto">
-                  <DropdownMenuItem 
-                    className="cursor-pointer hover:bg-muted py-3 px-4 border-b"
-                  >
-                    <div className="flex flex-col gap-1 w-full">
-                      <p className="text-sm font-medium">Application Approved</p>
-                      <p className="text-xs text-muted-foreground">Your SBA loan application has been approved</p>
-                      <p className="text-xs text-muted-foreground">2 hours ago</p>
+                  {recentNotifications.length === 0 ? (
+                    <div className="py-8 text-center text-sm text-muted-foreground">
+                      No notifications yet
                     </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem 
-                    className="cursor-pointer hover:bg-muted py-3 px-4 border-b"
-                  >
-                    <div className="flex flex-col gap-1 w-full">
-                      <p className="text-sm font-medium">Document Required</p>
-                      <p className="text-xs text-muted-foreground">Please upload additional tax documents</p>
-                      <p className="text-xs text-muted-foreground">1 day ago</p>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem 
-                    className="cursor-pointer hover:bg-muted py-3 px-4 border-b"
-                  >
-                    <div className="flex flex-col gap-1 w-full">
-                      <p className="text-sm font-medium">Status Update</p>
-                      <p className="text-xs text-muted-foreground">Your application is under review</p>
-                      <p className="text-xs text-muted-foreground">3 days ago</p>
-                    </div>
-                  </DropdownMenuItem>
+                  ) : (
+                    recentNotifications.map((notification) => (
+                      <DropdownMenuItem 
+                        key={notification.id}
+                        className={`cursor-pointer hover:bg-muted py-3 px-4 border-b ${
+                          !notification.read ? 'bg-accent/50' : ''
+                        }`}
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div className="flex flex-col gap-1 w-full">
+                          <p className="text-sm font-medium">{notification.title}</p>
+                          <p className="text-xs text-muted-foreground">{notification.message}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
+                    ))
+                  )}
                 </div>
                 
                 <div className="px-4 py-2 border-t">
                   <Button 
                     variant="ghost" 
                     className="w-full text-xs"
-                    onClick={() => navigate('/portal?tab=notifications')}
+                    onClick={() => navigate('/notifications')}
                   >
                     View All Notifications
                   </Button>
