@@ -62,7 +62,7 @@ export default function CreditReports() {
   const getImpactColor = (impact: string) => {
     if (impact.includes('High')) return 'text-red-600';
     if (impact.includes('Medium')) return 'text-yellow-600';
-    return 'text-muted-foreground';
+    return 'text-foreground';
   };
 
   const getStatusIcon = (icon: string) => {
@@ -105,7 +105,7 @@ export default function CreditReports() {
               <div className={`text-5xl font-bold ${getScoreRating(creditData.transUnion.score).color}`}>
                 {creditData.transUnion.score}
               </div>
-              <div className="pb-2 text-sm text-muted-foreground">
+              <div className="pb-2 text-sm text-foreground">
                 out of {creditData.transUnion.maxScore}
               </div>
             </div>
@@ -118,9 +118,9 @@ export default function CreditReports() {
               <span className={creditData.transUnion.change > 0 ? 'text-green-600' : 'text-red-600'}>
                 {creditData.transUnion.change > 0 ? '+' : ''}{creditData.transUnion.change} Point
               </span>
-              <span className="text-muted-foreground">• {creditData.transUnion.rating}</span>
+              <span className="text-foreground">• {creditData.transUnion.rating}</span>
             </div>
-            <p className="text-xs text-muted-foreground">Checked daily</p>
+            <p className="text-xs text-foreground">Checked daily</p>
           </CardContent>
         </Card>
 
@@ -134,7 +134,7 @@ export default function CreditReports() {
               <div className={`text-5xl font-bold ${getScoreRating(creditData.equifax.score).color}`}>
                 {creditData.equifax.score}
               </div>
-              <div className="pb-2 text-sm text-muted-foreground">
+              <div className="pb-2 text-sm text-foreground">
                 out of {creditData.equifax.maxScore}
               </div>
             </div>
@@ -147,14 +147,14 @@ export default function CreditReports() {
               <span className={creditData.equifax.change > 0 ? 'text-green-600' : 'text-red-600'}>
                 {creditData.equifax.change > 0 ? '+' : ''}{creditData.equifax.change} Points
               </span>
-              <span className="text-muted-foreground">• {creditData.equifax.rating}</span>
+              <span className="text-foreground">• {creditData.equifax.rating}</span>
             </div>
-            <p className="text-xs text-muted-foreground">Checked daily</p>
+            <p className="text-xs text-foreground">Checked daily</p>
           </CardContent>
         </Card>
       </div>
 
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-foreground">
         Scores checked daily with VantageScore 3.0
       </p>
 
@@ -164,7 +164,7 @@ export default function CreditReports() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Score Trend</CardTitle>
-              <CardDescription>Your credit score over the last 3 months</CardDescription>
+              <CardDescription className="text-foreground">Your credit score over the last 3 months</CardDescription>
             </div>
             <Button 
               variant="link" 
@@ -187,7 +187,7 @@ export default function CreditReports() {
                     <div className="w-full bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
                       <div className="w-full h-2 bg-primary rounded-t"></div>
                     </div>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">{point.date}</span>
+                    <span className="text-xs text-foreground whitespace-nowrap">{point.date}</span>
                   </div>
                 );
               })}
@@ -200,7 +200,7 @@ export default function CreditReports() {
       <Card>
         <CardHeader>
           <CardTitle>Upcoming bureau reports</CardTitle>
-          <CardDescription>
+          <CardDescription className="text-foreground">
             Based on your last credit report, we estimate these accounts will be reported to TransUnion in the next 7 days.
           </CardDescription>
         </CardHeader>
@@ -210,7 +210,7 @@ export default function CreditReports() {
               <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
                   <p className="font-medium text-sm">{report.account}</p>
-                  <p className="text-xs text-muted-foreground">Due: {report.dueDate}</p>
+                  <p className="text-xs text-foreground">Due: {report.dueDate}</p>
                 </div>
                 <Badge variant="secondary">{report.balance}</Badge>
               </div>
@@ -230,7 +230,7 @@ export default function CreditReports() {
       <Card>
         <CardHeader>
           <CardTitle>Credit factors</CardTitle>
-          <CardDescription>
+          <CardDescription className="text-foreground">
             See what's helping or hurting your score, and what to fix first. Try digging into your credit card use and payment history first. You can improve those factors more quickly.
           </CardDescription>
         </CardHeader>
@@ -275,12 +275,12 @@ export default function CreditReports() {
       <Card>
         <CardHeader>
           <CardTitle>Suggested for your credit</CardTitle>
-          <CardDescription>
+          <CardDescription className="text-foreground">
             We suggest offers based on your credit, Approval Odds, and money we make from our partners.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-8 text-foreground">
             <p className="text-sm">Credit card and loan offers will appear here based on your credit profile.</p>
           </div>
         </CardContent>
