@@ -57,6 +57,9 @@ serve(async (req) => {
       case 'application-status-change':
         return await handleApplicationStatusChange(supabase, notificationData);
 
+      case 'loan-funded':
+        return await handleLoanFunded(notificationData);
+
       default:
         return new Response(
           JSON.stringify({ error: 'Invalid action' }),
@@ -230,6 +233,52 @@ async function handleApplicationStatusChange(supabase: any, notificationData: an
   }
 }
 
+async function handleLoanFunded(notificationData: any): Promise<Response> {
+  try {
+    const { applicantEmail, applicantName, loanNumber, loanAmount, loanType, monthlyPayment, interestRate, termMonths } = notificationData;
+
+    console.log('Sending loan funded notification to:', applicantEmail);
+
+    const emailNotification: NotificationData = {
+      type: 'email',
+      recipient: applicantEmail,
+      template: 'loan_funded',
+      data: {
+        applicantName,
+        loanNumber,
+        loanAmount: formatCurrency(loanAmount),
+        loanType,
+        monthlyPayment: formatCurrency(monthlyPayment),
+        interestRate: interestRate.toFixed(2),
+        termMonths,
+        timestamp: new Date().toISOString()
+      }
+    };
+
+    return await sendNotification(emailNotification);
+
+  } catch (error) {
+    console.error('Error handling loan funded notification:', error);
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: 'Failed to send loan funded notification',
+        error: error.message 
+      }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+}
+
 async function sendBulkNotifications(notifications: NotificationData[]): Promise<Response> {
   const results = [];
   
@@ -355,6 +404,49 @@ function getEmailTemplate(templateName: string, data: any): EmailTemplate {
         <p>Best regards,<br>Halo Business Finance Team</p>
       `,
       text: `After careful review, we are unable to approve your loan application #${data.applicationNumber} at this time.`
+    },
+    loan_funded: {
+      subject: `🎉 Your Loan Has Been Funded - ${data.loanNumber}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #10b981;">Congratulations! Your Loan Has Been Funded</h2>
+          <p>Dear ${data.applicantName},</p>
+          <p>Great news! Your loan application #${data.loanNumber} has been successfully funded and is now active in your account.</p>
+          
+          <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #374151;">Loan Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0;"><strong>Loan Type:</strong></td>
+                <td style="padding: 8px 0;">${data.loanType}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0;"><strong>Loan Amount:</strong></td>
+                <td style="padding: 8px 0;">${data.loanAmount}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0;"><strong>Interest Rate:</strong></td>
+                <td style="padding: 8px 0;">${data.interestRate}%</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0;"><strong>Term:</strong></td>
+                <td style="padding: 8px 0;">${data.termMonths} months</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0;"><strong>Monthly Payment:</strong></td>
+                <td style="padding: 8px 0; font-size: 18px; color: #10b981;"><strong>${data.monthlyPayment}</strong></td>
+              </tr>
+            </table>
+          </div>
+          
+          <p>You can view your loan details, payment schedule, and make payments through your borrower portal.</p>
+          
+          <p>If you have any questions, please don't hesitate to contact our support team.</p>
+          
+          <p>Best regards,<br>Heritage Business Funding Team</p>
+        </div>
+      `,
+      text: `Congratulations! Your loan #${data.loanNumber} has been funded. Loan Amount: ${data.loanAmount}, Monthly Payment: ${data.monthlyPayment}, Interest Rate: ${data.interestRate}%, Term: ${data.termMonths} months. View details in your borrower portal.`
     }
   };
 
