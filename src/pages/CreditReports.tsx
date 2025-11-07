@@ -127,7 +127,7 @@ export default function CreditReports() {
     <div className="container mx-auto p-6 max-w-7xl space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Credit Health</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Credit Health</h1>
       </div>
 
       {/* Tabs for Personal vs Business */}
