@@ -117,6 +117,83 @@ export default function CreditScoreSimulator() {
   // Calculate credit age as a percentage score
   const creditAgeScore = creditAge >= 10 ? 100 : creditAge >= 7 ? 75 : creditAge >= 5 ? 50 : creditAge >= 3 ? 25 : Math.round((creditAge / 3) * 25);
   
+  // Calculate actual point contributions for current score
+  const getCurrentPointBreakdown = () => {
+    const baseScore = 450;
+    let paymentHistoryPoints = 0;
+    let utilizationPoints = 0;
+    let creditAgePoints = 0;
+    const creditMixPoints = 80;
+    
+    // Payment history points
+    if (paymentHistory >= 95) paymentHistoryPoints = 140;
+    else if (paymentHistory >= 85) paymentHistoryPoints = 105;
+    else if (paymentHistory >= 75) paymentHistoryPoints = 70;
+    else if (paymentHistory >= 65) paymentHistoryPoints = 35;
+    
+    // Utilization points
+    if (currentUtilization <= 10) utilizationPoints = 120;
+    else if (currentUtilization <= 30) utilizationPoints = 90;
+    else if (currentUtilization <= 50) utilizationPoints = 60;
+    else if (currentUtilization <= 75) utilizationPoints = 30;
+    
+    // Credit age points
+    if (creditAge >= 10) creditAgePoints = 60;
+    else if (creditAge >= 7) creditAgePoints = 45;
+    else if (creditAge >= 5) creditAgePoints = 30;
+    else if (creditAge >= 3) creditAgePoints = 15;
+    
+    return {
+      baseScore,
+      paymentHistoryPoints,
+      utilizationPoints,
+      creditAgePoints,
+      creditMixPoints,
+      total: baseScore + paymentHistoryPoints + utilizationPoints + creditAgePoints + creditMixPoints
+    };
+  };
+  
+  // Calculate actual point contributions for projected score
+  const getProjectedPointBreakdown = () => {
+    const baseScore = 450;
+    let paymentHistoryPoints = 0;
+    let utilizationPoints = 0;
+    let creditAgePoints = 0;
+    const creditMixPoints = 80;
+    
+    const improvedPaymentHistory = Math.min(100, paymentHistory + (debtPayoff > 0 ? 5 : 0));
+    
+    // Payment history points
+    if (improvedPaymentHistory >= 95) paymentHistoryPoints = 140;
+    else if (improvedPaymentHistory >= 85) paymentHistoryPoints = 105;
+    else if (improvedPaymentHistory >= 75) paymentHistoryPoints = 70;
+    else if (improvedPaymentHistory >= 65) paymentHistoryPoints = 35;
+    
+    // Utilization points
+    if (newUtilization <= 10) utilizationPoints = 120;
+    else if (newUtilization <= 30) utilizationPoints = 90;
+    else if (newUtilization <= 50) utilizationPoints = 60;
+    else if (newUtilization <= 75) utilizationPoints = 30;
+    
+    // Credit age points
+    if (creditAge >= 10) creditAgePoints = 60;
+    else if (creditAge >= 7) creditAgePoints = 45;
+    else if (creditAge >= 5) creditAgePoints = 30;
+    else if (creditAge >= 3) creditAgePoints = 15;
+    
+    return {
+      baseScore,
+      paymentHistoryPoints,
+      utilizationPoints,
+      creditAgePoints,
+      creditMixPoints,
+      total: baseScore + paymentHistoryPoints + utilizationPoints + creditAgePoints + creditMixPoints
+    };
+  };
+  
+  const currentBreakdown = getCurrentPointBreakdown();
+  const projectedBreakdown = getProjectedPointBreakdown();
+  
   // Credit factors breakdown
   const currentFactors = [
     { name: 'Payment History', percentage: 35, value: paymentHistory, color: 'bg-blue-500' },
@@ -369,6 +446,162 @@ export default function CreditScoreSimulator() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Point Contribution Breakdown */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Current Score Breakdown */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Current Score Breakdown</CardTitle>
+            <CardDescription className="text-foreground">
+              How each factor contributes points to your score
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Base Score</span>
+                  <span className="font-bold">{currentBreakdown.baseScore} pts</span>
+                </div>
+                <Progress value={(currentBreakdown.baseScore / 850) * 100} className="h-2" />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Payment History (35%)</span>
+                  <span className="font-bold text-blue-600">+{currentBreakdown.paymentHistoryPoints} pts</span>
+                </div>
+                <Progress value={(currentBreakdown.paymentHistoryPoints / 140) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 140 points</p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Credit Utilization (30%)</span>
+                  <span className="font-bold text-green-600">+{currentBreakdown.utilizationPoints} pts</span>
+                </div>
+                <Progress value={(currentBreakdown.utilizationPoints / 120) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 120 points</p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Credit Age (15%)</span>
+                  <span className="font-bold text-yellow-600">+{currentBreakdown.creditAgePoints} pts</span>
+                </div>
+                <Progress value={(currentBreakdown.creditAgePoints / 60) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 60 points</p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Credit Mix & New Credit (20%)</span>
+                  <span className="font-bold text-purple-600">+{currentBreakdown.creditMixPoints} pts</span>
+                </div>
+                <Progress value={(currentBreakdown.creditMixPoints / 80) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 80 points</p>
+              </div>
+              
+              <div className="pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold">Total Score</span>
+                  <span className={`text-2xl font-bold ${getScoreRating(currentBreakdown.total).color}`}>
+                    {currentBreakdown.total}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Projected Score Breakdown */}
+        <Card className="border-2 border-primary">
+          <CardHeader>
+            <CardTitle>Projected Score Breakdown</CardTitle>
+            <CardDescription className="text-foreground">
+              How your changes will impact point distribution
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Base Score</span>
+                  <span className="font-bold">{projectedBreakdown.baseScore} pts</span>
+                </div>
+                <Progress value={(projectedBreakdown.baseScore / 850) * 100} className="h-2" />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Payment History (35%)</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-blue-600">+{projectedBreakdown.paymentHistoryPoints} pts</span>
+                    {projectedBreakdown.paymentHistoryPoints !== currentBreakdown.paymentHistoryPoints && (
+                      <Badge variant="outline" className="text-green-600 text-xs">
+                        +{projectedBreakdown.paymentHistoryPoints - currentBreakdown.paymentHistoryPoints}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <Progress value={(projectedBreakdown.paymentHistoryPoints / 140) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 140 points</p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Credit Utilization (30%)</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-green-600">+{projectedBreakdown.utilizationPoints} pts</span>
+                    {projectedBreakdown.utilizationPoints !== currentBreakdown.utilizationPoints && (
+                      <Badge variant="outline" className="text-green-600 text-xs">
+                        +{projectedBreakdown.utilizationPoints - currentBreakdown.utilizationPoints}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <Progress value={(projectedBreakdown.utilizationPoints / 120) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 120 points</p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Credit Age (15%)</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-yellow-600">+{projectedBreakdown.creditAgePoints} pts</span>
+                    {projectedBreakdown.creditAgePoints !== currentBreakdown.creditAgePoints && (
+                      <Badge variant="outline" className="text-green-600 text-xs">
+                        +{projectedBreakdown.creditAgePoints - currentBreakdown.creditAgePoints}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <Progress value={(projectedBreakdown.creditAgePoints / 60) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 60 points</p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Credit Mix & New Credit (20%)</span>
+                  <span className="font-bold text-purple-600">+{projectedBreakdown.creditMixPoints} pts</span>
+                </div>
+                <Progress value={(projectedBreakdown.creditMixPoints / 80) * 100} className="h-2" />
+                <p className="text-xs text-foreground">Max: 80 points</p>
+              </div>
+              
+              <div className="pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold">Total Score</span>
+                  <span className={`text-2xl font-bold ${getScoreRating(projectedBreakdown.total).color}`}>
+                    {projectedBreakdown.total}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Credit Factors Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
