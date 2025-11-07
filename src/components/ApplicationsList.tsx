@@ -328,7 +328,7 @@ const ApplicationsList = () => {
                           className="w-full justify-start"
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate('/my-documents');
+                            navigate('/document-storage');
                           }}
                         >
                           Upload Documents
