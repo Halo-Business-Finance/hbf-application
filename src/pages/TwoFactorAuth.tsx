@@ -178,7 +178,7 @@ const TwoFactorAuth = () => {
       <div className="max-w-3xl mx-auto p-4 md:p-8">
         <Button
           variant="ghost"
-          onClick={() => navigate('/portal?tab=account')}
+          onClick={() => navigate('/my-account?tab=account')}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

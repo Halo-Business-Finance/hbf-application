@@ -63,7 +63,7 @@ const ChangeEmail = () => {
       });
       
       form.reset();
-      navigate('/portal?tab=account');
+      navigate('/my-account?tab=account');
     } catch (error: any) {
       console.error('Error updating email:', error);
       toast({
@@ -81,7 +81,7 @@ const ChangeEmail = () => {
       <div className="max-w-2xl mx-auto p-4 md:p-8">
         <Button
           variant="ghost"
-          onClick={() => navigate('/portal?tab=account')}
+          onClick={() => navigate('/my-account?tab=account')}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

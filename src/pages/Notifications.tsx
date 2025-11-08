@@ -12,11 +12,11 @@ const Notifications = () => {
       <div className="mb-6">
         <Button
           variant="ghost"
-          onClick={() => navigate('/portal')}
+          onClick={() => navigate('/my-account')}
           className="mb-4"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Portal
+          Back to My Account
         </Button>
         <h1 className="text-3xl font-bold text-foreground">Notifications</h1>
         <p className="text-muted-foreground mt-2">

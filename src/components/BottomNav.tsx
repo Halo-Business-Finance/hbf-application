@@ -6,7 +6,7 @@ const navItems = [
   { icon: Home, label: 'Home', path: '/' },
   { icon: FileText, label: 'Apps', path: '/loan-applications' },
   { icon: Calculator, label: 'Calc', path: '/loan-calculator' },
-  { icon: User, label: 'Portal', path: '/borrower-portal' },
+  { icon: User, label: 'Account', path: '/my-account' },
   { icon: HelpCircle, label: 'Help', path: '/support' },
 ];
 
