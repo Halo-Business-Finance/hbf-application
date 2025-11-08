@@ -9,7 +9,9 @@ import {
   ChevronRight,
   Folder,
   FileText,
-  Trash2
+  Trash2,
+  Eye,
+  X
 } from 'lucide-react';
 import {
   Dialog,
@@ -67,6 +69,10 @@ const MyDocuments = () => {
   const [deleting, setDeleting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
 
   const folders: FolderCategory[] = [
     { id: 'business_tax_returns', name: 'Business Tax Returns', count: 0 },
@@ -313,10 +319,51 @@ const MyDocuments = () => {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
+  const handlePreviewClick = async (doc: Document, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPreviewDocument(doc);
+    setPreviewDialogOpen(true);
+    setLoadingPreview(true);
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('borrower-documents')
+        .createSignedUrl(doc.file_path, 3600); // 1 hour expiry
+
+      if (error) throw error;
+
+      setPreviewUrl(data.signedUrl);
+    } catch (error) {
+      console.error('Error loading preview:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load document preview",
+        variant: "destructive"
+      });
+      setPreviewDialogOpen(false);
+    } finally {
+      setLoadingPreview(false);
+    }
+  };
+
   const handleDeleteClick = (doc: Document, e: React.MouseEvent) => {
     e.stopPropagation();
     setDocumentToDelete(doc);
     setDeleteDialogOpen(true);
+  };
+
+  const handleClosePreview = () => {
+    setPreviewDialogOpen(false);
+    setPreviewDocument(null);
+    setPreviewUrl(null);
+  };
+
+  const isImageFile = (fileType: string) => {
+    return fileType.startsWith('image/');
+  };
+
+  const isPdfFile = (fileType: string) => {
+    return fileType === 'application/pdf';
   };
 
   const handleDeleteConfirm = async () => {
@@ -423,14 +470,26 @@ const MyDocuments = () => {
                         <span className="text-xs text-gray-500">
                           {formatFileSize(doc.file_size)}
                         </span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => handleDeleteClick(doc, e)}
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {(isImageFile(doc.file_type) || isPdfFile(doc.file_type)) && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={(e) => handlePreviewClick(doc, e)}
+                            >
+                              <Eye className="w-4 h-4 text-primary" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => handleDeleteClick(doc, e)}
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -542,6 +601,77 @@ const MyDocuments = () => {
             >
               {uploading ? `Uploading... ${uploadProgress}%` : `Upload ${selectedFiles.length > 0 ? `${selectedFiles.length} Document${selectedFiles.length > 1 ? 's' : ''}` : 'Documents'}`}
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Dialog */}
+      <Dialog open={previewDialogOpen} onOpenChange={handleClosePreview}>
+        <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b">
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle>{previewDocument?.file_name}</DialogTitle>
+                <DialogDescription className="text-xs mt-1">
+                  {previewDocument && formatFileSize(previewDocument.file_size)}
+                </DialogDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClosePreview}
+                className="h-8 w-8"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-auto bg-muted/30 p-4">
+            {loadingPreview ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Loading preview...</p>
+                </div>
+              </div>
+            ) : previewUrl && previewDocument ? (
+              <>
+                {isImageFile(previewDocument.file_type) && (
+                  <div className="flex items-center justify-center h-full">
+                    <img
+                      src={previewUrl}
+                      alt={previewDocument.file_name}
+                      className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                    />
+                  </div>
+                )}
+                
+                {isPdfFile(previewDocument.file_type) && (
+                  <iframe
+                    src={previewUrl}
+                    className="w-full h-full rounded-lg border-0"
+                    title={previewDocument.file_name}
+                  />
+                )}
+
+                {!isImageFile(previewDocument.file_type) && !isPdfFile(previewDocument.file_type) && (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center">
+                      <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground mb-4">
+                        Preview not available for this file type
+                      </p>
+                      <Button asChild>
+                        <a href={previewUrl} download={previewDocument.file_name}>
+                          Download File
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : null}
           </div>
         </DialogContent>
       </Dialog>
