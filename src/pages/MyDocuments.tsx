@@ -31,6 +31,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
 
 interface Document {
   id: string;
@@ -65,6 +66,7 @@ const MyDocuments = () => {
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const folders: FolderCategory[] = [
     { id: 'business_tax_returns', name: 'Business Tax Returns', count: 0 },
@@ -208,13 +210,32 @@ const MyDocuments = () => {
     if (!selectedFile || !user) return;
 
     setUploading(true);
+    setUploadProgress(0);
+    
     try {
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
+      // Simulate progress for smaller files or track actual progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 100);
+
       const { error: uploadError } = await supabase.storage
         .from('borrower-documents')
-        .upload(fileName, selectedFile);
+        .upload(fileName, selectedFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      clearInterval(progressInterval);
+      setUploadProgress(95);
 
       if (uploadError) throw uploadError;
 
@@ -232,14 +253,20 @@ const MyDocuments = () => {
 
       if (dbError) throw dbError;
 
+      setUploadProgress(100);
+
       toast({
         title: "Success",
         description: "Document uploaded successfully"
       });
 
-      setSelectedFile(null);
-      setUploadDialogOpen(false);
-      loadDocuments();
+      // Reset after a short delay to show 100%
+      setTimeout(() => {
+        setSelectedFile(null);
+        setUploadDialogOpen(false);
+        setUploadProgress(0);
+        loadDocuments();
+      }, 500);
     } catch (error) {
       console.error('Error uploading document:', error);
       toast({
@@ -247,6 +274,7 @@ const MyDocuments = () => {
         description: "Failed to upload document",
         variant: "destructive"
       });
+      setUploadProgress(0);
     } finally {
       setUploading(false);
     }
@@ -464,12 +492,22 @@ const MyDocuments = () => {
               )}
             </div>
 
+            {uploading && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Uploading...</span>
+                  <span className="font-medium">{uploadProgress}%</span>
+                </div>
+                <Progress value={uploadProgress} className="h-2" />
+              </div>
+            )}
+
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || uploading}
               className="w-full"
             >
-              {uploading ? 'Uploading...' : 'Upload Document'}
+              {uploading ? `Uploading... ${uploadProgress}%` : 'Upload Document'}
             </Button>
           </div>
         </DialogContent>
