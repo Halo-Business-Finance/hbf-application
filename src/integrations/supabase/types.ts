@@ -74,9 +74,12 @@ export type Database = {
           file_size: number
           file_type: string
           id: string
+          is_latest_version: boolean
+          parent_document_id: string | null
           updated_at: string
           uploaded_at: string
           user_id: string
+          version_number: number
         }
         Insert: {
           description?: string | null
@@ -86,9 +89,12 @@ export type Database = {
           file_size: number
           file_type: string
           id?: string
+          is_latest_version?: boolean
+          parent_document_id?: string | null
           updated_at?: string
           uploaded_at?: string
           user_id: string
+          version_number?: number
         }
         Update: {
           description?: string | null
@@ -98,11 +104,22 @@ export type Database = {
           file_size?: number
           file_type?: string
           id?: string
+          is_latest_version?: boolean
+          parent_document_id?: string | null
           updated_at?: string
           uploaded_at?: string
           user_id?: string
+          version_number?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "borrower_documents_parent_document_id_fkey"
+            columns: ["parent_document_id"]
+            isOneToOne: false
+            referencedRelation: "borrower_documents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       crm_activities: {
         Row: {

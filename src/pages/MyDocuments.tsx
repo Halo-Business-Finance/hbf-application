@@ -11,7 +11,9 @@ import {
   FileText,
   Trash2,
   Eye,
-  X
+  X,
+  History,
+  UploadCloud
 } from 'lucide-react';
 import {
   Dialog,
@@ -44,6 +46,9 @@ interface Document {
   document_category: string;
   description: string | null;
   uploaded_at: string;
+  version_number: number;
+  parent_document_id: string | null;
+  is_latest_version: boolean;
 }
 
 interface FolderCategory {
@@ -73,6 +78,13 @@ const MyDocuments = () => {
   const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
+  const [versionHistoryDialogOpen, setVersionHistoryDialogOpen] = useState(false);
+  const [selectedDocumentForVersions, setSelectedDocumentForVersions] = useState<Document | null>(null);
+  const [documentVersions, setDocumentVersions] = useState<Document[]>([]);
+  const [loadingVersions, setLoadingVersions] = useState(false);
+  const [uploadNewVersionDialogOpen, setUploadNewVersionDialogOpen] = useState(false);
+  const [documentToUpdate, setDocumentToUpdate] = useState<Document | null>(null);
+  const [newVersionFile, setNewVersionFile] = useState<File | null>(null);
 
   const folders: FolderCategory[] = [
     { id: 'business_tax_returns', name: 'Business Tax Returns', count: 0 },
@@ -101,9 +113,11 @@ const MyDocuments = () => {
 
   const loadDocuments = async () => {
     try {
+      // Only load latest versions by default
       const { data, error } = await supabase
         .from('borrower_documents')
         .select('*')
+        .eq('is_latest_version', true)
         .order('uploaded_at', { ascending: false });
 
       if (error) throw error;
@@ -366,6 +380,147 @@ const MyDocuments = () => {
     return fileType === 'application/pdf';
   };
 
+  const handleVersionHistoryClick = async (doc: Document, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedDocumentForVersions(doc);
+    setVersionHistoryDialogOpen(true);
+    setLoadingVersions(true);
+
+    try {
+      // Get the root document ID (either this document or its parent)
+      const rootDocId = doc.parent_document_id || doc.id;
+
+      // Load all versions of this document
+      const { data, error } = await supabase
+        .from('borrower_documents')
+        .select('*')
+        .or(`id.eq.${rootDocId},parent_document_id.eq.${rootDocId}`)
+        .order('version_number', { ascending: false });
+
+      if (error) throw error;
+
+      setDocumentVersions(data || []);
+    } catch (error) {
+      console.error('Error loading document versions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load document versions",
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingVersions(false);
+    }
+  };
+
+  const handleUploadNewVersionClick = (doc: Document, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDocumentToUpdate(doc);
+    setUploadNewVersionDialogOpen(true);
+  };
+
+  const handleNewVersionFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 10MB",
+          variant: "destructive"
+        });
+        e.target.value = '';
+        return;
+      }
+
+      const validation = validateFileType(file);
+      if (!validation.valid) {
+        toast({
+          title: "Invalid file type",
+          description: validation.error,
+          variant: "destructive"
+        });
+        e.target.value = '';
+        return;
+      }
+
+      setNewVersionFile(file);
+    }
+  };
+
+  const handleUploadNewVersion = async () => {
+    if (!newVersionFile || !documentToUpdate || !user) return;
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const fileExt = newVersionFile.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}_${newVersionFile.name}`;
+      
+      // Get the root document ID
+      const rootDocId = documentToUpdate.parent_document_id || documentToUpdate.id;
+      const nextVersion = documentToUpdate.version_number + 1;
+
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => Math.min(prev + 10, 90));
+      }, 100);
+
+      const { error: uploadError } = await supabase.storage
+        .from('borrower-documents')
+        .upload(fileName, newVersionFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      clearInterval(progressInterval);
+      setUploadProgress(95);
+
+      if (uploadError) throw uploadError;
+
+      const { error: dbError } = await supabase
+        .from('borrower_documents')
+        .insert({
+          user_id: user.id,
+          file_name: newVersionFile.name,
+          file_path: fileName,
+          file_type: newVersionFile.type,
+          file_size: newVersionFile.size,
+          document_category: documentToUpdate.document_category,
+          description: documentToUpdate.description,
+          version_number: nextVersion,
+          parent_document_id: rootDocId,
+          is_latest_version: true
+        });
+
+      if (dbError) throw dbError;
+
+      setUploadProgress(100);
+
+      toast({
+        title: "Success",
+        description: `Version ${nextVersion} uploaded successfully`
+      });
+
+      setTimeout(() => {
+        setNewVersionFile(null);
+        setUploadNewVersionDialogOpen(false);
+        setDocumentToUpdate(null);
+        setUploadProgress(0);
+        loadDocuments();
+      }, 500);
+    } catch (error) {
+      console.error('Error uploading new version:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload new version",
+        variant: "destructive"
+      });
+      setUploadProgress(0);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     if (!documentToDelete) return;
 
@@ -466,17 +621,45 @@ const MyDocuments = () => {
                         className="flex items-center gap-2 py-2 px-6 hover:bg-white rounded transition-colors duration-200 group"
                       >
                         <FileText className="w-4 h-4 text-gray-400" />
-                        <span className="flex-1 text-sm">{doc.file_name}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm">{doc.file_name}</span>
+                            {doc.version_number > 1 && (
+                              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                                v{doc.version_number}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                         <span className="text-xs text-gray-500">
                           {formatFileSize(doc.file_size)}
                         </span>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => handleVersionHistoryClick(doc, e)}
+                            title="Version History"
+                          >
+                            <History className="w-4 h-4 text-blue-500" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => handleUploadNewVersionClick(doc, e)}
+                            title="Upload New Version"
+                          >
+                            <UploadCloud className="w-4 h-4 text-green-500" />
+                          </Button>
                           {(isImageFile(doc.file_type) || isPdfFile(doc.file_type)) && (
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
                               onClick={(e) => handlePreviewClick(doc, e)}
+                              title="Preview"
                             >
                               <Eye className="w-4 h-4 text-primary" />
                             </Button>
@@ -486,6 +669,7 @@ const MyDocuments = () => {
                             size="icon"
                             className="h-8 w-8"
                             onClick={(e) => handleDeleteClick(doc, e)}
+                            title="Delete"
                           >
                             <Trash2 className="w-4 h-4 text-destructive" />
                           </Button>
@@ -605,15 +789,146 @@ const MyDocuments = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Version History Dialog */}
+      <Dialog open={versionHistoryDialogOpen} onOpenChange={setVersionHistoryDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Version History</DialogTitle>
+            <DialogDescription>
+              {selectedDocumentForVersions?.file_name}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2 max-h-96 overflow-y-auto">
+            {loadingVersions ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : documentVersions.length > 0 ? (
+              documentVersions.map((version) => (
+                <div
+                  key={version.id}
+                  className={`flex items-center gap-3 p-3 rounded-lg border ${
+                    version.is_latest_version ? 'bg-primary/5 border-primary' : 'bg-muted/50'
+                  }`}
+                >
+                  <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">Version {version.version_number}</span>
+                      {version.is_latest_version && (
+                        <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded">
+                          Latest
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Uploaded {new Date(version.uploaded_at).toLocaleString()} • {formatFileSize(version.file_size)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {(isImageFile(version.file_type) || isPdfFile(version.file_type)) && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          handlePreviewClick(version, e);
+                          setVersionHistoryDialogOpen(false);
+                        }}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-muted-foreground py-8">No versions found</p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Upload New Version Dialog */}
+      <Dialog open={uploadNewVersionDialogOpen} onOpenChange={setUploadNewVersionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload New Version</DialogTitle>
+            <DialogDescription>
+              Upload a new version of {documentToUpdate?.file_name}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="version-file">Select File</Label>
+              <Input
+                id="version-file"
+                type="file"
+                onChange={handleNewVersionFileSelect}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                disabled={uploading}
+              />
+              {newVersionFile && (
+                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                  <FileText className="w-4 h-4 text-primary" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{newVersionFile.name}</p>
+                    <p className="text-xs text-muted-foreground">{formatFileSize(newVersionFile.size)}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {uploading && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Uploading new version...</span>
+                  <span className="font-medium">{uploadProgress}%</span>
+                </div>
+                <Progress value={uploadProgress} className="h-2" />
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+              <History className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <p className="text-xs text-blue-700">
+                This will create version {(documentToUpdate?.version_number || 0) + 1} and mark previous versions as outdated.
+              </p>
+            </div>
+
+            <Button
+              onClick={handleUploadNewVersion}
+              disabled={!newVersionFile || uploading}
+              className="w-full"
+            >
+              {uploading ? `Uploading... ${uploadProgress}%` : 'Upload New Version'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Preview Dialog */}
       <Dialog open={previewDialogOpen} onOpenChange={handleClosePreview}>
         <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
             <div className="flex items-center justify-between">
               <div>
-                <DialogTitle>{previewDocument?.file_name}</DialogTitle>
+                <div className="flex items-center gap-2">
+                  <DialogTitle>{previewDocument?.file_name}</DialogTitle>
+                  {previewDocument && previewDocument.version_number > 1 && (
+                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                      Version {previewDocument.version_number}
+                    </span>
+                  )}
+                </div>
                 <DialogDescription className="text-xs mt-1">
-                  {previewDocument && formatFileSize(previewDocument.file_size)}
+                  {previewDocument && (
+                    <>
+                      {formatFileSize(previewDocument.file_size)} • Uploaded {new Date(previewDocument.uploaded_at).toLocaleDateString()}
+                    </>
+                  )}
                 </DialogDescription>
               </div>
               <Button
