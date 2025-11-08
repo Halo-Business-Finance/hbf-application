@@ -112,17 +112,57 @@ const MyDocuments = () => {
     }
   };
 
+  const validateFileType = (file: File): { valid: boolean; error?: string } => {
+    const allowedTypes = {
+      'application/pdf': ['.pdf'],
+      'application/msword': ['.doc'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+    };
+
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    const isValidType = Object.keys(allowedTypes).includes(file.type);
+    const isValidExtension = Object.values(allowedTypes).flat().includes(fileExtension);
+
+    if (!isValidType && !isValidExtension) {
+      return {
+        valid: false,
+        error: 'Invalid file type. Please upload PDF, Word, Excel, or image files (JPG, PNG).'
+      };
+    }
+
+    return { valid: true };
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file size
       if (file.size > 10 * 1024 * 1024) {
         toast({
           title: "File too large",
           description: "Please select a file smaller than 10MB",
           variant: "destructive"
         });
+        e.target.value = '';
         return;
       }
+
+      // Validate file type
+      const validation = validateFileType(file);
+      if (!validation.valid) {
+        toast({
+          title: "Invalid file type",
+          description: validation.error,
+          variant: "destructive"
+        });
+        e.target.value = '';
+        return;
+      }
+
       setSelectedFile(file);
     }
   };
