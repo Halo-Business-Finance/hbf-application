@@ -160,36 +160,24 @@ export const SecurityOverview = () => {
 
   const securityItems = [
     {
-      icon: Shield,
       label: 'Active Admins',
       value: metrics.activeAdmins,
-      gradient: 'from-cyan-500 to-blue-500',
-      glowColor: 'shadow-cyan-500/50',
-      iconColor: 'text-cyan-400'
+      gradient: 'from-cyan-500 to-blue-500'
     },
     {
-      icon: Zap,
       label: 'Admin Actions (24h)',
       value: metrics.recentAdminActions,
-      gradient: 'from-purple-500 to-pink-500',
-      glowColor: 'shadow-purple-500/50',
-      iconColor: 'text-purple-400'
+      gradient: 'from-purple-500 to-pink-500'
     },
     {
-      icon: Clock,
       label: 'Pending Reviews',
       value: metrics.pendingApplications,
-      gradient: 'from-orange-500 to-red-500',
-      glowColor: 'shadow-orange-500/50',
-      iconColor: 'text-orange-400'
+      gradient: 'from-orange-500 to-red-500'
     },
     {
-      icon: Database,
       label: 'Total Records',
       value: metrics.databaseSize,
-      gradient: 'from-green-500 to-emerald-500',
-      glowColor: 'shadow-green-500/50',
-      iconColor: 'text-green-400'
+      gradient: 'from-green-500 to-emerald-500'
     }
   ];
 
@@ -235,7 +223,6 @@ export const SecurityOverview = () => {
               {/* High-tech Metrics Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {securityItems.map((item, index) => {
-                  const Icon = item.icon;
                   return (
                     <div
                       key={item.label}
@@ -251,18 +238,12 @@ export const SecurityOverview = () => {
                       
                       {/* Content */}
                       <div className="relative p-5 flex flex-col items-center text-center space-y-3">
-                        {/* Icon with glow */}
-                        <div className="relative">
-                          <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} blur-lg opacity-50 animate-pulse`} />
-                          <Icon className={`relative h-10 w-10 ${item.iconColor} drop-shadow-[0_0_8px_currentColor]`} />
-                        </div>
-                        
                         {/* Animated counter */}
                         <div className="space-y-1">
-                          <p className={`text-3xl font-bold bg-gradient-to-br ${item.gradient} bg-clip-text text-transparent tabular-nums`}>
+                          <p className="text-3xl font-bold text-black tabular-nums">
                             <AnimatedCounter value={item.value} />
                           </p>
-                          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                          <p className="text-xs text-black uppercase tracking-wider font-medium">
                             {item.label}
                           </p>
                         </div>
@@ -280,13 +261,12 @@ export const SecurityOverview = () => {
                 <div className="relative">
                   {/* Section header */}
                   <div className="flex items-center gap-2 mb-4 pb-2 border-b border-primary/20">
-                    <Activity className="h-4 w-4 text-primary animate-pulse" />
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-primary">
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-black">
                       Live Activity Feed
                     </h4>
                     <div className="ml-auto flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_currentColor]" />
-                      <span className="text-xs text-muted-foreground">ACTIVE</span>
+                      <span className="text-xs text-black">ACTIVE</span>
                     </div>
                   </div>
                   
@@ -303,10 +283,10 @@ export const SecurityOverview = () => {
                         
                         <div className="relative flex items-start justify-between p-4">
                           <div className="flex-1 min-w-0 space-y-1">
-                            <p className="text-sm text-foreground font-medium truncate">
+                            <p className="text-sm text-black font-medium truncate">
                               {event.message}
                             </p>
-                            <p className="text-xs text-muted-foreground font-mono">
+                            <p className="text-xs text-black font-mono">
                               {event.timestamp.toLocaleString()}
                             </p>
                           </div>
