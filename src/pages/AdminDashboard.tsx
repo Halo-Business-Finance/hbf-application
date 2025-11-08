@@ -28,6 +28,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
+import { SecurityOverview } from '@/components/SecurityOverview';
 
 
 const AdminDashboard = () => {
@@ -168,6 +169,9 @@ const AdminDashboard = () => {
             Manage applications, users, and system settings
           </p>
         </div>
+
+        {/* Security Overview Widget */}
+        <SecurityOverview />
 
         {/* Admin Sections Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
