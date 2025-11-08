@@ -14,7 +14,6 @@ import ChangePassword from "./pages/ChangePassword";
 import ChangeEmail from "./pages/ChangeEmail";
 import TwoFactorAuth from "./pages/TwoFactorAuth";
 import LoanApplications from "./pages/LoanApplications";
-import CRM from "./pages/CRM";
 import Support from "./pages/Support";
 import LoanCalculator from "./pages/LoanCalculator";
 import MyDocuments from "./pages/MyDocuments";
@@ -24,7 +23,6 @@ import BankAccounts from "./pages/BankAccounts";
 import ExistingLoans from "./pages/ExistingLoans";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
-import { LoanflowCrmIntegration } from "./components/LoanflowCrmIntegration";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RateLimitProvider } from "./components/RateLimitProvider";
 
@@ -184,20 +182,6 @@ const App = () => (
                 <Layout>
                   <ProtectedRoute requiredRole="admin">
                     <AdminLoanDetail />
-                  </ProtectedRoute>
-                </Layout>
-              } />
-              <Route path="/crm" element={
-                <Layout>
-                  <ProtectedRoute requiredRole="admin">
-                    <CRM />
-                  </ProtectedRoute>
-                </Layout>
-              } />
-              <Route path="/crm/loanflow-integration" element={
-                <Layout>
-                  <ProtectedRoute requiredRole="admin">
-                    <LoanflowCrmIntegration />
                   </ProtectedRoute>
                 </Layout>
               } />
