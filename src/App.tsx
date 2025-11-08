@@ -243,13 +243,6 @@ const App = () => (
                   </ProtectedRoute>
                 </Layout>
               } />
-              <Route path="/my-documents" element={
-                <Layout>
-                  <ProtectedRoute>
-                    <MyDocuments />
-                  </ProtectedRoute>
-                </Layout>
-              } />
               <Route path="/credit-reports" element={
                 <Layout>
                   <ProtectedRoute>
