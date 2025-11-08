@@ -64,6 +64,7 @@ const MyDocuments = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const folders: FolderCategory[] = [
     { id: 'business_tax_returns', name: 'Business Tax Returns', count: 0 },
@@ -137,33 +138,69 @@ const MyDocuments = () => {
     return { valid: true };
   };
 
+  const processFile = (file: File) => {
+    // Validate file size
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please select a file smaller than 10MB",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    // Validate file type
+    const validation = validateFileType(file);
+    if (!validation.valid) {
+      toast({
+        title: "Invalid file type",
+        description: validation.error,
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    setSelectedFile(file);
+    return true;
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size
-      if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Please select a file smaller than 10MB",
-          variant: "destructive"
-        });
+      const success = processFile(file);
+      if (!success) {
         e.target.value = '';
-        return;
       }
+    }
+  };
 
-      // Validate file type
-      const validation = validateFileType(file);
-      if (!validation.valid) {
-        toast({
-          title: "Invalid file type",
-          description: validation.error,
-          variant: "destructive"
-        });
-        e.target.value = '';
-        return;
-      }
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
 
-      setSelectedFile(file);
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
     }
   };
 
@@ -385,16 +422,45 @@ const MyDocuments = () => {
 
             <div className="space-y-2">
               <Label htmlFor="file">Select File</Label>
-              <Input
-                id="file"
-                type="file"
-                onChange={handleFileSelect}
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-              />
+              <div
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
+                  isDragging
+                    ? 'border-primary bg-primary/5'
+                    : 'border-muted-foreground/25 hover:border-primary/50'
+                }`}
+              >
+                <Input
+                  id="file"
+                  type="file"
+                  onChange={handleFileSelect}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div className="text-center">
+                  <Upload className={`w-8 h-8 mx-auto mb-2 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <p className="text-sm font-medium mb-1">
+                    {isDragging ? 'Drop file here' : 'Drag & drop your file here'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    or click to browse
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Supported: PDF, Word, Excel, JPG, PNG (Max 10MB)
+                  </p>
+                </div>
+              </div>
               {selectedFile && (
-                <p className="text-sm text-muted-foreground">
-                  Selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
-                </p>
+                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                  <FileText className="w-4 h-4 text-primary" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{selectedFile.name}</p>
+                    <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
+                  </div>
+                </div>
               )}
             </div>
 
