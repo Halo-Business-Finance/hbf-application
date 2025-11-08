@@ -1,9 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, AlertTriangle, Users, Activity, Lock, UserX, Database, Clock } from 'lucide-react';
+import { Shield, AlertTriangle, Users, Activity, Lock, UserX, Database, Clock, Zap } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
+
+const AnimatedCounter = ({ value, duration = 1000 }: { value: number; duration?: number }) => {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const animate = () => {
+      const now = Date.now();
+      const progress = Math.min((now - startTime) / duration, 1);
+      const easeOutQuad = 1 - Math.pow(1 - progress, 3);
+      const currentCount = Math.floor(easeOutQuad * value);
+      
+      if (countRef.current !== currentCount) {
+        countRef.current = currentCount;
+        setCount(currentCount);
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    animate();
+  }, [value, duration]);
+
+  return <span>{count}</span>;
+};
 
 interface SecurityMetrics {
   recentLogins: number;
@@ -135,29 +163,33 @@ export const SecurityOverview = () => {
       icon: Shield,
       label: 'Active Admins',
       value: metrics.activeAdmins,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10'
+      gradient: 'from-cyan-500 to-blue-500',
+      glowColor: 'shadow-cyan-500/50',
+      iconColor: 'text-cyan-400'
     },
     {
-      icon: Activity,
+      icon: Zap,
       label: 'Admin Actions (24h)',
       value: metrics.recentAdminActions,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
+      gradient: 'from-purple-500 to-pink-500',
+      glowColor: 'shadow-purple-500/50',
+      iconColor: 'text-purple-400'
     },
     {
       icon: Clock,
       label: 'Pending Reviews',
       value: metrics.pendingApplications,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50'
+      gradient: 'from-orange-500 to-red-500',
+      glowColor: 'shadow-orange-500/50',
+      iconColor: 'text-orange-400'
     },
     {
       icon: Database,
       label: 'Total Records',
       value: metrics.databaseSize,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
+      gradient: 'from-green-500 to-emerald-500',
+      glowColor: 'shadow-green-500/50',
+      iconColor: 'text-green-400'
     }
   ];
 
@@ -173,69 +205,130 @@ export const SecurityOverview = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          Security & System Overview
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {securityItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.label}
-                    className={`flex flex-col items-center p-4 rounded-lg ${item.bgColor} hover:opacity-80 transition-opacity`}
-                  >
-                    <Icon className={`h-8 w-8 mb-2 ${item.color}`} />
-                    <p className="text-2xl font-bold text-foreground">{item.value}</p>
-                    <p className="text-sm text-muted-foreground text-center mt-1">
-                      {item.label}
-                    </p>
-                  </div>
-                );
-              })}
+    <div className="relative">
+      {/* Animated background grid */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-lg opacity-50" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:50px_50px] rounded-lg" />
+      
+      <Card className="relative border-primary/20 shadow-lg shadow-primary/5 backdrop-blur-sm">
+        <CardHeader className="border-b border-primary/10">
+          <CardTitle className="flex items-center gap-3">
+            <div className="relative">
+              <Shield className="h-6 w-6 text-primary animate-pulse" />
+              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
             </div>
-
-            {/* Recent Activity */}
-            {recentEvents.length > 0 && (
-              <div>
-                <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Recent Activity
-                </h4>
-                <div className="space-y-2">
-                  {recentEvents.map((event, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start justify-between p-3 rounded-md bg-muted/50 hover:bg-muted transition-colors"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-foreground truncate">{event.message}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {event.timestamp.toLocaleString()}
-                        </p>
-                      </div>
-                      <Badge variant={getSeverityColor(event.severity)} className="ml-2 flex-shrink-0">
-                        {event.type.replace('_', ' ')}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
+            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent font-bold">
+              SECURITY & SYSTEM OVERVIEW
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
               </div>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* High-tech Metrics Grid */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {securityItems.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className="group relative overflow-hidden"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      {/* Glow effect */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-lg blur-xl`} />
+                      
+                      {/* Border gradient */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-20 rounded-lg`} />
+                      <div className="absolute inset-[1px] bg-background rounded-lg" />
+                      
+                      {/* Content */}
+                      <div className="relative p-5 flex flex-col items-center text-center space-y-3">
+                        {/* Icon with glow */}
+                        <div className="relative">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} blur-lg opacity-50 animate-pulse`} />
+                          <Icon className={`relative h-10 w-10 ${item.iconColor} drop-shadow-[0_0_8px_currentColor]`} />
+                        </div>
+                        
+                        {/* Animated counter */}
+                        <div className="space-y-1">
+                          <p className={`text-3xl font-bold bg-gradient-to-br ${item.gradient} bg-clip-text text-transparent tabular-nums`}>
+                            <AnimatedCounter value={item.value} />
+                          </p>
+                          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                            {item.label}
+                          </p>
+                        </div>
+                        
+                        {/* Scan line effect */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Recent Activity Feed */}
+              {recentEvents.length > 0 && (
+                <div className="relative">
+                  {/* Section header */}
+                  <div className="flex items-center gap-2 mb-4 pb-2 border-b border-primary/20">
+                    <Activity className="h-4 w-4 text-primary animate-pulse" />
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-primary">
+                      Live Activity Feed
+                    </h4>
+                    <div className="ml-auto flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_currentColor]" />
+                      <span className="text-xs text-muted-foreground">ACTIVE</span>
+                    </div>
+                  </div>
+                  
+                  {/* Activity list */}
+                  <div className="space-y-2">
+                    {recentEvents.map((event, index) => (
+                      <div
+                        key={index}
+                        className="group relative overflow-hidden rounded-lg border border-primary/10 bg-gradient-to-r from-background via-primary/5 to-background hover:border-primary/30 transition-all duration-300 animate-fade-in"
+                        style={{ animationDelay: `${index * 100}ms` }}
+                      >
+                        {/* Animated border glow */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        
+                        <div className="relative flex items-start justify-between p-4">
+                          <div className="flex-1 min-w-0 space-y-1">
+                            <p className="text-sm text-foreground font-medium truncate">
+                              {event.message}
+                            </p>
+                            <p className="text-xs text-muted-foreground font-mono">
+                              {event.timestamp.toLocaleString()}
+                            </p>
+                          </div>
+                          <Badge 
+                            variant={getSeverityColor(event.severity)} 
+                            className="ml-3 flex-shrink-0 shadow-sm"
+                          >
+                            {event.type.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        
+                        {/* Scan line */}
+                        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
