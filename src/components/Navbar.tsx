@@ -186,7 +186,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-16 px-2 sm:px-4 lg:px-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative gap-2">
+    <nav className="h-16 pl-0 pr-2 sm:pr-4 lg:pr-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative gap-2">
       {/* Left: Logo */}
       <div className="cursor-pointer" onClick={handleLogoClick}>
         <span className="text-blue-900 font-bold text-lg sm:text-xl lg:text-2xl tracking-tight truncate">
