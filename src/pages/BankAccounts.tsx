@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from '@/components/ui/modern-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -406,80 +406,80 @@ const BankAccounts = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-        <ModernTabs defaultValue="personal" className="w-full">
-          <ModernTabsList className="grid w-full grid-cols-2">
-            <ModernTabsTrigger value="personal" count={personalAccounts.length}>
-              Personal Accounts
-            </ModernTabsTrigger>
-            <ModernTabsTrigger value="business" count={businessAccounts.length}>
-              Business Accounts
-            </ModernTabsTrigger>
-          </ModernTabsList>
+      <Tabs defaultValue="personal" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="personal" count={personalAccounts.length}>
+            Personal Accounts
+          </TabsTrigger>
+          <TabsTrigger value="business" count={businessAccounts.length}>
+            Business Accounts
+          </TabsTrigger>
+        </TabsList>
 
-          <ModernTabsContent value="personal" className="space-y-6">
-            <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Total Personal Balance</p>
-                    <p className="text-3xl font-bold">
-                      {formatCurrency(calculateTotalBalance(personalAccounts))}
-                    </p>
-                  </div>
-                  <TrendingUp className="w-12 h-12 text-primary" />
+        <TabsContent value="personal" className="space-y-6">
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Total Personal Balance</p>
+                  <p className="text-3xl font-bold">
+                    {formatCurrency(calculateTotalBalance(personalAccounts))}
+                  </p>
                 </div>
+                <TrendingUp className="w-12 h-12 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {personalAccounts.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              {personalAccounts.map(renderAccountCard)}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="text-center py-12">
+                <Landmark className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No Personal Accounts</h3>
+                <p className="text-muted-foreground mb-4">
+                  Connect your first personal bank account to get started
+                </p>
               </CardContent>
             </Card>
+          )}
+        </TabsContent>
 
-            {personalAccounts.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2">
-                {personalAccounts.map(renderAccountCard)}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Landmark className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Personal Accounts</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Connect your first personal bank account to get started
+        <TabsContent value="business" className="space-y-6">
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Total Business Balance</p>
+                  <p className="text-3xl font-bold">
+                    {formatCurrency(calculateTotalBalance(businessAccounts))}
                   </p>
-                </CardContent>
-              </Card>
-            )}
-          </ModernTabsContent>
-
-          <ModernTabsContent value="business" className="space-y-6">
-            <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Total Business Balance</p>
-                    <p className="text-3xl font-bold">
-                      {formatCurrency(calculateTotalBalance(businessAccounts))}
-                    </p>
-                  </div>
-                  <TrendingUp className="w-12 h-12 text-primary" />
                 </div>
+                <TrendingUp className="w-12 h-12 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {businessAccounts.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              {businessAccounts.map(renderAccountCard)}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="text-center py-12">
+                <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No Business Accounts</h3>
+                <p className="text-muted-foreground mb-4">
+                  Connect your first business bank account to get started
+                </p>
               </CardContent>
             </Card>
-
-            {businessAccounts.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2">
-                {businessAccounts.map(renderAccountCard)}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Business Accounts</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Connect your first business bank account to get started
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </ModernTabsContent>
-        </ModernTabs>
+          )}
+        </TabsContent>
+      </Tabs>
       </div>
     </div>
   );

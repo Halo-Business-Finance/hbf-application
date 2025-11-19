@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, TrendingDown, ArrowRight, AlertCircle, CheckCircle2, XCircle, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from '@/components/ui/modern-tabs';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -161,7 +161,6 @@ export default function CreditReports() {
           <TabsTrigger value="business">Business Credit</TabsTrigger>
         </TabsList>
 
-        {/* Personal Credit Tab */}
         <TabsContent value="personal" className="space-y-6 mt-6">
           {/* Dual Credit Score Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -356,7 +355,6 @@ export default function CreditReports() {
           </Card>
         </TabsContent>
 
-        {/* Business Credit Tab */}
         <TabsContent value="business" className="space-y-6 mt-6">
           {/* Dual Business Credit Score Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

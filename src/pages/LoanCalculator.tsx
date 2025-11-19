@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from '@/components/ui/modern-tabs';
 import { Calculator, DollarSign, Percent, Calendar } from 'lucide-react';
 
 interface CalculationResult {
@@ -334,13 +334,13 @@ const LoanCalculator = () => {
               <CardDescription>Monthly breakdown of principal and interest payments</CardDescription>
             </CardHeader>
             <CardContent>
-              <ModernTabs defaultValue="yearly">
-                <ModernTabsList className="mb-4 grid w-full grid-cols-2">
-                  <ModernTabsTrigger value="yearly">Yearly Summary</ModernTabsTrigger>
-                  <ModernTabsTrigger value="monthly">Monthly Details</ModernTabsTrigger>
-                </ModernTabsList>
+              <Tabs defaultValue="yearly">
+                <TabsList className="mb-4 grid w-full grid-cols-2">
+                  <TabsTrigger value="yearly">Yearly Summary</TabsTrigger>
+                  <TabsTrigger value="monthly">Monthly Details</TabsTrigger>
+                </TabsList>
 
-                <ModernTabsContent value="yearly">
+                <TabsContent value="yearly">
                   <div className="max-h-[300px] overflow-y-auto space-y-4">
                     {Array.from({ length: Math.ceil(amortization.length / 12) }, (_, yearIndex) => {
                       const year = yearIndex + 1;
@@ -378,9 +378,9 @@ const LoanCalculator = () => {
                       );
                     })}
                   </div>
-                </ModernTabsContent>
+                </TabsContent>
 
-                <ModernTabsContent value="monthly">
+                <TabsContent value="monthly">
                   <div className="max-h-[300px] overflow-y-auto border rounded-lg">
                     <table className="w-full text-sm">
                       <thead className="sticky top-0 bg-background border-b">
@@ -405,8 +405,8 @@ const LoanCalculator = () => {
                       </tbody>
                     </table>
                   </div>
-                </ModernTabsContent>
-              </ModernTabs>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         )}

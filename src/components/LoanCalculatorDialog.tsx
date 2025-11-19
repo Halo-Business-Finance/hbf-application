@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from '@/components/ui/modern-tabs';
 import { Calculator, DollarSign, Percent, Calendar } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -325,13 +325,13 @@ export function LoanCalculatorDialog({ open, onOpenChange }: LoanCalculatorDialo
               <div className="space-y-4">
                 <h3 className="font-semibold text-blue-900">Amortization Schedule</h3>
                 
-                <ModernTabs defaultValue="yearly">
-                  <ModernTabsList className="mb-4 grid w-full grid-cols-2">
-                    <ModernTabsTrigger value="yearly">Yearly Summary</ModernTabsTrigger>
-                    <ModernTabsTrigger value="monthly">Monthly Details</ModernTabsTrigger>
-                  </ModernTabsList>
+                <Tabs defaultValue="yearly">
+                  <TabsList className="mb-4 grid w-full grid-cols-2">
+                    <TabsTrigger value="yearly">Yearly Summary</TabsTrigger>
+                    <TabsTrigger value="monthly">Monthly Details</TabsTrigger>
+                  </TabsList>
 
-                  <ModernTabsContent value="yearly">
+                  <TabsContent value="yearly">
                     <ScrollArea className="h-[300px] w-full rounded-md border p-4">
                       <div className="space-y-4">
                         {Array.from({ length: Math.ceil(amortization.length / 12) }, (_, yearIndex) => {
@@ -371,9 +371,9 @@ export function LoanCalculatorDialog({ open, onOpenChange }: LoanCalculatorDialo
                         })}
                       </div>
                     </ScrollArea>
-                  </ModernTabsContent>
+                  </TabsContent>
 
-                  <ModernTabsContent value="monthly">
+                  <TabsContent value="monthly">
                     <ScrollArea className="h-[300px] w-full rounded-md border">
                       <div className="p-4">
                         <table className="w-full text-sm">
@@ -400,8 +400,8 @@ export function LoanCalculatorDialog({ open, onOpenChange }: LoanCalculatorDialo
                         </table>
                       </div>
                     </ScrollArea>
-                  </ModernTabsContent>
-                </ModernTabs>
+                  </TabsContent>
+                </Tabs>
               </div>
             )}
           </div>
