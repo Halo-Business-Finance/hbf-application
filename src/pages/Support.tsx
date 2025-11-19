@@ -64,7 +64,7 @@ const Support = () => {
 
         <Tabs defaultValue="chat" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="chat" className="flex items-center gap-2">
+            <TabsTrigger value="chat" count={chatMessages.length} className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Live Chat
             </TabsTrigger>
