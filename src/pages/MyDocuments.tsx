@@ -14,7 +14,8 @@ import {
   X,
   History,
   UploadCloud,
-  Download
+  Download,
+  Share2
 } from 'lucide-react';
 import {
   Dialog,
@@ -22,6 +23,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -86,6 +88,10 @@ const MyDocuments = () => {
   const [uploadNewVersionDialogOpen, setUploadNewVersionDialogOpen] = useState(false);
   const [documentToUpdate, setDocumentToUpdate] = useState<Document | null>(null);
   const [newVersionFile, setNewVersionFile] = useState<File | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [documentToShare, setDocumentToShare] = useState<Document | null>(null);
+  const [shareableLink, setShareableLink] = useState('');
+  const [linkExpiry, setLinkExpiry] = useState('3600'); // Default 1 hour
 
   const folders: FolderCategory[] = [
     { id: 'business_tax_returns', name: 'Business Tax Returns', count: 0 },
@@ -391,6 +397,61 @@ const MyDocuments = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleShare = async (doc: Document, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDocumentToShare(doc);
+    setShareDialogOpen(true);
+  };
+
+  const handleGenerateShareLink = async () => {
+    if (!documentToShare) return;
+
+    try {
+      const expirySeconds = parseInt(linkExpiry);
+      const { data, error } = await supabase.storage
+        .from('borrower-documents')
+        .createSignedUrl(documentToShare.file_path, expirySeconds);
+
+      if (error) throw error;
+
+      setShareableLink(data.signedUrl);
+      toast({
+        title: "Success",
+        description: "Shareable link generated",
+      });
+    } catch (error) {
+      console.error('Error generating share link:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate shareable link",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareableLink);
+      toast({
+        title: "Success",
+        description: "Link copied to clipboard",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to copy link",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCloseShareDialog = () => {
+    setShareDialogOpen(false);
+    setDocumentToShare(null);
+    setShareableLink('');
+    setLinkExpiry('3600');
   };
 
   const handleDeleteClick = (doc: Document, e: React.MouseEvent) => {
@@ -710,6 +771,15 @@ const MyDocuments = () => {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8"
+                            onClick={(e) => handleShare(doc, e)}
+                            title="Share"
+                          >
+                            <Share2 className="w-4 h-4 text-accent" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
                             onClick={(e) => handleDeleteClick(doc, e)}
                             title="Delete"
                           >
@@ -983,6 +1053,14 @@ const MyDocuments = () => {
                   Download
                 </Button>
                 <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => previewDocument && handleShare(previewDocument, e)}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+                <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleClosePreview}
@@ -1064,6 +1142,61 @@ const MyDocuments = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Share Document Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={handleCloseShareDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Document</DialogTitle>
+            <DialogDescription>
+              Generate a secure, time-limited link to share {documentToShare?.file_name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Link Expiry</label>
+              <select
+                value={linkExpiry}
+                onChange={(e) => setLinkExpiry(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md bg-background"
+              >
+                <option value="3600">1 hour</option>
+                <option value="21600">6 hours</option>
+                <option value="86400">24 hours</option>
+                <option value="604800">7 days</option>
+              </select>
+            </div>
+            
+            {!shareableLink ? (
+              <Button onClick={handleGenerateShareLink} className="w-full">
+                Generate Link
+              </Button>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={shareableLink}
+                    readOnly
+                    className="flex-1 px-3 py-2 border rounded-md bg-muted text-sm"
+                  />
+                  <Button variant="outline" size="icon" onClick={handleCopyLink}>
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Link expires in {parseInt(linkExpiry) / 3600} hour(s)
+                </p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCloseShareDialog}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
