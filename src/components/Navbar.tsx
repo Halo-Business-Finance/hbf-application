@@ -186,7 +186,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-16 px-2 sm:px-4 lg:px-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative gap-4">
+    <nav className="h-16 px-2 sm:px-4 lg:px-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative gap-2">
       {/* Left: Logo and Sidebar Trigger */}
       <div className="flex items-center gap-2">
         <div className="cursor-pointer" onClick={handleLogoClick}>
@@ -198,9 +198,12 @@ const Navbar = () => {
         <SidebarTrigger className="m-0 text-blue-900" />
       </div>
 
-      {/* Search Bar */}
+      {/* Left Spacer */}
+      <div className="flex-1 hidden md:block"></div>
+
+      {/* Center: Search Bar */}
       {authenticated && (
-        <div className="flex-1 max-w-md hidden md:block">
+        <div className="w-full max-w-md hidden md:block">
           <Popover open={searchOpen} onOpenChange={setSearchOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -212,7 +215,7 @@ const Navbar = () => {
                 <span>Search applications and documents...</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-96 p-0" align="start">
+            <PopoverContent className="w-96 p-0" align="center">
               <Command shouldFilter={false}>
                 <CommandInput
                   placeholder="Search applications and documents..."
@@ -272,22 +275,23 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Mobile Search Button */}
-      {authenticated && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden text-blue-900"
-          onClick={() => setSearchOpen(true)}
-        >
-          <Search className="h-5 w-5" />
-        </Button>
-      )}
+      {/* Right Spacer */}
+      <div className="flex-1 hidden md:block"></div>
 
       {/* Right: Navigation Items */}
-      <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
+      <div className="flex items-center space-x-2 sm:space-x-4">
         {authenticated && (
           <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Mobile Search Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-blue-900"
+              onClick={() => setSearchOpen(true)}
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+
             {/* Notifications Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
