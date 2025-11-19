@@ -8,15 +8,36 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell, Calculator, BellRing } from 'lucide-react';
+import { LogOut, KeyRound, Home, UserCircle, Settings, FileText, Shield, Users, HelpCircle, Bell, Calculator, BellRing, Search } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { LoanCalculatorDialog } from '@/components/LoanCalculatorDialog';
 import { userNotificationService, Notification } from '@/services/userNotificationService';
 import { formatDistanceToNow } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+
+interface SearchResult {
+  id: string;
+  type: 'application' | 'document';
+  title: string;
+  subtitle: string;
+  url: string;
+}
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -25,6 +46,10 @@ const Navbar = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [recentNotifications, setRecentNotifications] = useState<Notification[]>([]);
   const [calculatorOpen, setCalculatorOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     if (authenticated) {
@@ -38,6 +63,79 @@ const Navbar = () => {
       return unsubscribe;
     }
   }, [authenticated]);
+
+  useEffect(() => {
+    if (!searchQuery.trim() || !authenticated) {
+      setSearchResults([]);
+      return;
+    }
+
+    const searchTimeout = setTimeout(async () => {
+      await performSearch(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(searchTimeout);
+  }, [searchQuery, authenticated]);
+
+  const performSearch = async (query: string) => {
+    if (!query.trim()) return;
+
+    setSearching(true);
+    try {
+      const results: SearchResult[] = [];
+
+      // Search loan applications
+      const { data: applications } = await supabase
+        .from('loan_applications')
+        .select('id, application_number, business_name, first_name, last_name, loan_type, status')
+        .or(`business_name.ilike.%${query}%,first_name.ilike.%${query}%,last_name.ilike.%${query}%,application_number.ilike.%${query}%`)
+        .limit(5);
+
+      if (applications) {
+        applications.forEach(app => {
+          results.push({
+            id: app.id,
+            type: 'application',
+            title: app.business_name || `${app.first_name} ${app.last_name}`,
+            subtitle: `Application #${app.application_number} - ${app.loan_type} - ${app.status}`,
+            url: isAdmin ? `/admin/applications/${app.id}` : '/applications',
+          });
+        });
+      }
+
+      // Search documents
+      const { data: documents } = await supabase
+        .from('borrower_documents')
+        .select('id, file_name, document_category, uploaded_at')
+        .ilike('file_name', `%${query}%`)
+        .eq('is_latest_version', true)
+        .limit(5);
+
+      if (documents) {
+        documents.forEach(doc => {
+          results.push({
+            id: doc.id,
+            type: 'document',
+            title: doc.file_name,
+            subtitle: `${doc.document_category} - Uploaded ${new Date(doc.uploaded_at).toLocaleDateString()}`,
+            url: '/documents',
+          });
+        });
+      }
+
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Error searching:', error);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleSearchSelect = (result: SearchResult) => {
+    navigate(result.url);
+    setSearchOpen(false);
+    setSearchQuery('');
+  };
 
   const loadNotifications = async () => {
     try {
@@ -102,8 +200,94 @@ const Navbar = () => {
         <SidebarTrigger className="m-0 text-blue-900" />
       </div>
 
+      {/* Search Bar */}
+      {authenticated && (
+        <div className="flex-1 max-w-md mx-4 hidden md:block">
+          <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-start text-muted-foreground hover:bg-muted/50"
+                onClick={() => setSearchOpen(true)}
+              >
+                <Search className="mr-2 h-4 w-4" />
+                <span>Search applications and documents...</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-96 p-0" align="start">
+              <Command shouldFilter={false}>
+                <CommandInput
+                  placeholder="Search applications and documents..."
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
+                <CommandList>
+                  <CommandEmpty>
+                    {searching ? 'Searching...' : 'No results found.'}
+                  </CommandEmpty>
+                  {searchResults.length > 0 && (
+                    <>
+                      <CommandGroup heading="Applications">
+                        {searchResults
+                          .filter(r => r.type === 'application')
+                          .map(result => (
+                            <CommandItem
+                              key={result.id}
+                              onSelect={() => handleSearchSelect(result)}
+                              className="cursor-pointer"
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              <div className="flex flex-col">
+                                <span className="font-medium">{result.title}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {result.subtitle}
+                                </span>
+                              </div>
+                            </CommandItem>
+                          ))}
+                      </CommandGroup>
+                      <CommandGroup heading="Documents">
+                        {searchResults
+                          .filter(r => r.type === 'document')
+                          .map(result => (
+                            <CommandItem
+                              key={result.id}
+                              onSelect={() => handleSearchSelect(result)}
+                              className="cursor-pointer"
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              <div className="flex flex-col">
+                                <span className="font-medium">{result.title}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {result.subtitle}
+                                </span>
+                              </div>
+                            </CommandItem>
+                          ))}
+                      </CommandGroup>
+                    </>
+                  )}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+
+      {/* Mobile Search Button */}
+      {authenticated && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden text-blue-900"
+          onClick={() => setSearchOpen(true)}
+        >
+          <Search className="h-5 w-5" />
+        </Button>
+      )}
+
       {/* Spacer */}
-      <div className="flex-1"></div>
+      <div className="flex-1 md:flex-none"></div>
 
       {/* Right: Navigation Items */}
       <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
