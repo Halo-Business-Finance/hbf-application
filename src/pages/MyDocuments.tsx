@@ -15,7 +15,8 @@ import {
   History,
   UploadCloud,
   Download,
-  Share2
+  Share2,
+  Mail
 } from 'lucide-react';
 import {
   Dialog,
@@ -92,6 +93,8 @@ const MyDocuments = () => {
   const [documentToShare, setDocumentToShare] = useState<Document | null>(null);
   const [shareableLink, setShareableLink] = useState('');
   const [linkExpiry, setLinkExpiry] = useState('3600'); // Default 1 hour
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const folders: FolderCategory[] = [
     { id: 'business_tax_returns', name: 'Business Tax Returns', count: 0 },
@@ -452,6 +455,65 @@ const MyDocuments = () => {
     setDocumentToShare(null);
     setShareableLink('');
     setLinkExpiry('3600');
+    setRecipientEmail('');
+  };
+
+  const handleSendEmail = async () => {
+    if (!recipientEmail || !shareableLink || !documentToShare) {
+      toast({
+        title: "Error",
+        description: "Please generate a link and enter recipient email",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(recipientEmail)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSendingEmail(true);
+
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const senderName = currentUser?.email || 'A user';
+
+      const response = await supabase.functions.invoke('send-document-email', {
+        body: {
+          recipientEmail,
+          documentName: documentToShare.file_name,
+          shareableLink,
+          senderName,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      toast({
+        title: "Success",
+        description: `Document shared with ${recipientEmail}`,
+      });
+
+      setRecipientEmail('');
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send email. Make sure Microsoft 365 credentials are configured.",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   const handleDeleteClick = (doc: Document, e: React.MouseEvent) => {
@@ -1172,21 +1234,45 @@ const MyDocuments = () => {
                 Generate Link
               </Button>
             ) : (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={shareableLink}
-                    readOnly
-                    className="flex-1 px-3 py-2 border rounded-md bg-muted text-sm"
-                  />
-                  <Button variant="outline" size="icon" onClick={handleCopyLink}>
-                    <Upload className="h-4 w-4" />
-                  </Button>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={shareableLink}
+                      readOnly
+                      className="flex-1 px-3 py-2 border rounded-md bg-muted text-sm"
+                    />
+                    <Button variant="outline" size="icon" onClick={handleCopyLink}>
+                      <Upload className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Link expires in {parseInt(linkExpiry) / 3600} hour(s)
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Link expires in {parseInt(linkExpiry) / 3600} hour(s)
-                </p>
+
+                <div className="border-t pt-4 space-y-2">
+                  <label className="text-sm font-medium">Send via Email</label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="recipient@example.com"
+                      value={recipientEmail}
+                      onChange={(e) => setRecipientEmail(e.target.value)}
+                      disabled={sendingEmail}
+                    />
+                    <Button 
+                      onClick={handleSendEmail} 
+                      disabled={sendingEmail || !recipientEmail}
+                    >
+                      {sendingEmail ? 'Sending...' : 'Send'}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    The shareable link will be sent to the recipient's email
+                  </p>
+                </div>
               </div>
             )}
           </div>
