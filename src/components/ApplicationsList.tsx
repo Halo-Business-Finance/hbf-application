@@ -26,7 +26,11 @@ interface LoanApplication {
   created_at: string;
 }
 
-const ApplicationsList = () => {
+interface ApplicationsListProps {
+  statusFilter?: string | null;
+}
+
+const ApplicationsList = ({ statusFilter = null }: ApplicationsListProps) => {
   const [applications, setApplications] = useState<LoanApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [collapsedCards, setCollapsedCards] = useState<Set<string>>(new Set());
@@ -159,6 +163,32 @@ const ApplicationsList = () => {
     );
   }
 
+  // Filter applications based on statusFilter prop
+  const filteredApplications = statusFilter 
+    ? applications.filter(app => {
+        if (statusFilter === 'all') return true;
+        if (statusFilter === 'pending') return app.status === 'under_review' || app.status === 'submitted';
+        if (statusFilter === 'approved') return app.status === 'approved' || app.status === 'funded';
+        return app.status === statusFilter;
+      })
+    : applications;
+
+  if (filteredApplications.length === 0 && statusFilter) {
+    return (
+      <div>
+        <Card>
+          <CardContent className="p-12 text-center">
+            <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No Applications Found</h3>
+            <p className="text-muted-foreground">
+              No applications match the selected filter.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const getStatusMessage = (status: string) => {
     const messages = {
       draft: { text: 'Draft - Continue Application', color: 'text-gray-700' },
@@ -174,7 +204,7 @@ const ApplicationsList = () => {
   return (
     <div>
       <div className="space-y-4">
-        {applications.map((application) => {
+        {filteredApplications.map((application) => {
           const statusInfo = getStatusMessage(application.status);
           const isCollapsed = collapsedCards.has(application.id);
           

@@ -158,6 +158,8 @@ const DashboardView = () => {
     pendingReview: 0,
     successRate: 0
   });
+  const [activeTab, setActiveTab] = useState('applications');
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const { user } = useAuth();
   const [firstName, setFirstName] = useState<string | null>(null);
   useEffect(() => {
@@ -198,6 +200,11 @@ const DashboardView = () => {
     fetchStats();
   }, [user]);
 
+  const handleMetricClick = (filter: string) => {
+    setStatusFilter(filter);
+    setActiveTab('applications');
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8 mb-12">
       {/* Welcome Header */}
@@ -216,7 +223,10 @@ const DashboardView = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
+        <Card 
+          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => handleMetricClick('all')}
+        >
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Total Applications</p>
@@ -225,7 +235,10 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
+        <Card 
+          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => handleMetricClick('approved')}
+        >
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Approved Amount</p>
@@ -234,7 +247,10 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
+        <Card 
+          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => handleMetricClick('pending')}
+        >
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Pending Review</p>
@@ -243,7 +259,10 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
+        <Card 
+          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => handleMetricClick('approved')}
+        >
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
@@ -254,7 +273,7 @@ const DashboardView = () => {
       </div>
 
       {/* Tabs Section */}
-      <Tabs defaultValue="applications" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-md">
           <TabsTrigger value="applications" className="text-xs sm:text-sm">My Applications</TabsTrigger>
           <TabsTrigger value="activity" className="text-xs sm:text-sm">Recent Activity</TabsTrigger>
@@ -262,7 +281,26 @@ const DashboardView = () => {
         </TabsList>
 
         <TabsContent value="applications" className="mt-6">
-          <ApplicationsList />
+          {statusFilter && (
+            <div className="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="bg-blue-900 text-white">
+                  Filter: {statusFilter === 'all' ? 'All Applications' : 
+                           statusFilter === 'pending' ? 'Pending Review' : 
+                           statusFilter === 'approved' ? 'Approved/Funded' : statusFilter}
+                </Badge>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setStatusFilter(null)}
+                className="text-blue-900 hover:text-blue-700"
+              >
+                Clear Filter
+              </Button>
+            </div>
+          )}
+          <ApplicationsList statusFilter={statusFilter} />
         </TabsContent>
 
         <TabsContent value="activity" className="mt-6">
