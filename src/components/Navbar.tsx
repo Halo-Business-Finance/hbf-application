@@ -186,23 +186,21 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="h-16 px-2 sm:px-4 lg:px-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative">
-      {/* Left: Logo */}
-      <div className="flex items-center cursor-pointer pr-4" onClick={handleLogoClick}>
-        <span className="text-blue-900 font-bold text-lg sm:text-xl lg:text-2xl tracking-tight truncate">
-          <span className="hidden sm:inline">Halo Business Finance</span>
-          <span className="sm:hidden">HBF</span>
-        </span>
-      </div>
-
-      {/* Sidebar Trigger */}
-      <div className="flex items-center">
+    <nav className="h-16 px-2 sm:px-4 lg:px-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative gap-4">
+      {/* Left: Logo and Sidebar Trigger */}
+      <div className="flex items-center gap-2">
+        <div className="cursor-pointer" onClick={handleLogoClick}>
+          <span className="text-blue-900 font-bold text-lg sm:text-xl lg:text-2xl tracking-tight truncate">
+            <span className="hidden sm:inline">Halo Business Finance</span>
+            <span className="sm:hidden">HBF</span>
+          </span>
+        </div>
         <SidebarTrigger className="m-0 text-blue-900" />
       </div>
 
       {/* Search Bar */}
       {authenticated && (
-        <div className="flex-1 max-w-md mx-4 hidden md:block">
+        <div className="flex-1 max-w-md hidden md:block">
           <Popover open={searchOpen} onOpenChange={setSearchOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -285,9 +283,6 @@ const Navbar = () => {
           <Search className="h-5 w-5" />
         </Button>
       )}
-
-      {/* Spacer */}
-      <div className="flex-1 md:flex-none"></div>
 
       {/* Right: Navigation Items */}
       <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
