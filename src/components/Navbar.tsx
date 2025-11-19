@@ -89,18 +89,21 @@ const Navbar = () => {
 
   return (
     <nav className="h-16 px-2 sm:px-4 lg:px-6 border-b bg-white flex w-full items-center sticky top-0 z-50 relative">
-      {/* Left: Sidebar Trigger */}
-      <div className="flex items-center">
-        <SidebarTrigger className="m-0 text-blue-900" />
-      </div>
-
-      {/* Center: Logo */}
-      <div className="flex-1 flex justify-center cursor-pointer px-4" onClick={handleLogoClick}>
+      {/* Left: Logo */}
+      <div className="flex items-center cursor-pointer pr-4" onClick={handleLogoClick}>
         <span className="text-blue-900 font-bold text-lg sm:text-xl lg:text-2xl tracking-tight truncate">
           <span className="hidden sm:inline">Halo Business Finance</span>
           <span className="sm:hidden">HBF</span>
         </span>
       </div>
+
+      {/* Sidebar Trigger */}
+      <div className="flex items-center">
+        <SidebarTrigger className="m-0 text-blue-900" />
+      </div>
+
+      {/* Spacer */}
+      <div className="flex-1"></div>
 
       {/* Right: Navigation Items */}
       <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
