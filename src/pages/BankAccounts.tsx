@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -406,19 +406,17 @@ const BankAccounts = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="personal" className="flex items-center gap-2">
-              <User className="w-4 h-4" />
+        <ModernTabs defaultValue="personal" className="w-full">
+          <ModernTabsList className="grid w-full grid-cols-2">
+            <ModernTabsTrigger value="personal" count={personalAccounts.length}>
               Personal Accounts
-            </TabsTrigger>
-            <TabsTrigger value="business" className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
+            </ModernTabsTrigger>
+            <ModernTabsTrigger value="business" count={businessAccounts.length}>
               Business Accounts
-            </TabsTrigger>
-          </TabsList>
+            </ModernTabsTrigger>
+          </ModernTabsList>
 
-          <TabsContent value="personal" className="space-y-6">
+          <ModernTabsContent value="personal" className="space-y-6">
             <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
@@ -439,19 +437,19 @@ const BankAccounts = () => {
               </div>
             ) : (
               <Card>
-                <CardContent className="p-12 text-center">
-                  <Landmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-semibold mb-2">No Personal Accounts</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Connect your personal bank accounts via our third-party API integration
+                <CardContent className="text-center py-12">
+                  <Landmark className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Personal Accounts</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Connect your first personal bank account to get started
                   </p>
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
+          </ModernTabsContent>
 
-          <TabsContent value="business" className="space-y-6">
-            <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5">
+          <ModernTabsContent value="business" className="space-y-6">
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -460,7 +458,7 @@ const BankAccounts = () => {
                       {formatCurrency(calculateTotalBalance(businessAccounts))}
                     </p>
                   </div>
-                  <TrendingUp className="w-12 h-12 text-blue-600" />
+                  <TrendingUp className="w-12 h-12 text-primary" />
                 </div>
               </CardContent>
             </Card>
@@ -471,17 +469,17 @@ const BankAccounts = () => {
               </div>
             ) : (
               <Card>
-                <CardContent className="p-12 text-center">
-                  <Landmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-semibold mb-2">No Business Accounts</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Connect your business bank accounts via our third-party API integration
+                <CardContent className="text-center py-12">
+                  <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Business Accounts</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Connect your first business bank account to get started
                   </p>
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
-        </Tabs>
+          </ModernTabsContent>
+        </ModernTabs>
       </div>
     </div>
   );

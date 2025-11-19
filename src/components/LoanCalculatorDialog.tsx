@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
 import { Calculator, DollarSign, Percent, Calendar } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -325,78 +325,83 @@ export function LoanCalculatorDialog({ open, onOpenChange }: LoanCalculatorDialo
               <div className="space-y-4">
                 <h3 className="font-semibold text-blue-900">Amortization Schedule</h3>
                 
-                <Tabs defaultValue="yearly">
-                  <TabsList className="mb-4">
-                    <TabsTrigger value="yearly">Yearly Summary</TabsTrigger>
-                    <TabsTrigger value="monthly">Monthly Details</TabsTrigger>
-                  </TabsList>
+                <ModernTabs defaultValue="yearly">
+                  <ModernTabsList className="mb-4 grid w-full grid-cols-2">
+                    <ModernTabsTrigger value="yearly">Yearly Summary</ModernTabsTrigger>
+                    <ModernTabsTrigger value="monthly">Monthly Details</ModernTabsTrigger>
+                  </ModernTabsList>
 
-                  <TabsContent value="yearly">
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse text-sm">
-                        <thead>
-                          <tr className="border-b">
-                            <th className="text-left p-2">Year</th>
-                            <th className="text-right p-2">Payment</th>
-                            <th className="text-right p-2">Principal</th>
-                            <th className="text-right p-2">Interest</th>
-                            <th className="text-right p-2">Balance</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {amortization
-                            .filter((_, index) => index % 12 === 11 || index === amortization.length - 1)
-                            .map((entry) => {
-                              const year = Math.ceil(entry.month / 12);
-                              const yearStart = (year - 1) * 12;
-                              const yearEnd = Math.min(year * 12, amortization.length);
-                              const yearEntries = amortization.slice(yearStart, yearEnd);
-                              const yearPayment = yearEntries.reduce((sum, e) => sum + e.payment, 0);
-                              const yearPrincipal = yearEntries.reduce((sum, e) => sum + e.principal, 0);
-                              const yearInterest = yearEntries.reduce((sum, e) => sum + e.interest, 0);
+                  <ModernTabsContent value="yearly">
+                    <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                      <div className="space-y-4">
+                        {Array.from({ length: Math.ceil(amortization.length / 12) }, (_, yearIndex) => {
+                          const year = yearIndex + 1;
+                          const yearData = amortization.slice(yearIndex * 12, (yearIndex + 1) * 12);
+                          const yearPayment = yearData.reduce((sum, entry) => sum + entry.payment, 0);
+                          const yearPrincipal = yearData.reduce((sum, entry) => sum + entry.principal, 0);
+                          const yearInterest = yearData.reduce((sum, entry) => sum + entry.interest, 0);
+                          const endBalance = yearData[yearData.length - 1]?.balance || 0;
 
-                              return (
-                                <tr key={entry.month} className="border-b hover:bg-muted/50">
-                                  <td className="p-2 font-medium">{year}</td>
-                                  <td className="text-right p-2">{formatCurrency(yearPayment)}</td>
-                                  <td className="text-right p-2">{formatCurrency(yearPrincipal)}</td>
-                                  <td className="text-right p-2">{formatCurrency(yearInterest)}</td>
-                                  <td className="text-right p-2">{formatCurrency(entry.balance)}</td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </TabsContent>
+                          return (
+                            <div key={year} className="p-4 border rounded-lg bg-card">
+                              <div className="font-semibold mb-3 flex items-center gap-2">
+                                <Calendar className="h-4 w-4" />
+                                Year {year}
+                              </div>
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div>
+                                  <p className="text-muted-foreground">Total Payment</p>
+                                  <p className="font-medium">{formatCurrency(yearPayment)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-muted-foreground">Principal</p>
+                                  <p className="font-medium">{formatCurrency(yearPrincipal)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-muted-foreground">Interest</p>
+                                  <p className="font-medium">{formatCurrency(yearInterest)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-muted-foreground">End Balance</p>
+                                  <p className="font-medium">{formatCurrency(endBalance)}</p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </ScrollArea>
+                  </ModernTabsContent>
 
-                  <TabsContent value="monthly">
-                    <div className="max-h-[400px] overflow-y-auto">
-                      <table className="w-full border-collapse text-sm">
-                        <thead className="sticky top-0 bg-background">
-                          <tr className="border-b">
-                            <th className="text-left p-2">Month</th>
-                            <th className="text-right p-2">Payment</th>
-                            <th className="text-right p-2">Principal</th>
-                            <th className="text-right p-2">Interest</th>
-                            <th className="text-right p-2">Balance</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {amortization.map((entry) => (
-                            <tr key={entry.month} className="border-b hover:bg-muted/50">
-                              <td className="p-2">{entry.month}</td>
-                              <td className="text-right p-2">{formatCurrency(entry.payment)}</td>
-                              <td className="text-right p-2">{formatCurrency(entry.principal)}</td>
-                              <td className="text-right p-2">{formatCurrency(entry.interest)}</td>
-                              <td className="text-right p-2">{formatCurrency(entry.balance)}</td>
+                  <ModernTabsContent value="monthly">
+                    <ScrollArea className="h-[300px] w-full rounded-md border">
+                      <div className="p-4">
+                        <table className="w-full text-sm">
+                          <thead className="sticky top-0 bg-background border-b">
+                            <tr className="text-left">
+                              <th className="p-2">Month</th>
+                              <th className="p-2">Payment</th>
+                              <th className="p-2">Principal</th>
+                              <th className="p-2">Interest</th>
+                              <th className="p-2">Balance</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                          </thead>
+                          <tbody>
+                            {amortization.map((entry) => (
+                              <tr key={entry.month} className="border-b hover:bg-muted/50">
+                                <td className="p-2">{entry.month}</td>
+                                <td className="p-2">{formatCurrency(entry.payment)}</td>
+                                <td className="p-2">{formatCurrency(entry.principal)}</td>
+                                <td className="p-2">{formatCurrency(entry.interest)}</td>
+                                <td className="p-2">{formatCurrency(entry.balance)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </ScrollArea>
+                  </ModernTabsContent>
+                </ModernTabs>
               </div>
             )}
           </div>
