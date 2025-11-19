@@ -13,7 +13,8 @@ import {
   Eye,
   X,
   History,
-  UploadCloud
+  UploadCloud,
+  Download
 } from 'lucide-react';
 import {
   Dialog,
@@ -360,6 +361,38 @@ const MyDocuments = () => {
     }
   };
 
+  const handleDownload = async (doc: Document, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const { data, error } = await supabase.storage
+        .from('borrower-documents')
+        .createSignedUrl(doc.file_path, 60); // 1 minute expiry
+
+      if (error) throw error;
+
+      // Create a temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = data.signedUrl;
+      link.download = doc.file_name;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({
+        title: "Success",
+        description: "Document download started",
+      });
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      toast({
+        title: "Error",
+        description: "Failed to download document",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleDeleteClick = (doc: Document, e: React.MouseEvent) => {
     e.stopPropagation();
     setDocumentToDelete(doc);
@@ -668,6 +701,15 @@ const MyDocuments = () => {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8"
+                            onClick={(e) => handleDownload(doc, e)}
+                            title="Download"
+                          >
+                            <Download className="w-4 h-4 text-secondary" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
                             onClick={(e) => handleDeleteClick(doc, e)}
                             title="Delete"
                           >
@@ -931,14 +973,24 @@ const MyDocuments = () => {
                   )}
                 </DialogDescription>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClosePreview}
-                className="h-8 w-8"
-              >
-                <X className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => previewDocument && handleDownload(previewDocument, e)}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClosePreview}
+                  className="h-8 w-8"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </DialogHeader>
           
