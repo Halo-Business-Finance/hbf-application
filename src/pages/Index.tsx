@@ -961,17 +961,17 @@ const Index = () => {
         {/* Back Button */}
         {selectedLoanType && (
           <div className="mb-8 animate-slide-up">
-            <Alert className="border-primary/20 bg-primary/5">
+            <Alert className="border-border bg-background">
               <AlertDescription className="flex items-center justify-between">
                 <Button 
                   variant="ghost" 
                   onClick={handleBackToHome}
-                  className="p-0 h-auto text-primary hover:text-primary/80 font-semibold group"
+                  className="p-0 h-auto text-foreground hover:text-foreground/80 font-semibold group"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                   Return to Loan Types
                 </Button>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-foreground">
                   Your progress will be saved as a draft
                 </span>
               </AlertDescription>
