@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from '@/components/ui/modern-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
@@ -285,9 +285,9 @@ const ExistingLoans = () => {
         </div>
 
         <Tabs defaultValue="commercial" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="commercial">Commercial Loans</TabsTrigger>
-            <TabsTrigger value="business">Business Loans</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="commercial" count={commercialLoans.length}>Commercial Loans</TabsTrigger>
+            <TabsTrigger value="business" count={businessLoans.length}>Business Loans</TabsTrigger>
           </TabsList>
 
           <TabsContent value="commercial" className="space-y-6">

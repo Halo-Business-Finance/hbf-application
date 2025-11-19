@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from '@/components/ui/modern-tabs';
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from '@/components/ui/modern-tabs';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { adminService } from '@/services/adminService';
@@ -271,7 +271,7 @@ const AdminLoanDetail = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="details" className="space-y-4">
-          <TabsList>
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="details">Application Details</TabsTrigger>
             <TabsTrigger value="status">Status Management</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>

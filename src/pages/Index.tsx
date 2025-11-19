@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, HelpCircle, LogIn, Home, Building2, CreditCard, Store, Banknote, TrendingUp, Sparkles, CheckCircle, ArrowRight, Shield, Building, Settings, HardHat, Handshake, FileText, RotateCcw, Zap, DollarSign, Clock, Eye, EyeOff } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { ModernTabs, ModernTabsContent, ModernTabsList, ModernTabsTrigger } from "@/components/ui/modern-tabs";
+import { ModernTabs as Tabs, ModernTabsContent as TabsContent, ModernTabsList as TabsList, ModernTabsTrigger as TabsTrigger } from "@/components/ui/modern-tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import ApplicationsList from "@/components/ApplicationsList";
@@ -335,6 +335,7 @@ const Index = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -683,7 +684,7 @@ const Index = () => {
             </CardHeader>
             <CardContent className="px-6 pb-6">
               <Tabs value={isLogin ? "login" : "signup"} onValueChange={switchMode} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="login">Sign In</TabsTrigger>
                   <TabsTrigger value="signup">Sign Up</TabsTrigger>
                 </TabsList>
@@ -754,77 +755,36 @@ const Index = () => {
                         </span>
                       </div>
                     </div>
-                    
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-11 text-sm" 
-                      onClick={handleMicrosoftSignIn}
-                      disabled={authLoading}
-                    >
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23">
-                        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-                        <path fill="#f35325" d="M1 1h10v10H1z"/>
-                        <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                        <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                      </svg>
-                      Continue with Microsoft
-                    </Button>
-                    
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-11 text-sm" 
-                      onClick={handleGoogleSignIn}
-                      disabled={authLoading}
-                    >
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                      </svg>
-                      Continue with Google
-                    </Button>
-                    
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-11 text-sm" 
-                      onClick={handleAppleSignIn}
-                      disabled={authLoading}
-                    >
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                      </svg>
-                      Continue with Apple
-                    </Button>
-                    
-                    <div className="text-center pt-2">
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M23.498 12.275c0-.813-.073-1.594-.21-2.347H12v4.437h6.437c-.278 1.49-1.121 2.752-2.39 3.598v2.989h3.867c2.265-2.083 3.571-5.15 3.571-8.677z" fill="#4285F4"/>
+                          <path d="M12 24c3.24 0 5.957-1.075 7.942-2.913l-3.867-2.99c-1.075.72-2.45 1.145-4.075 1.145-3.132 0-5.785-2.115-6.735-4.952H1.248v3.086C3.215 21.318 7.289 24 12 24z" fill="#34A853"/>
+                          <path d="M5.265 14.29c-.242-.72-.38-1.49-.38-2.29s.138-1.57.38-2.29V6.623H1.248C.455 8.216 0 10.054 0 12s.455 3.784 1.248 5.377l4.017-3.087z" fill="#FBBC05"/>
+                          <path d="M12 4.758c1.765 0 3.35.606 4.596 1.796l3.447-3.447C17.953 1.142 15.24 0 12 0 7.289 0 3.215 2.682 1.248 6.623l4.017 3.087c.95-2.837 3.603-4.952 6.735-4.952z" fill="#EA4335"/>
+                        </svg>
+                      </Button>
+
+                      <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 384 512">
+                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                        </svg>
+                      </Button>
+
+                      <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.145 12.086c.007.206.01.412.01.62 0 6.337-4.824 10.81-13.615 10.81-2.711 0-5.234-.78-7.354-2.116.375.041.756.062 1.142.062 2.244 0 4.309-.757 5.954-2.03-2.098-.038-3.868-1.416-4.478-3.307.293.056.593.086.902.086.437 0 .86-.058 1.262-.167-2.189-.439-3.838-2.364-3.838-4.673v-.061c.645.356 1.383.57 2.169.595-1.284-.853-2.128-2.313-2.128-3.963 0-.874.237-1.693.65-2.397 2.359 2.883 5.887 4.78 9.864 4.979-.082-.348-.124-.711-.124-1.084 0-2.624 2.138-4.755 4.773-4.755 1.373 0 2.613.575 3.484 1.495 1.088-.213 2.11-.61 3.034-1.155-.357 1.106-1.114 2.035-2.099 2.621.967-.115 1.887-.369 2.742-.746-.64.955-1.448 1.794-2.38 2.467z"/>
+                        </svg>
+                      </Button>
+                    </div>
+
+                    <div className="text-center">
                       <Button 
-                        type="button" 
+                        type="button"
                         variant="link" 
-                        className="text-sm text-foreground hover:text-foreground/80 p-0 h-auto"
-                        onClick={async () => {
-                          if (!email) {
-                            setAuthError("Please enter your email address first");
-                            return;
-                          }
-                          setAuthLoading(true);
-                          const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                            redirectTo: `${window.location.origin}/?type=recovery`
-                          });
-                          setAuthLoading(false);
-                          if (error) {
-                            setAuthError(error.message);
-                          } else {
-                            toast({
-                              title: "Password reset email sent!",
-                              description: "Check your email for the reset link.",
-                            });
-                          }
-                        }}
+                        className="text-xs text-foreground"
+                        onClick={() => navigate('/forgot-password')}
                       >
                         Forgot your password?
                       </Button>
@@ -839,8 +799,7 @@ const Index = () => {
                         <Label htmlFor="firstName" className="text-foreground font-normal text-sm">First Name</Label>
                         <Input
                           id="firstName"
-                          type="text"
-                          placeholder="First name"
+                          placeholder="John"
                           value={firstName}
                           onChange={(e) => setFirstName(e.target.value)}
                           required
@@ -852,8 +811,7 @@ const Index = () => {
                         <Label htmlFor="lastName" className="text-foreground font-normal text-sm">Last Name</Label>
                         <Input
                           id="lastName"
-                          type="text"
-                          placeholder="Last name"
+                          placeholder="Smith"
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
                           required
@@ -862,11 +820,24 @@ const Index = () => {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
-                      <Label htmlFor="signupEmail" className="text-foreground font-normal text-sm">Email</Label>
+                      <Label htmlFor="business" className="text-foreground font-normal text-sm">Business Name</Label>
                       <Input
-                        id="signupEmail"
+                        id="business"
+                        placeholder="Your Business LLC"
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                        required
+                        disabled={authLoading}
+                        className="h-10"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email" className="text-foreground font-normal text-sm">Email</Label>
+                      <Input
+                        id="signup-email"
                         type="email"
                         placeholder="Enter your email"
                         value={email}
@@ -878,17 +849,16 @@ const Index = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signupPassword" className="text-foreground font-normal text-sm">Password</Label>
+                      <Label htmlFor="signup-password" className="text-foreground font-normal text-sm">Password</Label>
                       <div className="relative">
                         <Input
-                          id="signupPassword"
+                          id="signup-password"
                           type={showPassword ? "text" : "password"}
                           placeholder="Create a password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           required
                           disabled={authLoading}
-                          minLength={6}
                           className="h-10 pr-10"
                         />
                         <Button
@@ -907,21 +877,6 @@ const Index = () => {
                         </Button>
                       </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-foreground font-normal text-sm">Confirm Password</Label>
-                      <Input
-                        id="confirmPassword"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        disabled={authLoading}
-                        minLength={6}
-                        className="h-10"
-                      />
-                    </div>
 
                     {authError && (
                       <Alert variant="destructive">
@@ -930,9 +885,9 @@ const Index = () => {
                     )}
 
                     <Button type="submit" className="w-full h-11 text-base font-medium" disabled={authLoading}>
-                      {authLoading ? "Creating account..." : "Sign Up"}
+                      {authLoading ? "Creating Account..." : "Create Account"}
                     </Button>
-                    
+
                     <div className="relative py-2">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t" />
@@ -943,52 +898,40 @@ const Index = () => {
                         </span>
                       </div>
                     </div>
-                    
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-11 text-sm" 
-                      onClick={handleMicrosoftSignIn}
-                      disabled={authLoading}
-                    >
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23">
-                        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-                        <path fill="#f35325" d="M1 1h10v10H1z"/>
-                        <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                        <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                      </svg>
-                      Continue with Microsoft
-                    </Button>
-                    
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-11 text-sm" 
-                      onClick={handleGoogleSignIn}
-                      disabled={authLoading}
-                    >
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                      </svg>
-                      Continue with Google
-                    </Button>
-                    
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-11 text-sm" 
-                      onClick={handleAppleSignIn}
-                      disabled={authLoading}
-                    >
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                      </svg>
-                      Continue with Apple
-                    </Button>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M23.498 12.275c0-.813-.073-1.594-.21-2.347H12v4.437h6.437c-.278 1.49-1.121 2.752-2.39 3.598v2.989h3.867c2.265-2.083 3.571-5.15 3.571-8.677z" fill="#4285F4"/>
+                          <path d="M12 24c3.24 0 5.957-1.075 7.942-2.913l-3.867-2.99c-1.075.72-2.45 1.145-4.075 1.145-3.132 0-5.785-2.115-6.735-4.952H1.248v3.086C3.215 21.318 7.289 24 12 24z" fill="#34A853"/>
+                          <path d="M5.265 14.29c-.242-.72-.38-1.49-.38-2.29s.138-1.57.38-2.29V6.623H1.248C.455 8.216 0 10.054 0 12s.455 3.784 1.248 5.377l4.017-3.087z" fill="#FBBC05"/>
+                          <path d="M12 4.758c1.765 0 3.35.606 4.596 1.796l3.447-3.447C17.953 1.142 15.24 0 12 0 7.289 0 3.215 2.682 1.248 6.623l4.017 3.087c.95-2.837 3.603-4.952 6.735-4.952z" fill="#EA4335"/>
+                        </svg>
+                      </Button>
+
+                      <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 384 512">
+                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                        </svg>
+                      </Button>
+
+                      <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.145 12.086c.007.206.01.412.01.62 0 6.337-4.824 10.81-13.615 10.81-2.711 0-5.234-.78-7.354-2.116.375.041.756.062 1.142.062 2.244 0 4.309-.757 5.954-2.03-2.098-.038-3.868-1.416-4.478-3.307.293.056.593.086.902.086.437 0 .86-.058 1.262-.167-2.189-.439-3.838-2.364-3.838-4.673v-.061c.645.356 1.383.57 2.169.595-1.284-.853-2.128-2.313-2.128-3.963 0-.874.237-1.693.65-2.397 2.359 2.883 5.887 4.78 9.864 4.979-.082-.348-.124-.711-.124-1.084 0-2.624 2.138-4.755 4.773-4.755 1.373 0 2.613.575 3.484 1.495 1.088-.213 2.11-.61 3.034-1.155-.357 1.106-1.114 2.035-2.099 2.621.967-.115 1.887-.369 2.742-.746-.64.955-1.448 1.794-2.38 2.467z"/>
+                        </svg>
+                      </Button>
+                    </div>
+
+                    <div className="text-center">
+                      <Button 
+                        type="button"
+                        variant="link" 
+                        className="text-xs text-foreground"
+                        onClick={() => navigate('/forgot-password')}
+                      >
+                        Forgot your password?
+                      </Button>
+                    </div>
                   </form>
                 </TabsContent>
               </Tabs>
