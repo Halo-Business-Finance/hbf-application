@@ -216,7 +216,7 @@ const DashboardView = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Total Applications</p>
@@ -225,7 +225,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Approved Amount</p>
@@ -234,7 +234,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Pending Review</p>
@@ -243,7 +243,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer">
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
