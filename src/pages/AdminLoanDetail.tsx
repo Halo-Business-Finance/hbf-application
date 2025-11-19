@@ -273,9 +273,9 @@ const AdminLoanDetail = () => {
         <Tabs defaultValue="details" className="space-y-4">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="details">Application Details</TabsTrigger>
-            <TabsTrigger value="status">Status Management</TabsTrigger>
+            <TabsTrigger value="status" count={statusHistory.length}>Status Management</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="history" count={statusHistory.length}>History</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-4">

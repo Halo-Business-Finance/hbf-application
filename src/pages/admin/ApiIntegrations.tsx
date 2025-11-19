@@ -299,9 +299,9 @@ const ApiIntegrations = () => {
 
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">All Integrations</TabsTrigger>
-            <TabsTrigger value="active">Active</TabsTrigger>
-            <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
+            <TabsTrigger value="all" count={integrations.length}>All Integrations</TabsTrigger>
+            <TabsTrigger value="active" count={integrations.filter(i => i.isActive).length}>Active</TabsTrigger>
+            <TabsTrigger value="webhooks" count={webhooks.length}>Webhooks</TabsTrigger>
             <TabsTrigger value="api-keys">API Keys</TabsTrigger>
           </TabsList>
 

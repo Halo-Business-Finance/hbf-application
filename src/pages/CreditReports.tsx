@@ -157,8 +157,8 @@ export default function CreditReports() {
       {/* Tabs for Personal vs Business */}
       <Tabs defaultValue="personal" className="w-full">
         <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="personal">Personal Credit</TabsTrigger>
-          <TabsTrigger value="business">Business Credit</TabsTrigger>
+          <TabsTrigger value="personal" count={2}>Personal Credit</TabsTrigger>
+          <TabsTrigger value="business" count={2}>Business Credit</TabsTrigger>
         </TabsList>
 
         <TabsContent value="personal" className="space-y-6 mt-6">
