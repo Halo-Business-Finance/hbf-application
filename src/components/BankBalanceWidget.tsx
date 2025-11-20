@@ -60,17 +60,17 @@ export const BankBalanceWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-none shadow-sm overflow-hidden bg-orange-500">
-        <CardHeader className="bg-orange-600">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-blue-900 flex items-center gap-2">
+      <Card className="border-none shadow-sm overflow-hidden bg-white">
+        <CardHeader className="bg-blue-950">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Bank Accounts
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 bg-orange-500">
+        <CardContent className="p-6 bg-white">
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-orange-400 rounded w-1/3"></div>
-            <div className="h-4 bg-orange-400 rounded w-1/2"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
           </div>
         </CardContent>
       </Card>
@@ -79,60 +79,60 @@ export const BankBalanceWidget = () => {
 
   if (accounts.length === 0) {
     return (
-      <Card className="border-none shadow-sm overflow-hidden bg-orange-500">
-        <CardHeader className="bg-orange-600">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-blue-900 flex items-center gap-2">
+      <Card className="border-none shadow-sm overflow-hidden bg-white">
+        <CardHeader className="bg-blue-950">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Bank Accounts
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 bg-orange-500">
-          <p className="text-sm text-blue-800">No active bank accounts</p>
+        <CardContent className="p-6 bg-white">
+          <p className="text-sm text-gray-700">No active bank accounts</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-none shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-orange-500">
-      <CardHeader className="bg-orange-600">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-blue-900 flex items-center gap-2">
+    <Card className="border-none shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-white">
+      <CardHeader className="bg-blue-950">
+        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
           <Wallet className="w-4 h-4" />
           Bank Accounts
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 bg-orange-500">
+      <CardContent className="p-6 bg-white">
         <div className="mb-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-blue-900">{formatCurrency(totalBalance)}</span>
-            <Badge variant="outline" className="border-blue-900 bg-blue-900/10 text-blue-900 font-semibold">
+            <span className="text-3xl font-bold text-gray-900">{formatCurrency(totalBalance)}</span>
+            <Badge variant="outline" className="border-gray-900 bg-gray-900/10 text-gray-900 font-semibold">
               Total Balance
             </Badge>
           </div>
-          <p className="text-xs text-blue-800/70 mt-1">{accounts.length} active account{accounts.length > 1 ? 's' : ''}</p>
+          <p className="text-xs text-gray-600 mt-1">{accounts.length} active account{accounts.length > 1 ? 's' : ''}</p>
         </div>
 
         <div className="space-y-3">
           {totalPersonal > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900">Personal</p>
-                <p className="text-xs text-blue-800/70">{personalAccounts.length} account{personalAccounts.length > 1 ? 's' : ''}</p>
+                <p className="text-sm font-medium text-gray-900">Personal</p>
+                <p className="text-xs text-gray-600">{personalAccounts.length} account{personalAccounts.length > 1 ? 's' : ''}</p>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold text-blue-900">{formatCurrency(totalPersonal)}</p>
+                <p className="text-lg font-semibold text-gray-900">{formatCurrency(totalPersonal)}</p>
               </div>
             </div>
           )}
           
           {totalBusiness > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900">Business</p>
-                <p className="text-xs text-blue-800/70">{businessAccounts.length} account{businessAccounts.length > 1 ? 's' : ''}</p>
+                <p className="text-sm font-medium text-gray-900">Business</p>
+                <p className="text-xs text-gray-600">{businessAccounts.length} account{businessAccounts.length > 1 ? 's' : ''}</p>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold text-blue-900">{formatCurrency(totalBusiness)}</p>
+                <p className="text-lg font-semibold text-gray-900">{formatCurrency(totalBusiness)}</p>
               </div>
             </div>
           )}
