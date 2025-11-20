@@ -286,7 +286,7 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden text-blue-900"
+              className="md:hidden text-foreground hover:bg-muted/50 transition-colors"
               onClick={() => setSearchOpen(true)}
             >
               <Search className="h-5 w-5" />
@@ -298,7 +298,7 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-blue-900 hover:bg-accent relative"
+                  className="text-foreground hover:bg-muted/50 transition-colors relative"
                 >
                   <Bell className="w-5 h-5" />
                   {notificationCount > 0 && (
@@ -368,7 +368,7 @@ const Navbar = () => {
               variant="ghost"
               size="icon"
               onClick={() => setCalculatorOpen(true)}
-              className="text-blue-900 hover:bg-accent"
+              className="text-foreground hover:bg-muted/50 transition-colors"
               title="Loan Calculator"
             >
               <Calculator className="w-5 h-5" />
@@ -385,7 +385,7 @@ const Navbar = () => {
               variant="ghost"
               size="icon"
               onClick={() => navigate('/support')}
-              className="text-blue-900 hover:bg-accent"
+              className="text-foreground hover:bg-muted/50 transition-colors"
             >
               <HelpCircle className="w-5 h-5" />
             </Button>
@@ -393,8 +393,8 @@ const Navbar = () => {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity px-3 py-2 rounded-md hover:bg-accent">
-                  <UserCircle className="w-5 h-5 text-blue-900" />
+                <div className="flex items-center space-x-2 cursor-pointer px-3 py-2 rounded-md hover:bg-muted/50 transition-colors">
+                  <UserCircle className="w-5 h-5 text-foreground" />
                 </div>
               </DropdownMenuTrigger>
               
