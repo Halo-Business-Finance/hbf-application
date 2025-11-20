@@ -114,12 +114,12 @@ export const CreditScoreWidget = () => {
         {averageScore && (
           <div className="mb-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-blue-900">{averageScore}</span>
-              <Badge variant="outline" className="border-blue-900 bg-blue-900/10 text-blue-900 font-semibold">
+              <span className="text-3xl font-bold text-white">{averageScore}</span>
+              <Badge variant="outline" className="border-white bg-white/10 text-white font-semibold">
                 {getScoreRating(averageScore)}
               </Badge>
             </div>
-            <p className="text-xs text-blue-800/70 mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
+            <p className="text-xs text-white/80 mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
           </div>
         )}
         
@@ -127,13 +127,13 @@ export const CreditScoreWidget = () => {
           {scores.map((score) => (
             <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900">{getBureauDisplay(score.bureau)}</p>
-                <p className="text-xs text-blue-800/70">
+                <p className="text-sm font-medium text-white">{getBureauDisplay(score.bureau)}</p>
+                <p className="text-xs text-white/80">
                   {new Date(score.score_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold text-blue-900">{score.score}</p>
+                <p className="text-lg font-semibold text-white">{score.score}</p>
               </div>
             </div>
           ))}
