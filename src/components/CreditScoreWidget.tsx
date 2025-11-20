@@ -69,9 +69,9 @@ export const CreditScoreWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-none shadow-sm overflow-hidden bg-orange-500">
-        <CardHeader className="bg-orange-600">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-blue-900 flex items-center gap-2">
+      <Card className="border-none shadow-sm overflow-hidden bg-blue-900">
+        <CardHeader className="bg-blue-950">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-orange-500 flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Credit Scores
           </CardTitle>
@@ -88,9 +88,9 @@ export const CreditScoreWidget = () => {
 
   if (scores.length === 0) {
     return (
-      <Card className="border-none shadow-sm overflow-hidden bg-orange-500">
-        <CardHeader className="bg-orange-600">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-blue-900 flex items-center gap-2">
+      <Card className="border-none shadow-sm overflow-hidden bg-blue-900">
+        <CardHeader className="bg-blue-950">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-orange-500 flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Credit Scores
           </CardTitle>
@@ -103,9 +103,9 @@ export const CreditScoreWidget = () => {
   }
 
   return (
-    <Card className="border-none shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-orange-500">
-      <CardHeader className="bg-orange-600">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-blue-900 flex items-center gap-2">
+    <Card className="border-none shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-blue-900">
+      <CardHeader className="bg-blue-950">
+        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-orange-500 flex items-center gap-2">
           <Activity className="w-4 h-4" />
           Credit Scores
         </CardTitle>
