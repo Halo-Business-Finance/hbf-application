@@ -69,14 +69,14 @@ export const CreditScoreWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-2 border-orange-500 shadow-sm bg-orange-500">
-        <CardHeader className="bg-orange-600 border-b border-orange-400">
+      <Card className="border-2 border-blue-900 shadow-sm overflow-hidden">
+        <CardHeader className="bg-blue-900 border-b border-blue-800">
           <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Credit Scores
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="p-6 bg-orange-500">
           <div className="animate-pulse space-y-3">
             <div className="h-8 bg-orange-400 rounded w-1/3"></div>
             <div className="h-4 bg-orange-400 rounded w-1/2"></div>
@@ -88,29 +88,29 @@ export const CreditScoreWidget = () => {
 
   if (scores.length === 0) {
     return (
-      <Card className="border-2 border-orange-500 shadow-sm bg-orange-500">
-        <CardHeader className="bg-orange-600 border-b border-orange-400">
+      <Card className="border-2 border-blue-900 shadow-sm overflow-hidden">
+        <CardHeader className="bg-blue-900 border-b border-blue-800">
           <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Credit Scores
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
-          <p className="text-sm text-white/90">No credit scores available</p>
+        <CardContent className="p-6 bg-orange-500">
+          <p className="text-sm text-white">No credit scores available</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-2 border-orange-500 shadow-sm hover:shadow-md transition-all duration-200 bg-orange-500">
-      <CardHeader className="bg-orange-600 border-b border-orange-400">
+    <Card className="border-2 border-blue-900 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+      <CardHeader className="bg-blue-900 border-b border-blue-800">
         <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
           <Activity className="w-4 h-4" />
           Credit Scores
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-6 bg-orange-500">
         {averageScore && (
           <div className="mb-4">
             <div className="flex items-baseline gap-2">
@@ -119,13 +119,13 @@ export const CreditScoreWidget = () => {
                 {getScoreRating(averageScore)}
               </Badge>
             </div>
-            <p className="text-xs text-white/90 mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
+            <p className="text-xs text-white mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
           </div>
         )}
         
         <div className="space-y-3">
           {scores.map((score) => (
-            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
+            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-orange-600/50 border border-orange-400">
               <div className="flex-1">
                 <p className="text-sm font-medium text-white">{getBureauDisplay(score.bureau)}</p>
                 <p className="text-xs text-white/90">
