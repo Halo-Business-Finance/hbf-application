@@ -83,27 +83,27 @@ export const DashboardOverview = () => {
 
   return (
     <Card className="border-2 border-blue-950 bg-gradient-to-br from-blue-950 to-blue-900 shadow-lg hover:shadow-xl transition-all duration-200">
-      <CardContent className="p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Total Balance */}
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/10 rounded-lg">
-              <Wallet className="w-8 h-8 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/10 rounded-lg">
+              <Wallet className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-sm text-white/70 uppercase tracking-wide mb-1">Total Balance</p>
-              <p className="text-4xl font-bold text-white">{formatCurrency(totalBalance)}</p>
+              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Total Balance</p>
+              <p className="text-2xl font-bold text-white">{formatCurrency(totalBalance)}</p>
             </div>
           </div>
 
           {/* Average Credit Score */}
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/10 rounded-lg">
-              <TrendingUp className="w-8 h-8 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/10 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-sm text-white/70 uppercase tracking-wide mb-1">Average Credit Score</p>
-              <p className="text-4xl font-bold text-white">
+              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Average Credit Score</p>
+              <p className="text-2xl font-bold text-white">
                 {averageScore !== null ? averageScore : 'N/A'}
               </p>
             </div>
