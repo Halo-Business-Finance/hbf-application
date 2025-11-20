@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { Wallet, Building2, User, TrendingUp } from 'lucide-react';
+import { Building2, User } from 'lucide-react';
 
 interface BankAccount {
   id: string;
@@ -60,84 +59,79 @@ export const BankBalanceWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-2 border-blue-950 shadow-lg overflow-hidden bg-white rounded-lg">
-        <CardHeader className="bg-blue-950">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
-            <Wallet className="w-4 h-4" />
-            Bank Accounts
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 bg-white">
-          <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="border border-gray-200 shadow-sm bg-white">
+            <CardContent className="p-6">
+              <div className="animate-pulse space-y-3">
+                <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-12 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     );
   }
 
   if (accounts.length === 0) {
     return (
-      <Card className="border-2 border-blue-950 shadow-lg overflow-hidden bg-white rounded-lg">
-        <CardHeader className="bg-blue-950">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
-            <Wallet className="w-4 h-4" />
-            Bank Accounts
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 bg-white">
-          <p className="text-sm text-gray-700">No active bank accounts</p>
+      <Card className="border border-gray-200 shadow-sm bg-white">
+        <CardContent className="p-6 text-center">
+          <Building2 className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+          <p className="text-lg font-semibold text-gray-900 mb-1">No Bank Accounts</p>
+          <p className="text-sm text-gray-600">Connect your first bank account to get started</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-2 border-blue-950 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden bg-white rounded-lg">
-      <CardHeader className="bg-blue-950">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
-          <Wallet className="w-4 h-4" />
-          Bank Accounts
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 bg-white">
-        <div className="mb-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-gray-900">{formatCurrency(totalBalance)}</span>
-            <Badge variant="outline" className="border-gray-900 bg-gray-900/10 text-gray-900 font-semibold">
-              Total Balance
-            </Badge>
-          </div>
-          <p className="text-xs text-gray-600 mt-1">{accounts.length} active account{accounts.length > 1 ? 's' : ''}</p>
-        </div>
-
-        <div className="space-y-3">
-          {totalPersonal > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">Personal</p>
-                <p className="text-xs text-gray-600">{personalAccounts.length} account{personalAccounts.length > 1 ? 's' : ''}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-semibold text-gray-900">{formatCurrency(totalPersonal)}</p>
-              </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {personalAccounts.map((account) => (
+        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <User className="w-5 h-5 text-blue-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Personal Account</h3>
             </div>
-          )}
-          
-          {totalBusiness > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">Business</p>
-                <p className="text-xs text-gray-600">{businessAccounts.length} account{businessAccounts.length > 1 ? 's' : ''}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-semibold text-gray-900">{formatCurrency(totalBusiness)}</p>
-              </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-1">{account.account_name}</p>
+              <p className="text-sm font-medium text-gray-700">{account.institution}</p>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-green-600">{formatCurrency(Number(account.balance))}</span>
+            </div>
+            
+            <p className="text-xs text-gray-600 mt-3">Last synced: Recently</p>
+          </CardContent>
+        </Card>
+      ))}
+      
+      {businessAccounts.map((account) => (
+        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Building2 className="w-5 h-5 text-blue-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Business Account</h3>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-1">{account.account_name}</p>
+              <p className="text-sm font-medium text-gray-700">{account.institution}</p>
+            </div>
+            
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-green-600">{formatCurrency(Number(account.balance))}</span>
+            </div>
+            
+            <p className="text-xs text-gray-600 mt-3">Last synced: Recently</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 };
