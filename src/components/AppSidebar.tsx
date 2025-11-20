@@ -84,7 +84,7 @@ export function AppSidebar() {
       : 'text-white hover:bg-blue-800 hover:text-white border-l-4 border-transparent'} transition-all duration-200 group`;
 
   return (
-    <Sidebar collapsible="offcanvas" className="bg-blue-950 border-r-0">
+    <Sidebar collapsible="none" className="bg-blue-950 border-r-0">
       <SidebarContent className="flex flex-col bg-blue-950">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
