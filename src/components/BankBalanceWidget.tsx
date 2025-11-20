@@ -13,33 +13,41 @@ interface BankAccount {
 }
 
 export const BankBalanceWidget = () => {
-  const [accounts, setAccounts] = useState<BankAccount[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadBankAccounts();
-  }, []);
-
-  const loadBankAccounts = async () => {
-    try {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) return;
-
-      const { data, error } = await supabase
-        .from('bank_accounts')
-        .select('*')
-        .eq('user_id', user.user.id)
-        .eq('status', 'active')
-        .order('balance', { ascending: false });
-
-      if (error) throw error;
-      setAccounts(data || []);
-    } catch (error) {
-      console.error('Error loading bank accounts:', error);
-    } finally {
-      setIsLoading(false);
+  const [accounts] = useState<BankAccount[]>([
+    {
+      id: '1',
+      account_name: 'Main Checking',
+      institution: 'Chase Bank',
+      balance: 45230,
+      is_business: false,
+      status: 'active'
+    },
+    {
+      id: '2',
+      account_name: 'Savings Account',
+      institution: 'Wells Fargo',
+      balance: 78500,
+      is_business: false,
+      status: 'active'
+    },
+    {
+      id: '3',
+      account_name: 'Business Checking',
+      institution: 'Bank of America',
+      balance: 125000,
+      is_business: true,
+      status: 'active'
+    },
+    {
+      id: '4',
+      account_name: 'Payroll Account',
+      institution: 'Silicon Valley Bank',
+      balance: 89400,
+      is_business: true,
+      status: 'active'
     }
-  };
+  ]);
+  const [isLoading] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
