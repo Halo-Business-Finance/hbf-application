@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +16,13 @@ import {
   Clock,
   TrendingUp,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Search,
+  Filter,
+  ArrowUpDown
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ExistingLoan {
   id: string;
@@ -44,6 +49,9 @@ const ExistingLoans = () => {
   const [loadingData, setLoadingData] = useState(true);
   const [commercialLoans, setCommercialLoans] = useState<ExistingLoan[]>([]);
   const [businessLoans, setBusinessLoans] = useState<ExistingLoan[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('balance_desc');
 
   useEffect(() => {
     if (!loading && !authenticated) {
@@ -155,6 +163,56 @@ const ExistingLoans = () => {
   const calculateTotalMonthlyPayment = (loans: ExistingLoan[]) => {
     return loans.reduce((sum, loan) => sum + loan.monthlyPayment, 0);
   };
+
+  const filterAndSortLoans = (loans: ExistingLoan[]) => {
+    let filtered = [...loans];
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(loan =>
+        loan.loanName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        loan.lender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        loan.loanPurpose.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by status
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(loan => loan.status === statusFilter);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'balance_desc':
+          return b.loanBalance - a.loanBalance;
+        case 'balance_asc':
+          return a.loanBalance - b.loanBalance;
+        case 'payment_desc':
+          return b.monthlyPayment - a.monthlyPayment;
+        case 'payment_asc':
+          return a.monthlyPayment - b.monthlyPayment;
+        case 'maturity_asc':
+          return new Date(a.maturityDate).getTime() - new Date(b.maturityDate).getTime();
+        case 'maturity_desc':
+          return new Date(b.maturityDate).getTime() - new Date(a.maturityDate).getTime();
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  };
+
+  const filteredCommercialLoans = useMemo(() => 
+    filterAndSortLoans(commercialLoans), 
+    [commercialLoans, searchTerm, statusFilter, sortBy]
+  );
+  
+  const filteredBusinessLoans = useMemo(() => 
+    filterAndSortLoans(businessLoans), 
+    [businessLoans, searchTerm, statusFilter, sortBy]
+  );
 
   const renderLoanCard = (loan: ExistingLoan) => {
     const payoffPercentage = calculatePayoffPercentage(loan.loanBalance, loan.originalAmount);
@@ -286,109 +344,135 @@ const ExistingLoans = () => {
 
         <Tabs defaultValue="commercial" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="commercial" count={commercialLoans.length}>Commercial Loans</TabsTrigger>
-            <TabsTrigger value="business" count={businessLoans.length}>Business Loans</TabsTrigger>
+            <TabsTrigger value="commercial" count={filteredCommercialLoans.length}>Commercial Loans</TabsTrigger>
+            <TabsTrigger value="business" count={filteredBusinessLoans.length}>Business Loans</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="commercial" className="space-y-6">
-            {/* Summary Cards */}
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription className="text-xs">Total Balance</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(calculateTotalBalance(commercialLoans))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription className="text-xs">Total Monthly Payments</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(calculateTotalMonthlyPayment(commercialLoans))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription className="text-xs">Active Loans</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{commercialLoans.length}</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Loan Cards */}
-            {commercialLoans.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2">
-                {commercialLoans.map(renderLoanCard)}
+          <Card className="p-4 my-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search loans..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9"
+                />
               </div>
-            ) : (
+              
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="current">Current</SelectItem>
+                  <SelectItem value="funded_by_us">Funded by Us</SelectItem>
+                  <SelectItem value="partner_funded">Partner Funded</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger>
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="balance_desc">Balance (Highest First)</SelectItem>
+                  <SelectItem value="balance_asc">Balance (Lowest First)</SelectItem>
+                  <SelectItem value="payment_desc">Payment (Highest First)</SelectItem>
+                  <SelectItem value="payment_asc">Payment (Lowest First)</SelectItem>
+                  <SelectItem value="maturity_asc">Maturity (Soonest First)</SelectItem>
+                  <SelectItem value="maturity_desc">Maturity (Latest First)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </Card>
+
+          <TabsContent value="commercial" className="space-y-6">
+            {filteredCommercialLoans.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <Wallet className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-semibold mb-2">No Commercial Loans</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your commercial loans will appear here once pulled from third-party APIs or funded
-                  </p>
+                  <Wallet className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Commercial Loans</h3>
+                  <p className="text-muted-foreground">You don't have any commercial loans yet</p>
                 </CardContent>
               </Card>
+            ) : (
+              <>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                          <TrendingUp className="w-8 h-8 text-muted-foreground" />
+                          Total Balance
+                        </div>
+                        <div className="text-2xl font-bold text-primary">
+                          {formatCurrency(calculateTotalBalance(filteredCommercialLoans))}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                          <DollarSign className="w-8 h-8 text-muted-foreground" />
+                          Total Monthly Payment
+                        </div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(calculateTotalMonthlyPayment(filteredCommercialLoans))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="space-y-4">
+                  {filteredCommercialLoans.map((loan) => renderLoanCard(loan))}
+                </div>
+              </>
             )}
           </TabsContent>
 
           <TabsContent value="business" className="space-y-6">
-            {/* Summary Cards */}
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription className="text-xs">Total Balance</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(calculateTotalBalance(businessLoans))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription className="text-xs">Total Monthly Payments</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(calculateTotalMonthlyPayment(businessLoans))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription className="text-xs">Active Loans</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{businessLoans.length}</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Loan Cards */}
-            {businessLoans.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2">
-                {businessLoans.map(renderLoanCard)}
-              </div>
-            ) : (
+            {filteredBusinessLoans.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <Wallet className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-semibold mb-2">No Business Loans</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your business loans will appear here once pulled from third-party APIs or funded
-                  </p>
+                  <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Business Loans</h3>
+                  <p className="text-muted-foreground">You don't have any business loans yet</p>
                 </CardContent>
               </Card>
+            ) : (
+              <>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                          <TrendingUp className="w-8 h-8 text-muted-foreground" />
+                          Total Balance
+                        </div>
+                        <div className="text-2xl font-bold text-primary">
+                          {formatCurrency(calculateTotalBalance(filteredBusinessLoans))}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                          <DollarSign className="w-8 h-8 text-muted-foreground" />
+                          Total Monthly Payment
+                        </div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(calculateTotalMonthlyPayment(filteredBusinessLoans))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="space-y-4">
+                  {filteredBusinessLoans.map((loan) => renderLoanCard(loan))}
+                </div>
+              </>
             )}
           </TabsContent>
         </Tabs>

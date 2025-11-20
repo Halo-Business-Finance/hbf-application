@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Landmark, TrendingUp, DollarSign, Calendar, Building2, User, Plus, Trash2 } from 'lucide-react';
+import { Landmark, TrendingUp, DollarSign, Calendar, Building2, User, Plus, Trash2, Search, Filter, ArrowUpDown } from 'lucide-react';
 
 interface BankAccount {
   id: string;
@@ -46,6 +46,9 @@ const BankAccounts = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [accountTypeFilter, setAccountTypeFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('balance_desc');
   const [newAccount, setNewAccount] = useState<NewAccountForm>({
     account_name: '',
     account_number: '',
@@ -206,6 +209,56 @@ const BankAccounts = () => {
   const calculateTotalBalance = (accounts: BankAccount[]) => {
     return accounts.reduce((sum, account) => sum + account.balance, 0);
   };
+
+  const filterAndSortAccounts = (accounts: BankAccount[]) => {
+    let filtered = [...accounts];
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(account =>
+        account.account_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        account.institution.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        account.account_number.includes(searchTerm)
+      );
+    }
+
+    // Filter by account type
+    if (accountTypeFilter !== 'all') {
+      filtered = filtered.filter(account => account.account_type === accountTypeFilter);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'balance_desc':
+          return b.balance - a.balance;
+        case 'balance_asc':
+          return a.balance - b.balance;
+        case 'name_asc':
+          return a.account_name.localeCompare(b.account_name);
+        case 'name_desc':
+          return b.account_name.localeCompare(a.account_name);
+        case 'institution_asc':
+          return a.institution.localeCompare(b.institution);
+        case 'institution_desc':
+          return b.institution.localeCompare(a.institution);
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  };
+
+  const filteredPersonalAccounts = useMemo(() =>
+    filterAndSortAccounts(personalAccounts),
+    [personalAccounts, searchTerm, accountTypeFilter, sortBy]
+  );
+
+  const filteredBusinessAccounts = useMemo(() =>
+    filterAndSortAccounts(businessAccounts),
+    [businessAccounts, searchTerm, accountTypeFilter, sortBy]
+  );
 
   const renderAccountCard = (account: BankAccount) => (
     <Card key={account.id}>
@@ -406,80 +459,122 @@ const BankAccounts = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-      <Tabs defaultValue="personal" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="personal" count={personalAccounts.length}>
-            Personal Accounts
-          </TabsTrigger>
-          <TabsTrigger value="business" count={businessAccounts.length}>
-            Business Accounts
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="personal" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="personal" count={filteredPersonalAccounts.length}>
+              Personal Accounts
+            </TabsTrigger>
+            <TabsTrigger value="business" count={filteredBusinessAccounts.length}>
+              Business Accounts
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="personal" className="space-y-6">
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Personal Balance</p>
-                  <p className="text-3xl font-bold">
-                    {formatCurrency(calculateTotalBalance(personalAccounts))}
-                  </p>
-                </div>
-                <TrendingUp className="w-12 h-12 text-primary" />
+          <Card className="p-4 my-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search accounts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9"
+                />
               </div>
-            </CardContent>
+              
+              <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
+                <SelectTrigger>
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Checking">Checking</SelectItem>
+                  <SelectItem value="Savings">Savings</SelectItem>
+                  <SelectItem value="Money Market">Money Market</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger>
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="balance_desc">Balance (Highest First)</SelectItem>
+                  <SelectItem value="balance_asc">Balance (Lowest First)</SelectItem>
+                  <SelectItem value="name_asc">Name (A-Z)</SelectItem>
+                  <SelectItem value="name_desc">Name (Z-A)</SelectItem>
+                  <SelectItem value="institution_asc">Institution (A-Z)</SelectItem>
+                  <SelectItem value="institution_desc">Institution (Z-A)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </Card>
 
-          {personalAccounts.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2">
-              {personalAccounts.map(renderAccountCard)}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="text-center py-12">
-                <Landmark className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No Personal Accounts</h3>
-                <p className="text-muted-foreground mb-4">
-                  Connect your first personal bank account to get started
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="business" className="space-y-6">
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Business Balance</p>
-                  <p className="text-3xl font-bold">
-                    {formatCurrency(calculateTotalBalance(businessAccounts))}
-                  </p>
+          <TabsContent value="personal" className="space-y-6">
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Total Personal Balance</p>
+                    <p className="text-3xl font-bold">
+                      {formatCurrency(calculateTotalBalance(filteredPersonalAccounts))}
+                    </p>
+                  </div>
+                  <TrendingUp className="w-12 h-12 text-primary" />
                 </div>
-                <TrendingUp className="w-12 h-12 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {businessAccounts.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2">
-              {businessAccounts.map(renderAccountCard)}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="text-center py-12">
-                <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No Business Accounts</h3>
-                <p className="text-muted-foreground mb-4">
-                  Connect your first business bank account to get started
-                </p>
               </CardContent>
             </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+
+            {filteredPersonalAccounts.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {filteredPersonalAccounts.map(renderAccountCard)}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Landmark className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Personal Accounts</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Connect your first personal bank account to get started
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="business" className="space-y-6">
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Total Business Balance</p>
+                    <p className="text-3xl font-bold">
+                      {formatCurrency(calculateTotalBalance(filteredBusinessAccounts))}
+                    </p>
+                  </div>
+                  <TrendingUp className="w-12 h-12 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {filteredBusinessAccounts.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {filteredBusinessAccounts.map(renderAccountCard)}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No Business Accounts</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Connect your first business bank account to get started
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
