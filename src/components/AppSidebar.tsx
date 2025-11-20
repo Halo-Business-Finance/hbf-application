@@ -98,10 +98,14 @@ export function AppSidebar() {
                 </h2>
               </div>
             )}
-            <div className="px-4 mb-4">
-              <SidebarTrigger className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent/60 transition-all" />
-            </div>
-            {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Toggle Sidebar">
+                  <SidebarTrigger className="text-sidebar-foreground hover:bg-sidebar-accent/60 transition-all" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            {open && <SidebarGroupLabel className="mt-2">Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
