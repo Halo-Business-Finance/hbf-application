@@ -233,11 +233,11 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Amount</div>
+                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Loan Amount</div>
                     <div className="font-semibold text-xs sm:text-sm text-white">{formatCurrency(application.amount_requested)}</div>
                   </div>
                   <div className="hidden sm:block">
-                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Business</div>
+                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Business Name</div>
                     <div className="font-semibold text-xs sm:text-sm truncate text-white">{application.business_name}</div>
                   </div>
                   <div className="col-span-2 sm:col-span-1 flex items-start justify-between">
