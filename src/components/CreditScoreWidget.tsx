@@ -72,7 +72,7 @@ export const CreditScoreWidget = () => {
       <Card className="border-none shadow-sm overflow-hidden bg-blue-900">
         <CardHeader className="bg-blue-950">
           <CardTitle className="text-sm font-semibold uppercase tracking-wide text-orange-500 flex items-center gap-2">
-            <Activity className="w-4 h-4" />
+            <Activity className="w-4 h-4 text-white" />
             Credit Scores
           </CardTitle>
         </CardHeader>
@@ -91,7 +91,7 @@ export const CreditScoreWidget = () => {
       <Card className="border-none shadow-sm overflow-hidden bg-blue-900">
         <CardHeader className="bg-blue-950">
           <CardTitle className="text-sm font-semibold uppercase tracking-wide text-orange-500 flex items-center gap-2">
-            <Activity className="w-4 h-4" />
+            <Activity className="w-4 h-4 text-white" />
             Credit Scores
           </CardTitle>
         </CardHeader>
@@ -106,7 +106,7 @@ export const CreditScoreWidget = () => {
     <Card className="border-none shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-blue-900">
       <CardHeader className="bg-blue-950">
         <CardTitle className="text-sm font-semibold uppercase tracking-wide text-orange-500 flex items-center gap-2">
-          <Activity className="w-4 h-4" />
+          <Activity className="w-4 h-4 text-white" />
           Credit Scores
         </CardTitle>
       </CardHeader>
