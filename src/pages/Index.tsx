@@ -226,9 +226,9 @@ const DashboardView = () => {
         <Button 
           size="lg" 
           onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto bg-blue-950 hover:bg-blue-900 text-white"
         >
-          + New Application
+          + New Loan Application
         </Button>
       </div>
 
