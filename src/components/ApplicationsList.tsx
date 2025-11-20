@@ -291,16 +291,6 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                     <div className="flex flex-col gap-3">
                       {/* Main content */}
                       <div className="space-y-3">
-                        {/* Timeline Section */}
-                        <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                          <LoanTimeline 
-                            loanApplicationId={application.id} 
-                            currentStatus={application.status}
-                          />
-                        </div>
-                        
-                        <Separator className="bg-gray-200" />
-                        
                         {/* Progress Bar */}
                         <LoanProgressBar status={application.status} />
                         
