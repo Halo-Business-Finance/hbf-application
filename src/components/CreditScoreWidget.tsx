@@ -16,6 +16,7 @@ interface ScoreWithChange extends CreditScore {
 }
 
 export const CreditScoreWidget = () => {
+  const [filter, setFilter] = useState<'all' | string>('all');
   const [scores] = useState<ScoreWithChange[]>([
     {
       id: '1',
@@ -61,6 +62,8 @@ export const CreditScoreWidget = () => {
     return bureaus[bureau as keyof typeof bureaus] || bureau;
   };
 
+  const displayedScores = filter === 'all' ? scores : scores.filter(s => s.bureau === filter);
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -90,8 +93,35 @@ export const CreditScoreWidget = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {scores.map((score) => {
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <button
+          onClick={() => setFilter('all')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            filter === 'all' 
+              ? 'bg-blue-600 text-white shadow-sm' 
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+          }`}
+        >
+          All Bureaus ({scores.length})
+        </button>
+        {scores.map((score) => (
+          <button
+            key={score.bureau}
+            onClick={() => setFilter(score.bureau)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              filter === score.bureau 
+                ? 'bg-blue-600 text-white shadow-sm' 
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            {getBureauDisplay(score.bureau)}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {displayedScores.map((score) => {
         const scoreColor = score.score >= 740 ? 'text-green-600' : score.score >= 670 ? 'text-yellow-600' : 'text-orange-600';
         const changeColor = score.change > 0 ? 'text-green-600' : score.change < 0 ? 'text-red-600' : 'text-gray-500';
         const ChangeIcon = score.change > 0 ? TrendingUp : score.change < 0 ? TrendingDown : Minus;
@@ -120,7 +150,8 @@ export const CreditScoreWidget = () => {
             </CardContent>
           </Card>
         );
-      })}
+        })}
+      </div>
     </div>
   );
 };
