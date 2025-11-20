@@ -121,6 +121,39 @@ export type Database = {
           },
         ]
       }
+      credit_scores: {
+        Row: {
+          bureau: string
+          created_at: string
+          id: string
+          report_url: string | null
+          score: number
+          score_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bureau: string
+          created_at?: string
+          id?: string
+          report_url?: string | null
+          score: number
+          score_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bureau?: string
+          created_at?: string
+          id?: string
+          report_url?: string | null
+          score?: number
+          score_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       crm_activities: {
         Row: {
           activity_type: string
