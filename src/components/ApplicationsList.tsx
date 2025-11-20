@@ -284,12 +284,12 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
 
                 {/* Expandable Content Section */}
                 <CollapsibleContent>
-                  <CardContent className="p-4 sm:p-5 bg-white border-t border-gray-200">
-                    <div className="flex flex-col lg:flex-row gap-4">
+                  <CardContent className="p-3 sm:p-4 bg-white border-t border-gray-200">
+                    <div className="flex flex-col lg:flex-row gap-3">
                       {/* Left side - Timeline and details */}
-                      <div className="flex-1 space-y-4">
+                      <div className="flex-1 space-y-3">
                         {/* Timeline Section */}
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
                           <LoanTimeline 
                             loanApplicationId={application.id} 
                             currentStatus={application.status}
@@ -303,18 +303,18 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         
                         <Separator className="bg-gray-200" />
                         
-                        <div className="mb-2">
-                          <div className={`text-sm sm:text-base font-semibold ${statusInfo.color}`}>
+                        <div className="mb-1.5">
+                          <div className={`text-sm font-semibold ${statusInfo.color}`}>
                             {statusInfo.text}
                           </div>
                         </div>
                         
-                        <div className="flex gap-3 mb-3">
+                        <div className="flex gap-2 mb-2">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-sm sm:text-base mb-1 text-gray-900">
+                            <h3 className="font-semibold text-sm mb-0.5 text-gray-900">
                               {getLoanTypeDisplay(application.loan_type)}
                             </h3>
-                            <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                            <p className="text-xs text-gray-600 mb-0.5">
                               {application.first_name} {application.last_name} • {application.business_name}
                             </p>
                             {application.status === 'draft' && (
