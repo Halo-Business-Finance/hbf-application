@@ -60,17 +60,17 @@ export const BankBalanceWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-2 border-border/50 shadow-sm">
-        <CardHeader className="bg-muted/30 border-b border-border/50">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+      <Card className="border-2 border-blue-900 shadow-sm bg-blue-900">
+        <CardHeader className="bg-blue-950 border-b border-blue-800">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Bank Accounts
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-muted rounded w-1/3"></div>
-            <div className="h-4 bg-muted rounded w-1/2"></div>
+            <div className="h-8 bg-blue-800 rounded w-1/3"></div>
+            <div className="h-4 bg-blue-800 rounded w-1/2"></div>
           </div>
         </CardContent>
       </Card>
@@ -79,24 +79,24 @@ export const BankBalanceWidget = () => {
 
   if (accounts.length === 0) {
     return (
-      <Card className="border-2 border-border/50 shadow-sm">
-        <CardHeader className="bg-muted/30 border-b border-border/50">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+      <Card className="border-2 border-blue-900 shadow-sm bg-blue-900">
+        <CardHeader className="bg-blue-950 border-b border-blue-800">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Bank Accounts
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">No active bank accounts</p>
+          <p className="text-sm text-white/70">No active bank accounts</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-2 border-border/50 shadow-sm hover:shadow-md transition-all duration-200">
-      <CardHeader className="bg-muted/30 border-b border-border/50">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+    <Card className="border-2 border-blue-900 shadow-sm hover:shadow-md transition-all duration-200 bg-blue-900">
+      <CardHeader className="bg-blue-950 border-b border-blue-800">
+        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
           <Wallet className="w-4 h-4" />
           Bank Accounts
         </CardTitle>
@@ -104,38 +104,38 @@ export const BankBalanceWidget = () => {
       <CardContent className="p-6">
         <div className="mb-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-foreground">{formatCurrency(totalBalance)}</span>
-            <Badge variant="outline" className="border-emerald-600/30 bg-emerald-50 text-emerald-700">
+            <span className="text-3xl font-bold text-white">{formatCurrency(totalBalance)}</span>
+            <Badge variant="outline" className="border-orange-500 bg-orange-500 text-white">
               {accounts.length} Active
             </Badge>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">Total across all accounts</p>
+          <p className="text-xs text-white/70 mt-1">Total across all accounts</p>
         </div>
 
         <div className="space-y-3">
           {personalAccounts.length > 0 && (
-            <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
+            <div className="p-3 rounded-lg bg-blue-800/50 border border-blue-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">Personal Accounts</span>
+                  <User className="w-4 h-4 text-white/70" />
+                  <span className="text-sm font-medium text-white">Personal Accounts</span>
                 </div>
-                <span className="text-lg font-semibold text-foreground">{formatCurrency(totalPersonal)}</span>
+                <span className="text-lg font-semibold text-white">{formatCurrency(totalPersonal)}</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1 ml-6">{personalAccounts.length} account{personalAccounts.length > 1 ? 's' : ''}</p>
+              <p className="text-xs text-white/70 mt-1 ml-6">{personalAccounts.length} account{personalAccounts.length > 1 ? 's' : ''}</p>
             </div>
           )}
 
           {businessAccounts.length > 0 && (
-            <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
+            <div className="p-3 rounded-lg bg-blue-800/50 border border-blue-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">Business Accounts</span>
+                  <Building2 className="w-4 h-4 text-white/70" />
+                  <span className="text-sm font-medium text-white">Business Accounts</span>
                 </div>
-                <span className="text-lg font-semibold text-foreground">{formatCurrency(totalBusiness)}</span>
+                <span className="text-lg font-semibold text-white">{formatCurrency(totalBusiness)}</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1 ml-6">{businessAccounts.length} account{businessAccounts.length > 1 ? 's' : ''}</p>
+              <p className="text-xs text-white/70 mt-1 ml-6">{businessAccounts.length} account{businessAccounts.length > 1 ? 's' : ''}</p>
             </div>
           )}
         </div>

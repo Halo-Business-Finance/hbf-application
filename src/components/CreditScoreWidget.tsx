@@ -41,9 +41,9 @@ export const CreditScoreWidget = () => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 740) return 'text-emerald-600 border-emerald-600/30 bg-emerald-50';
-    if (score >= 670) return 'text-amber-600 border-amber-600/30 bg-amber-50';
-    return 'text-red-600 border-red-600/30 bg-red-50';
+    if (score >= 740) return 'text-white border-orange-500 bg-orange-500';
+    if (score >= 670) return 'text-white border-orange-400 bg-orange-400';
+    return 'text-white border-orange-600 bg-orange-600';
   };
 
   const getScoreRating = (score: number) => {
@@ -69,17 +69,17 @@ export const CreditScoreWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-2 border-border/50 shadow-sm">
-        <CardHeader className="bg-muted/30 border-b border-border/50">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+      <Card className="border-2 border-blue-900 shadow-sm bg-blue-900">
+        <CardHeader className="bg-blue-950 border-b border-blue-800">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Credit Scores
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-muted rounded w-1/3"></div>
-            <div className="h-4 bg-muted rounded w-1/2"></div>
+            <div className="h-8 bg-blue-800 rounded w-1/3"></div>
+            <div className="h-4 bg-blue-800 rounded w-1/2"></div>
           </div>
         </CardContent>
       </Card>
@@ -88,24 +88,24 @@ export const CreditScoreWidget = () => {
 
   if (scores.length === 0) {
     return (
-      <Card className="border-2 border-border/50 shadow-sm">
-        <CardHeader className="bg-muted/30 border-b border-border/50">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+      <Card className="border-2 border-blue-900 shadow-sm bg-blue-900">
+        <CardHeader className="bg-blue-950 border-b border-blue-800">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Credit Scores
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">No credit scores available</p>
+          <p className="text-sm text-white/70">No credit scores available</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-2 border-border/50 shadow-sm hover:shadow-md transition-all duration-200">
-      <CardHeader className="bg-muted/30 border-b border-border/50">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+    <Card className="border-2 border-blue-900 shadow-sm hover:shadow-md transition-all duration-200 bg-blue-900">
+      <CardHeader className="bg-blue-950 border-b border-blue-800">
+        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
           <Activity className="w-4 h-4" />
           Credit Scores
         </CardTitle>
@@ -114,26 +114,26 @@ export const CreditScoreWidget = () => {
         {averageScore && (
           <div className="mb-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-foreground">{averageScore}</span>
+              <span className="text-3xl font-bold text-white">{averageScore}</span>
               <Badge variant="outline" className={getScoreColor(averageScore)}>
                 {getScoreRating(averageScore)}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
+            <p className="text-xs text-white/70 mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
           </div>
         )}
         
         <div className="space-y-3">
           {scores.map((score) => (
-            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-border/50">
+            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-blue-800/50 border border-blue-700">
               <div className="flex-1">
-                <p className="text-sm font-medium text-foreground">{getBureauDisplay(score.bureau)}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-white">{getBureauDisplay(score.bureau)}</p>
+                <p className="text-xs text-white/70">
                   {new Date(score.score_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold text-foreground">{score.score}</p>
+                <p className="text-lg font-semibold text-white">{score.score}</p>
               </div>
             </div>
           ))}
