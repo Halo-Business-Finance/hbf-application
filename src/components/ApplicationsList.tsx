@@ -275,9 +275,12 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                           navigate(`/?id=7&app=${application.id}`);
                         }
                       }}
-                      className="w-full sm:w-auto border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-all"
+                      className="w-full sm:w-auto border-blue-950 bg-blue-950 text-white hover:bg-blue-900 transition-all flex items-center gap-2"
                     >
                       View Details
+                      <span className="text-xs font-semibold uppercase tracking-wide border border-white/30 bg-white/10 px-1.5 py-0.5 rounded">
+                        Active
+                      </span>
                     </Button>
                   </div>
                 )}
