@@ -42,6 +42,8 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB
+        // Don't include service worker files themselves in precache
+        globIgnores: ['**/sw.js', '**/workbox-*.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -76,6 +78,7 @@ export default defineConfig(({ mode }) => ({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
+              networkTimeoutSeconds: 10, // Fallback to cache after 10s
               expiration: {
                 maxEntries: 50,
                 maxAgeSeconds: 60 * 5 // 5 minutes
@@ -96,7 +99,11 @@ export default defineConfig(({ mode }) => ({
               }
             }
           }
-        ]
+        ],
+        // Enable navigation preload for faster page loads
+        navigationPreload: true,
+        // Clean up old caches automatically
+        cleanupOutdatedCaches: true
       }
     })
   ].filter(Boolean),
