@@ -241,49 +241,49 @@ const DashboardView = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card 
-          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('all')}
         >
           <CardContent className="p-6">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Total Applications</p>
-              <p className="text-3xl font-bold">{stats.totalApplications}</p>
+              <p className="text-sm text-orange-400 mb-1">Total Applications</p>
+              <p className="text-3xl font-bold text-white">{stats.totalApplications}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card 
-          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('approved')}
         >
           <CardContent className="p-6">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Approved Amount</p>
-              <p className="text-3xl font-bold">${stats.approvedAmount.toLocaleString()}</p>
+              <p className="text-sm text-orange-400 mb-1">Approved Amount</p>
+              <p className="text-3xl font-bold text-white">${stats.approvedAmount.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card 
-          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('pending')}
         >
           <CardContent className="p-6">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Pending Review</p>
-              <p className="text-3xl font-bold">{stats.pendingReview}</p>
+              <p className="text-sm text-orange-400 mb-1">Pending Review</p>
+              <p className="text-3xl font-bold text-white">{stats.pendingReview}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card 
-          className="border-2 border-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('approved')}
         >
           <CardContent className="p-6">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
-              <p className="text-3xl font-bold">{stats.successRate}%</p>
+              <p className="text-sm text-orange-400 mb-1">Success Rate</p>
+              <p className="text-3xl font-bold text-white">{stats.successRate}%</p>
             </div>
           </CardContent>
         </Card>
