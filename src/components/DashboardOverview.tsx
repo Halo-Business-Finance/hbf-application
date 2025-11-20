@@ -4,54 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Wallet, TrendingUp } from 'lucide-react';
 
 export const DashboardOverview = () => {
-  const [totalBalance, setTotalBalance] = useState(0);
-  const [averageScore, setAverageScore] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadOverviewData();
-  }, []);
-
-  const loadOverviewData = async () => {
-    try {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) return;
-
-      // Fetch bank accounts
-      const { data: accounts } = await supabase
-        .from('bank_accounts')
-        .select('balance')
-        .eq('user_id', user.user.id)
-        .eq('status', 'active');
-
-      // Fetch credit scores
-      const { data: scores } = await supabase
-        .from('credit_scores')
-        .select('score, bureau, score_date')
-        .eq('user_id', user.user.id)
-        .order('score_date', { ascending: false });
-
-      // Calculate total balance
-      const total = accounts?.reduce((sum, acc) => sum + Number(acc.balance), 0) || 0;
-      setTotalBalance(total);
-
-      // Calculate average score (get latest score per bureau)
-      if (scores && scores.length > 0) {
-        const bureauMap = new Map<string, number>();
-        scores.forEach(score => {
-          if (!bureauMap.has(score.bureau)) {
-            bureauMap.set(score.bureau, score.score);
-          }
-        });
-        const avg = Math.round(Array.from(bureauMap.values()).reduce((sum, s) => sum + s, 0) / bureauMap.size);
-        setAverageScore(avg);
-      }
-    } catch (error) {
-      console.error('Error loading overview data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [totalBalance] = useState(338130);
+  const [averageScore] = useState<number | null>(785);
+  const [isLoading] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

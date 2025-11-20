@@ -16,56 +16,33 @@ interface ScoreWithChange extends CreditScore {
 }
 
 export const CreditScoreWidget = () => {
-  const [scores, setScores] = useState<ScoreWithChange[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadCreditScores();
-  }, []);
-
-  const loadCreditScores = async () => {
-    try {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) return;
-
-      // Fetch all scores ordered by date to calculate changes
-      const { data, error } = await supabase
-        .from('credit_scores')
-        .select('*')
-        .eq('user_id', user.user.id)
-        .order('score_date', { ascending: false });
-
-      if (error) throw error;
-
-      // Group scores by bureau and calculate changes
-      const bureauMap = new Map<string, CreditScore[]>();
-      data?.forEach(score => {
-        if (!bureauMap.has(score.bureau)) {
-          bureauMap.set(score.bureau, []);
-        }
-        bureauMap.get(score.bureau)!.push(score);
-      });
-
-      // Get the latest score for each bureau with change calculation
-      const scoresWithChanges: ScoreWithChange[] = [];
-      bureauMap.forEach((bureauScores, bureau) => {
-        const latest = bureauScores[0];
-        const previous = bureauScores[1];
-        
-        scoresWithChanges.push({
-          ...latest,
-          change: previous ? latest.score - previous.score : 0,
-          previousScore: previous ? previous.score : null
-        });
-      });
-
-      setScores(scoresWithChanges);
-    } catch (error) {
-      console.error('Error loading credit scores:', error);
-    } finally {
-      setIsLoading(false);
+  const [scores] = useState<ScoreWithChange[]>([
+    {
+      id: '1',
+      score: 785,
+      bureau: 'experian',
+      score_date: '2025-11-15',
+      change: 12,
+      previousScore: 773
+    },
+    {
+      id: '2',
+      score: 792,
+      bureau: 'equifax',
+      score_date: '2025-11-15',
+      change: -5,
+      previousScore: 797
+    },
+    {
+      id: '3',
+      score: 778,
+      bureau: 'transunion',
+      score_date: '2025-11-15',
+      change: 8,
+      previousScore: 770
     }
-  };
+  ]);
+  const [isLoading] = useState(false);
 
   const getScoreRating = (score: number) => {
     if (score >= 800) return 'Exceptional';
