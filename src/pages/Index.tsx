@@ -234,14 +234,8 @@ const DashboardView = () => {
 
       {/* Dashboard Widgets */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div>
-          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">Bank Accounts</h2>
-          <BankBalanceWidget />
-        </div>
-        <div>
-          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">Credit Scores</h2>
-          <CreditScoreWidget />
-        </div>
+        <BankBalanceWidget />
+        <CreditScoreWidget />
       </div>
 
       {/* Stats Cards */}
