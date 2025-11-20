@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 
 interface CreditScore {
   id: string;
@@ -40,12 +39,6 @@ export const CreditScoreWidget = () => {
     }
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 740) return 'text-white border-orange-500 bg-orange-500';
-    if (score >= 670) return 'text-white border-orange-400 bg-orange-400';
-    return 'text-white border-orange-600 bg-orange-600';
-  };
-
   const getScoreRating = (score: number) => {
     if (score >= 800) return 'Exceptional';
     if (score >= 740) return 'Very Good';
@@ -63,39 +56,28 @@ export const CreditScoreWidget = () => {
     return bureaus[bureau as keyof typeof bureaus] || bureau;
   };
 
-  const averageScore = scores.length > 0 
-    ? Math.round(scores.reduce((sum, s) => sum + s.score, 0) / scores.length)
-    : null;
-
   if (isLoading) {
     return (
-      <Card className="border-2 border-blue-950 shadow-lg overflow-hidden bg-white rounded-lg">
-        <CardHeader className="bg-blue-950">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
-            <Activity className="w-4 h-4" />
-            Credit Scores
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 bg-white">
-          <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="border border-gray-200 shadow-sm bg-white">
+            <CardContent className="p-6">
+              <div className="animate-pulse space-y-3">
+                <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-16 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     );
   }
 
   if (scores.length === 0) {
     return (
-      <Card className="border-2 border-blue-950 shadow-lg overflow-hidden bg-white rounded-lg">
-        <CardHeader className="bg-blue-950">
-          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
-            <Activity className="w-4 h-4" />
-            Credit Scores
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 bg-white">
+      <Card className="border border-gray-200 shadow-sm bg-white">
+        <CardContent className="p-6">
           <p className="text-sm text-gray-700">No credit scores available</p>
         </CardContent>
       </Card>
@@ -103,42 +85,35 @@ export const CreditScoreWidget = () => {
   }
 
   return (
-    <Card className="border-2 border-blue-950 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden bg-white rounded-lg">
-      <CardHeader className="bg-blue-950">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
-          <Activity className="w-4 h-4" />
-          Credit Scores
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 bg-white">
-        {averageScore && (
-          <div className="mb-4">
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-gray-900">{averageScore}</span>
-              <Badge variant="outline" className="border-gray-900 bg-gray-900/10 text-gray-900 font-semibold">
-                {getScoreRating(averageScore)}
-              </Badge>
-            </div>
-            <p className="text-xs text-gray-600 mt-1">Average across {scores.length} bureau{scores.length > 1 ? 's' : ''}</p>
-          </div>
-        )}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {scores.map((score) => {
+        const scoreColor = score.score >= 740 ? 'text-green-600' : score.score >= 670 ? 'text-yellow-600' : 'text-orange-600';
+        const changeColor = 'text-green-600';
         
-        <div className="space-y-3">
-          {scores.map((score) => (
-            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{getBureauDisplay(score.bureau)}</p>
-                <p className="text-xs text-gray-600">
-                  {new Date(score.score_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </p>
+        return (
+          <Card key={score.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{getBureauDisplay(score.bureau)}</h3>
+              
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className={`text-6xl font-bold ${scoreColor}`}>{score.score}</span>
+                <span className="text-gray-600 text-lg">out of 850</span>
               </div>
-              <div className="text-right">
-                <p className="text-lg font-semibold text-gray-900">{score.score}</p>
+              
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-1 text-sm text-green-600">
+                  <TrendingUp className="w-4 h-4" />
+                  <span>+1 Point</span>
+                </div>
+                <span className="text-gray-400">•</span>
+                <span className="text-sm font-medium text-gray-700">{getScoreRating(score.score)}</span>
               </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+              
+              <p className="text-sm text-gray-600">Checked daily</p>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 };
