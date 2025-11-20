@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
 import { Building2, User } from 'lucide-react';
 
 interface BankAccount {
@@ -13,6 +12,7 @@ interface BankAccount {
 }
 
 export const BankBalanceWidget = () => {
+  const [filter, setFilter] = useState<'all' | 'personal' | 'business'>('all');
   const [accounts] = useState<BankAccount[]>([
     {
       id: '1',
@@ -61,9 +61,9 @@ export const BankBalanceWidget = () => {
   const personalAccounts = accounts.filter(a => !a.is_business);
   const businessAccounts = accounts.filter(a => a.is_business);
   
-  const totalPersonal = personalAccounts.reduce((sum, a) => sum + Number(a.balance), 0);
-  const totalBusiness = businessAccounts.reduce((sum, a) => sum + Number(a.balance), 0);
-  const totalBalance = totalPersonal + totalBusiness;
+  const displayedAccounts = filter === 'all' ? accounts : 
+                           filter === 'personal' ? personalAccounts : 
+                           businessAccounts;
 
   if (isLoading) {
     return (
@@ -96,50 +96,69 @@ export const BankBalanceWidget = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {personalAccounts.map((account) => (
-        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <User className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
-              <h3 className="text-lg font-semibold text-gray-900">Personal Account</h3>
-            </div>
-            
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-1">{account.account_name}</p>
-              <p className="text-sm font-medium text-gray-700">{account.institution}</p>
-            </div>
-            
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-green-600">{formatCurrency(Number(account.balance))}</span>
-            </div>
-            
-            <p className="text-xs text-gray-600 mt-3">Last synced: Recently</p>
-          </CardContent>
-        </Card>
-      ))}
-      
-      {businessAccounts.map((account) => (
-        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Building2 className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
-              <h3 className="text-lg font-semibold text-gray-900">Business Account</h3>
-            </div>
-            
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-1">{account.account_name}</p>
-              <p className="text-sm font-medium text-gray-700">{account.institution}</p>
-            </div>
-            
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-green-600">{formatCurrency(Number(account.balance))}</span>
-            </div>
-            
-            <p className="text-xs text-gray-600 mt-3">Last synced: Recently</p>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <button
+          onClick={() => setFilter('all')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            filter === 'all' 
+              ? 'bg-blue-600 text-white shadow-sm' 
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+          }`}
+        >
+          All Accounts ({accounts.length})
+        </button>
+        <button
+          onClick={() => setFilter('personal')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            filter === 'personal' 
+              ? 'bg-blue-600 text-white shadow-sm' 
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+          }`}
+        >
+          Personal ({personalAccounts.length})
+        </button>
+        <button
+          onClick={() => setFilter('business')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            filter === 'business' 
+              ? 'bg-blue-600 text-white shadow-sm' 
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+          }`}
+        >
+          Business ({businessAccounts.length})
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {displayedAccounts.map((account) => (
+          <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                {account.is_business ? (
+                  <Building2 className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
+                ) : (
+                  <User className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
+                )}
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {account.is_business ? 'Business Account' : 'Personal Account'}
+                </h3>
+              </div>
+              
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-1">{account.account_name}</p>
+                <p className="text-sm font-medium text-gray-700">{account.institution}</p>
+              </div>
+              
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold text-green-600">{formatCurrency(Number(account.balance))}</span>
+              </div>
+              
+              <p className="text-xs text-gray-600 mt-3">Last synced: Recently</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
