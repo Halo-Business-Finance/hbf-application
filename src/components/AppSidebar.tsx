@@ -80,8 +80,8 @@ export function AppSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     `${isActive 
-      ? 'bg-blue-700 text-white font-medium' 
-      : 'text-white hover:bg-blue-800 hover:text-white'} transition-all duration-200 group`;
+      ? 'bg-blue-700 text-white font-medium border-l-4 border-orange-500' 
+      : 'text-white hover:bg-blue-800 hover:text-white border-l-4 border-transparent'} transition-all duration-200 group`;
 
   return (
     <Sidebar collapsible="offcanvas" className="bg-blue-950 border-r-0">
