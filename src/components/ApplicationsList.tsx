@@ -227,7 +227,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                 {/* Header Section */}
                 <div className="bg-blue-950 px-4 sm:px-6 py-3 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-sm">
                   <div>
-                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Date</div>
+                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Start Date</div>
                     <div className="font-semibold text-xs sm:text-sm text-white">
                       {format(new Date(application.application_started_date), 'MMM d, yyyy')}
                     </div>
