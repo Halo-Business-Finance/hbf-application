@@ -1,3 +1,12 @@
+/**
+ * MY DASHBOARD PAGE (Route: /)
+ * Main dashboard displaying:
+ * - Credit scores and bank balances widgets
+ * - Loan application statistics
+ * - User's loan applications list
+ * - New loan application forms
+ */
+
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";

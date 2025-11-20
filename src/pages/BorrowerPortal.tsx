@@ -1,3 +1,12 @@
+/**
+ * MY ACCOUNT PAGE (Route: /my-account)
+ * User profile and account settings management page
+ * Displays:
+ * - Personal information (name, email, phone)
+ * - Account editing functionality
+ * - Logout option
+ */
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +39,6 @@ const profileSchema = z.object({
   phone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(20, "Phone number must be less than 20 characters").optional().or(z.literal('')),
 });
 
-// My Account page - User profile and account settings management
 const BorrowerPortal = () => {
   const { authenticated, loading, user, signOut } = useAuth();
   const navigate = useNavigate();
