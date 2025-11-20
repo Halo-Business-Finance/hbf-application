@@ -359,12 +359,12 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                       </div>
 
                       {/* Right side - Action buttons */}
-                      <div className="flex flex-col gap-2 w-full lg:min-w-[180px] lg:border-l lg:border-gray-200 lg:pl-4">
-                        <div className="text-xs uppercase tracking-wide text-gray-600 font-semibold mb-1">Actions</div>
+                      <div className="flex flex-col gap-1.5 w-full lg:min-w-[160px] lg:border-l lg:border-gray-200 lg:pl-3">
+                        <div className="text-xs uppercase tracking-wide text-gray-600 font-semibold mb-0.5">Actions</div>
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleCard(application.id);
@@ -375,7 +375,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('/document-storage');
@@ -386,7 +386,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('/support');
@@ -397,7 +397,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             window.print();
