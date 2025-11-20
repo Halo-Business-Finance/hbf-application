@@ -292,7 +292,7 @@ const DashboardView = () => {
       {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-md">
-          <TabsTrigger value="applications" className="text-xs sm:text-sm">My Applications</TabsTrigger>
+          <TabsTrigger value="applications" className="text-xs sm:text-sm">Loan Applications</TabsTrigger>
           <TabsTrigger value="activity" className="text-xs sm:text-sm">Recent Activity</TabsTrigger>
           <TabsTrigger value="loans" className="text-xs sm:text-sm">Existing Loans</TabsTrigger>
         </TabsList>
