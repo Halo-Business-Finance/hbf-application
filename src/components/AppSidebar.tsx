@@ -98,14 +98,10 @@ export function AppSidebar() {
                 </h2>
               </div>
             )}
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Toggle Sidebar">
-                  <SidebarTrigger className="text-sidebar-foreground hover:bg-sidebar-accent/60 transition-all" />
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-            {open && <SidebarGroupLabel className="mt-2">Navigation</SidebarGroupLabel>}
+            <div className="px-2 mb-3 mt-2">
+              <SidebarTrigger className="h-9 w-9 bg-sidebar-accent/80 hover:bg-sidebar-accent text-sidebar-accent-foreground rounded-md transition-all duration-200 shadow-sm hover:shadow" />
+            </div>
+            {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
