@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut } from 'lucide-react';
+import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {
   Sidebar,
@@ -98,8 +98,11 @@ export function AppSidebar() {
                 </h2>
               </div>
             )}
-            <div className="px-2 mb-3 mt-2">
-              <SidebarTrigger className="h-9 w-9 bg-sidebar-accent/80 hover:bg-sidebar-accent text-sidebar-accent-foreground rounded-md transition-all duration-200 shadow-sm hover:shadow" />
+            <div className="px-4 mb-3 mt-2">
+              <SidebarTrigger className={`flex items-center gap-3 h-10 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 ${open ? 'w-full justify-start' : 'w-10 justify-center'}`}>
+                {open ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
+                {open && <span className="text-sm font-medium">Collapse Menu</span>}
+              </SidebarTrigger>
             </div>
             {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
