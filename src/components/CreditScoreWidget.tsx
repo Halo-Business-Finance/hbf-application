@@ -76,10 +76,10 @@ export const CreditScoreWidget = () => {
             Credit Scores
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 bg-orange-500">
+        <CardContent className="p-6 bg-blue-900">
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-orange-400 rounded w-1/3"></div>
-            <div className="h-4 bg-orange-400 rounded w-1/2"></div>
+            <div className="h-8 bg-blue-800 rounded w-1/3"></div>
+            <div className="h-4 bg-blue-800 rounded w-1/2"></div>
           </div>
         </CardContent>
       </Card>
@@ -95,8 +95,8 @@ export const CreditScoreWidget = () => {
             Credit Scores
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 bg-orange-500">
-          <p className="text-sm text-blue-800">No credit scores available</p>
+        <CardContent className="p-6 bg-blue-900">
+          <p className="text-sm text-white">No credit scores available</p>
         </CardContent>
       </Card>
     );
@@ -110,7 +110,7 @@ export const CreditScoreWidget = () => {
           Credit Scores
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 bg-orange-500">
+      <CardContent className="p-6 bg-blue-900">
         {averageScore && (
           <div className="mb-4">
             <div className="flex items-baseline gap-2">
@@ -125,7 +125,7 @@ export const CreditScoreWidget = () => {
         
         <div className="space-y-3">
           {scores.map((score) => (
-            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
+            <div key={score.id} className="flex items-center justify-between p-3 rounded-lg bg-blue-700 border border-blue-600">
               <div className="flex-1">
                 <p className="text-sm font-medium text-white">{getBureauDisplay(score.bureau)}</p>
                 <p className="text-xs text-white/80">
