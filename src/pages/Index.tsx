@@ -36,6 +36,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import { CreditScoreWidget } from '@/components/CreditScoreWidget';
 import { BankBalanceWidget } from '@/components/BankBalanceWidget';
+import { DashboardOverview } from '@/components/DashboardOverview';
 
 const FundedLoansView = ({ userId }: { userId?: string }) => {
   const [fundedLoans, setFundedLoans] = useState<any[]>([]);
@@ -231,6 +232,9 @@ const DashboardView = () => {
           + New Loan Application
         </Button>
       </div>
+
+      {/* Overview Card */}
+      <DashboardOverview />
 
       {/* Dashboard Widgets */}
       <div className="grid gap-6 lg:grid-cols-2">
