@@ -217,7 +217,7 @@ const DashboardView = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 mb-12">
+    <div className="space-y-4 sm:space-y-5 mb-12">
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex-1">
@@ -233,13 +233,13 @@ const DashboardView = () => {
       </div>
 
       {/* Dashboard Widgets */}
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
         <CreditScoreWidget />
         <BankBalanceWidget />
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <Card 
           className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('all')}
