@@ -182,8 +182,8 @@ export const LoanTimeline = ({ loanApplicationId, currentStatus }: LoanTimelineP
                       )}
                     </div>
                     {isCurrent && (
-                      <span className="text-xs font-semibold uppercase tracking-wide border border-border bg-muted/50 text-foreground px-2 py-1 rounded">
-                        Current
+                      <span className="text-xs font-semibold uppercase tracking-wide border border-blue-950 bg-blue-950 text-white px-2 py-1 rounded shadow-sm">
+                        Active
                       </span>
                     )}
                   </div>
