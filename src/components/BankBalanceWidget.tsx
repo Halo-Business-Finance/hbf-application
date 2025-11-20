@@ -90,10 +90,10 @@ export const BankBalanceWidget = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {personalAccounts.map((account) => (
-        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-4">
-              <User className="w-5 h-5 text-blue-600" />
+              <User className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
               <h3 className="text-lg font-semibold text-gray-900">Personal Account</h3>
             </div>
             
@@ -112,10 +112,10 @@ export const BankBalanceWidget = () => {
       ))}
       
       {businessAccounts.map((account) => (
-        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+        <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Building2 className="w-5 h-5 text-blue-600" />
+              <Building2 className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
               <h3 className="text-lg font-semibold text-gray-900">Business Account</h3>
             </div>
             

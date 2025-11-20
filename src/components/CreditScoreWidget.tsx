@@ -121,18 +121,18 @@ export const CreditScoreWidget = () => {
         const changeText = score.change === 0 ? 'No Change' : `${score.change > 0 ? '+' : ''}${score.change} Point${Math.abs(score.change) !== 1 ? 's' : ''}`;
         
         return (
-          <Card key={score.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+          <Card key={score.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">{getBureauDisplay(score.bureau)}</h3>
               
               <div className="flex items-baseline gap-2 mb-2">
-                <span className={`text-6xl font-bold ${scoreColor}`}>{score.score}</span>
+                <span className={`text-6xl font-bold ${scoreColor} group-hover:scale-105 transition-transform duration-200`}>{score.score}</span>
                 <span className="text-gray-600 text-lg">out of 850</span>
               </div>
               
               <div className="flex items-center gap-3 mb-3">
                 <div className={`flex items-center gap-1 text-sm ${changeColor}`}>
-                  <ChangeIcon className="w-4 h-4" />
+                  <ChangeIcon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                   <span>{changeText}</span>
                 </div>
                 <span className="text-gray-400">•</span>
