@@ -223,31 +223,31 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
           
           return (
             <Collapsible key={application.id} open={!isCollapsed} onOpenChange={() => toggleCard(application.id)}>
-              <Card className="overflow-hidden border-2 border-border/50 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl backdrop-blur-sm">
+              <Card className="overflow-hidden border-2 border-blue-950 shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg bg-white">
                 {/* Header Section */}
-                <div className="bg-muted/30 px-3 sm:px-6 py-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-sm border-b border-border/50">
+                <div className="bg-blue-950 px-4 sm:px-6 py-3 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-sm">
                   <div>
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">Date</div>
-                    <div className="font-semibold text-xs sm:text-sm text-foreground">
+                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Date</div>
+                    <div className="font-semibold text-xs sm:text-sm text-white">
                       {format(new Date(application.application_started_date), 'MMM d, yyyy')}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">Amount</div>
-                    <div className="font-semibold text-xs sm:text-sm text-foreground">{formatCurrency(application.amount_requested)}</div>
+                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Amount</div>
+                    <div className="font-semibold text-xs sm:text-sm text-white">{formatCurrency(application.amount_requested)}</div>
                   </div>
                   <div className="hidden sm:block">
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">Business</div>
-                    <div className="font-semibold text-xs sm:text-sm truncate text-foreground">{application.business_name}</div>
+                    <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Business</div>
+                    <div className="font-semibold text-xs sm:text-sm truncate text-white">{application.business_name}</div>
                   </div>
                   <div className="col-span-2 sm:col-span-1 flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">Application #</div>
-                      <div className="font-mono font-semibold text-xs sm:text-sm text-slate-700">{application.application_number}</div>
+                      <div className="text-xs uppercase tracking-wide text-white/70 font-semibold mb-1">Application #</div>
+                      <div className="font-mono font-semibold text-xs sm:text-sm text-white">{application.application_number}</div>
                     </div>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all">
-                        {isCollapsed ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronUp className="h-4 w-4 text-muted-foreground" />}
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-white/10 transition-all">
+                        {isCollapsed ? <ChevronDown className="h-4 w-4 text-white" /> : <ChevronUp className="h-4 w-4 text-white" />}
                       </Button>
                     </CollapsibleTrigger>
                   </div>
@@ -255,12 +255,12 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
 
                 {/* Collapsed Status Bar */}
                 {isCollapsed && (
-                  <div className="px-3 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-muted/20">
+                  <div className="px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border-t border-gray-200">
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       <Badge variant="outline" className={`${getStatusColor(application.status)} text-xs uppercase tracking-wide font-semibold border`}>
                         {application.status.replace('_', ' ')}
                       </Badge>
-                      <span className="text-xs sm:text-sm font-medium text-muted-foreground">
+                      <span className="text-xs sm:text-sm font-medium text-gray-700">
                         {getLoanTypeDisplay(application.loan_type)}
                       </span>
                     </div>
@@ -275,7 +275,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                           navigate(`/?id=7&app=${application.id}`);
                         }
                       }}
-                      className="w-full sm:w-auto hover:ring-1 hover:ring-border transition-all"
+                      className="w-full sm:w-auto border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-all"
                     >
                       View Details
                     </Button>
@@ -284,46 +284,46 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
 
                 {/* Expandable Content Section */}
                 <CollapsibleContent>
-                  <CardContent className="p-4 sm:p-6 bg-background">
-                    <div className="flex flex-col lg:flex-row gap-6">
+                  <CardContent className="p-4 sm:p-5 bg-white border-t border-gray-200">
+                    <div className="flex flex-col lg:flex-row gap-4">
                       {/* Left side - Timeline and details */}
-                      <div className="flex-1 space-y-6">
+                      <div className="flex-1 space-y-4">
                         {/* Timeline Section */}
-                        <div className="bg-muted/20 p-4 rounded-lg border border-border/50">
+                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                           <LoanTimeline 
                             loanApplicationId={application.id} 
                             currentStatus={application.status}
                           />
                         </div>
                         
-                        <Separator />
+                        <Separator className="bg-gray-200" />
                         
                         {/* Progress Bar */}
                         <LoanProgressBar status={application.status} />
                         
-                        <Separator />
+                        <Separator className="bg-gray-200" />
                         
-                        <div className="mb-3">
-                          <div className={`text-base sm:text-lg font-semibold ${statusInfo.color}`}>
+                        <div className="mb-2">
+                          <div className={`text-sm sm:text-base font-semibold ${statusInfo.color}`}>
                             {statusInfo.text}
                           </div>
                         </div>
                         
-                        <div className="flex gap-4 mb-4">
+                        <div className="flex gap-3 mb-3">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-sm sm:text-base mb-1">
+                            <h3 className="font-semibold text-sm sm:text-base mb-1 text-gray-900">
                               {getLoanTypeDisplay(application.loan_type)}
                             </h3>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+                            <p className="text-xs sm:text-sm text-gray-600 mb-1">
                               {application.first_name} {application.last_name} • {application.business_name}
                             </p>
                             {application.status === 'draft' && (
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs text-gray-600">
                                 Started on {format(new Date(application.application_started_date), 'MMM d, yyyy')}
                               </p>
                             )}
                             {application.application_submitted_date && (
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs text-gray-600">
                                 Submitted on {format(new Date(application.application_submitted_date), 'MMM d, yyyy')}
                               </p>
                             )}
@@ -343,28 +343,28 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                                   navigate(`/?id=7&app=${application.id}`);
                                 }
                               }}
-                              className="w-full sm:w-auto hover:ring-1 hover:ring-border transition-all font-semibold"
+                              className="w-full sm:w-auto border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-all font-semibold"
                             >
                               Continue Application
                             </Button>
                           ) : (
-                            <Button variant="outline" size="sm" className="w-full sm:w-auto hover:ring-1 hover:ring-border transition-all font-semibold">
+                            <Button variant="outline" size="sm" className="w-full sm:w-auto border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-all font-semibold">
                               View Application
                             </Button>
                           )}
-                          <Button variant="ghost" size="sm" className="w-full sm:w-auto hover:ring-1 hover:ring-border transition-all">
+                          <Button variant="ghost" size="sm" className="w-full sm:w-auto text-gray-700 hover:bg-gray-100 transition-all">
                             Download PDF
                           </Button>
                         </div>
                       </div>
 
                       {/* Right side - Action buttons */}
-                      <div className="flex flex-col gap-2 w-full lg:min-w-[200px] lg:border-l lg:border-border/50 lg:pl-6">
-                        <div className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Actions</div>
+                      <div className="flex flex-col gap-2 w-full lg:min-w-[180px] lg:border-l lg:border-gray-200 lg:pl-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-600 font-semibold mb-1">Actions</div>
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleCard(application.id);
@@ -375,7 +375,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('/document-storage');
@@ -386,7 +386,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('/support');
@@ -397,7 +397,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all"
+                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             window.print();
