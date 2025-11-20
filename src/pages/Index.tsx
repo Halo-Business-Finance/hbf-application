@@ -241,7 +241,7 @@ const DashboardView = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card 
-          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-950 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('all')}
         >
           <CardContent className="p-6">
@@ -253,7 +253,7 @@ const DashboardView = () => {
         </Card>
 
         <Card 
-          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-950 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('approved')}
         >
           <CardContent className="p-6">
@@ -265,7 +265,7 @@ const DashboardView = () => {
         </Card>
 
         <Card 
-          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-950 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('pending')}
         >
           <CardContent className="p-6">
@@ -277,7 +277,7 @@ const DashboardView = () => {
         </Card>
 
         <Card 
-          className="border-none bg-blue-900 hover:shadow-lg transition-shadow cursor-pointer"
+          className="border-none bg-blue-950 hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => handleMetricClick('approved')}
         >
           <CardContent className="p-6">
