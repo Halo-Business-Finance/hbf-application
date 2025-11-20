@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAuth } from '@/contexts/AuthContext';
@@ -88,10 +89,13 @@ export function AppSidebar() {
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
-            <div className="px-4 py-3 mb-4 pt-8">
+            <div className="px-4 py-3 mb-2 pt-8">
               <h2 className="text-lg font-semibold text-sidebar-foreground">
                 Welcome{firstName ? `, ${firstName}` : ''}!
               </h2>
+            </div>
+            <div className="px-4 mb-4">
+              <SidebarTrigger className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent/60 transition-all" />
             </div>
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>

@@ -289,9 +289,6 @@ const Navbar = () => {
               <Search className="h-5 w-5" />
             </Button>
 
-            {/* Sidebar Trigger */}
-            <SidebarTrigger className="m-0 text-blue-950 hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all" />
-
             {/* Notifications Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
