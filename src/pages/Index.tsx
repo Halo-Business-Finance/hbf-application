@@ -294,7 +294,7 @@ const DashboardView = () => {
         <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-md">
           <TabsTrigger value="applications" className="text-xs sm:text-sm">My Applications</TabsTrigger>
           <TabsTrigger value="activity" className="text-xs sm:text-sm">Recent Activity</TabsTrigger>
-          <TabsTrigger value="loans" className="text-xs sm:text-sm">Loans</TabsTrigger>
+          <TabsTrigger value="loans" className="text-xs sm:text-sm">Existing Loans</TabsTrigger>
         </TabsList>
 
         <TabsContent value="applications" className="mt-6">
