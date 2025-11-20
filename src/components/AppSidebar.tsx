@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,6 +37,7 @@ export function AppSidebar() {
   const { isAdmin } = useUserRole();
   const { signOut, user } = useAuth();
   const { toast } = useToast();
+  const { open } = useSidebar();
   const currentPath = location.pathname;
   const [firstName, setFirstName] = useState<string>('');
 
@@ -85,26 +87,28 @@ export function AppSidebar() {
       : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'} transition-all duration-200 group`;
 
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar collapsible="icon">
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
-            <div className="px-4 py-3 mb-2 pt-8">
-              <h2 className="text-lg font-semibold text-sidebar-foreground">
-                Welcome{firstName ? `, ${firstName}` : ''}!
-              </h2>
-            </div>
+            {open && (
+              <div className="px-4 py-3 mb-2 pt-8">
+                <h2 className="text-lg font-semibold text-sidebar-foreground">
+                  Welcome{firstName ? `, ${firstName}` : ''}!
+                </h2>
+              </div>
+            )}
             <div className="px-4 mb-4">
               <SidebarTrigger className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent/60 transition-all" />
             </div>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+            {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild tooltip={item.title}>
                       <NavLink to={item.url} end className={getNavCls}>
-                        <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                        <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                         <span>{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
@@ -112,12 +116,12 @@ export function AppSidebar() {
                 ))}
                 {isAdmin() && (
                   <>
-                    <SidebarGroupLabel className="mt-4">Admin</SidebarGroupLabel>
+                    {open && <SidebarGroupLabel className="mt-4">Admin</SidebarGroupLabel>}
                     {adminItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton asChild tooltip={item.title}>
                           <NavLink to={item.url} end className={getNavCls}>
-                            <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                            <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                             <span>{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
@@ -136,9 +140,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={handleLogout}
+                  tooltip="Log Out"
                   className="hover:bg-destructive/10 hover:text-destructive transition-all duration-200 group cursor-pointer"
                 >
-                  <LogOut className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                  <LogOut className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                   <span>Log Out</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
