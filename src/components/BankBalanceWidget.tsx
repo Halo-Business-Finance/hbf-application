@@ -67,10 +67,10 @@ export const BankBalanceWidget = () => {
             Bank Accounts
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 bg-orange-500">
+        <CardContent className="p-6 bg-blue-900">
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-orange-400 rounded w-1/3"></div>
-            <div className="h-4 bg-orange-400 rounded w-1/2"></div>
+            <div className="h-8 bg-blue-800 rounded w-1/3"></div>
+            <div className="h-4 bg-blue-800 rounded w-1/2"></div>
           </div>
         </CardContent>
       </Card>
@@ -86,8 +86,8 @@ export const BankBalanceWidget = () => {
             Bank Accounts
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 bg-orange-500">
-          <p className="text-sm text-blue-800">No active bank accounts</p>
+        <CardContent className="p-6 bg-blue-900">
+          <p className="text-sm text-white">No active bank accounts</p>
         </CardContent>
       </Card>
     );
@@ -101,7 +101,7 @@ export const BankBalanceWidget = () => {
           Bank Accounts
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 bg-orange-500">
+      <CardContent className="p-6 bg-blue-900">
         <div className="mb-4">
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-white">{formatCurrency(totalBalance)}</span>
@@ -114,7 +114,7 @@ export const BankBalanceWidget = () => {
 
         <div className="space-y-3">
           {totalPersonal > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-blue-700 border border-blue-600">
               <div className="flex-1">
                 <p className="text-sm font-medium text-white">Personal</p>
                 <p className="text-xs text-white/80">{personalAccounts.length} account{personalAccounts.length > 1 ? 's' : ''}</p>
@@ -126,7 +126,7 @@ export const BankBalanceWidget = () => {
           )}
           
           {totalBusiness > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-400/50 border border-orange-300">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-blue-700 border border-blue-600">
               <div className="flex-1">
                 <p className="text-sm font-medium text-white">Business</p>
                 <p className="text-xs text-white/80">{businessAccounts.length} account{businessAccounts.length > 1 ? 's' : ''}</p>
