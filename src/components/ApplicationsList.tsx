@@ -285,9 +285,9 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                 {/* Expandable Content Section */}
                 <CollapsibleContent>
                   <CardContent className="p-3 sm:p-4 bg-white border-t border-gray-200">
-                    <div className="flex flex-col lg:flex-row gap-3">
-                      {/* Left side - Timeline and details */}
-                      <div className="flex-1 space-y-3">
+                    <div className="flex flex-col gap-3">
+                      {/* Main content */}
+                      <div className="space-y-3">
                         {/* Timeline Section */}
                         <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
                           <LoanTimeline 
@@ -358,13 +358,13 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         </div>
                       </div>
 
-                      {/* Right side - Action buttons */}
-                      <div className="flex flex-col gap-1.5 w-full lg:min-w-[160px] lg:border-l lg:border-gray-200 lg:pl-3">
-                        <div className="text-xs uppercase tracking-wide text-gray-600 font-semibold mb-0.5">Actions</div>
+                      {/* Horizontal Actions Section at Bottom */}
+                      <Separator className="bg-gray-200" />
+                      <div className="flex flex-wrap gap-2">
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
+                          className="flex-1 min-w-[120px] text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleCard(application.id);
@@ -375,7 +375,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
+                          className="flex-1 min-w-[120px] text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('/document-storage');
@@ -386,7 +386,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
+                          className="flex-1 min-w-[120px] text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('/support');
@@ -397,7 +397,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
+                          className="flex-1 min-w-[120px] text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
                             window.print();
