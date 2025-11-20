@@ -100,6 +100,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
                       <NavLink to={item.url} end className={getNavCls}>
+                        <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                         <span>{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
@@ -112,6 +113,7 @@ export function AppSidebar() {
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
                           <NavLink to={item.url} end className={getNavCls}>
+                            <item.icon className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                             <span>{item.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
@@ -132,6 +134,7 @@ export function AppSidebar() {
                   onClick={handleLogout}
                   className="text-white hover:bg-blue-800 hover:text-white transition-all duration-200 group cursor-pointer"
                 >
+                  <LogOut className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                   <span>Log Out</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
