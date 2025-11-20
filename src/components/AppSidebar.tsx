@@ -80,20 +80,20 @@ export function AppSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     `${isActive 
-      ? 'bg-blue-700 text-white font-medium border-l-4 border-orange-500' 
-      : 'text-white hover:bg-blue-800 hover:text-white border-l-4 border-transparent'} transition-all duration-200 group`;
+      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
+      : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'} transition-all duration-200 group`;
 
   return (
-    <Sidebar collapsible="none" className="bg-blue-950 border-r-0">
-      <SidebarContent className="flex flex-col bg-blue-950">
+    <Sidebar collapsible="offcanvas">
+      <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
             <div className="px-4 py-3 mb-4 pt-8">
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-sidebar-foreground">
                 Welcome{firstName ? `, ${firstName}` : ''}!
               </h2>
             </div>
-            <SidebarGroupLabel className="text-orange-400">Navigation</SidebarGroupLabel>
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
@@ -108,7 +108,7 @@ export function AppSidebar() {
                 ))}
                 {isAdmin() && (
                   <>
-                    <SidebarGroupLabel className="mt-4 text-orange-400">Admin</SidebarGroupLabel>
+                    <SidebarGroupLabel className="mt-4">Admin</SidebarGroupLabel>
                     {adminItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
@@ -132,7 +132,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={handleLogout}
-                  className="text-white hover:bg-blue-800 hover:text-white transition-all duration-200 group cursor-pointer"
+                  className="hover:bg-destructive/10 hover:text-destructive transition-all duration-200 group cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                   <span>Log Out</span>
