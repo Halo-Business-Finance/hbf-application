@@ -25,6 +25,8 @@ import InvoiceFactoringForm from "@/components/forms/InvoiceFactoringForm";
 import SBAExpressLoanForm from "@/components/forms/SBAExpressLoanForm";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
+import { CreditScoreWidget } from '@/components/CreditScoreWidget';
+import { BankBalanceWidget } from '@/components/BankBalanceWidget';
 
 const FundedLoansView = ({ userId }: { userId?: string }) => {
   const [fundedLoans, setFundedLoans] = useState<any[]>([]);
@@ -219,6 +221,12 @@ const DashboardView = () => {
         >
           + New Application
         </Button>
+      </div>
+
+      {/* Dashboard Widgets */}
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+        <CreditScoreWidget />
+        <BankBalanceWidget />
       </div>
 
       {/* Stats Cards */}
