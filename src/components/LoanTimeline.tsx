@@ -20,44 +20,44 @@ const statusConfig = {
   draft: {
     label: 'Draft Created',
     icon: Circle,
-    color: 'text-gray-500',
-    bgColor: 'bg-gray-100',
-    borderColor: 'border-gray-300',
+    color: 'text-slate-600',
+    bgColor: 'bg-slate-100',
+    borderColor: 'border-slate-300',
   },
   submitted: {
     label: 'Application Submitted',
     icon: Check,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-100',
-    borderColor: 'border-blue-300',
+    color: 'text-slate-700',
+    bgColor: 'bg-slate-100',
+    borderColor: 'border-slate-400',
   },
   under_review: {
     label: 'Under Review',
     icon: Clock,
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-100',
-    borderColor: 'border-yellow-300',
+    color: 'text-amber-700',
+    bgColor: 'bg-amber-50',
+    borderColor: 'border-amber-400',
   },
   approved: {
     label: 'Approved',
     icon: Check,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100',
-    borderColor: 'border-green-300',
+    color: 'text-emerald-700',
+    bgColor: 'bg-emerald-50',
+    borderColor: 'border-emerald-400',
   },
   funded: {
     label: 'Funded',
     icon: Check,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100',
-    borderColor: 'border-purple-300',
+    color: 'text-indigo-700',
+    bgColor: 'bg-indigo-50',
+    borderColor: 'border-indigo-400',
   },
   rejected: {
     label: 'Application Declined',
     icon: X,
-    color: 'text-red-600',
-    bgColor: 'bg-red-100',
-    borderColor: 'border-red-300',
+    color: 'text-red-700',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-400',
   },
 };
 
@@ -133,10 +133,10 @@ export const LoanTimeline = ({ loanApplicationId, currentStatus }: LoanTimelineP
 
   return (
     <div className="space-y-1">
-      <h4 className="text-sm font-semibold mb-4 text-foreground">Application Timeline</h4>
+      <h4 className="text-sm font-semibold uppercase tracking-wide mb-4 text-muted-foreground">Application Timeline</h4>
       <div className="relative">
         {/* Timeline line */}
-        <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border" />
+        <div className="absolute left-4 top-0 bottom-0 w-px border-l border-dashed border-border/50" />
 
         {/* Timeline items */}
         <div className="space-y-6">
@@ -151,11 +151,10 @@ export const LoanTimeline = ({ loanApplicationId, currentStatus }: LoanTimelineP
                 {/* Icon */}
                 <div
                   className={cn(
-                    'relative z-10 flex items-center justify-center w-8 h-8 rounded-full border-2',
+                    'relative z-10 flex items-center justify-center w-9 h-9 rounded-full border-2',
                     config.borderColor,
                     config.bgColor,
-                    isCurrent && 'ring-4 ring-offset-2 ring-offset-background',
-                    isCurrent && config.bgColor
+                    isCurrent && 'ring-2 ring-offset-2 ring-offset-background ring-border shadow-sm',
                   )}
                 >
                   <Icon className={cn('w-4 h-4', config.color)} />
@@ -168,22 +167,22 @@ export const LoanTimeline = ({ loanApplicationId, currentStatus }: LoanTimelineP
                       <h5
                         className={cn(
                           'text-sm font-semibold',
-                          isCurrent ? config.color : 'text-foreground'
+                          isCurrent ? config.color : 'text-slate-700'
                         )}
                       >
                         {config.label}
                       </h5>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-1 font-medium">
                         {format(new Date(item.changed_at), 'MMM d, yyyy • h:mm a')}
                       </p>
                       {item.notes && (
-                        <p className="text-xs text-muted-foreground mt-2 italic">
+                        <p className="text-xs text-muted-foreground mt-2 italic bg-muted/30 p-2 rounded border border-border/50">
                           {item.notes}
                         </p>
                       )}
                     </div>
                     {isCurrent && (
-                      <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
+                      <span className="text-xs font-semibold uppercase tracking-wide border border-border bg-muted/50 text-foreground px-2 py-1 rounded">
                         Current
                       </span>
                     )}
