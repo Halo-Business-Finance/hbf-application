@@ -280,7 +280,7 @@ const SidebarTrigger = React.forwardRef<
       {/* Switch background */}
       <div className={cn(
         "w-9 h-5 rounded-full transition-colors duration-200",
-        isOpen ? "bg-primary" : "bg-border"
+        isOpen ? "bg-blue-950" : "bg-border"
       )}>
         {/* Switch circle */}
         <div className={cn(
