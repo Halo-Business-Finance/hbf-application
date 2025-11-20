@@ -60,7 +60,7 @@ export const BankBalanceWidget = () => {
 
   if (isLoading) {
     return (
-      <Card className="border border-blue-950 shadow-sm overflow-hidden bg-white">
+      <Card className="border-2 border-blue-950 shadow-sm overflow-hidden bg-white">
         <CardHeader className="bg-blue-950">
           <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Wallet className="w-4 h-4" />
@@ -79,7 +79,7 @@ export const BankBalanceWidget = () => {
 
   if (accounts.length === 0) {
     return (
-      <Card className="border border-blue-950 shadow-sm overflow-hidden bg-white">
+      <Card className="border-2 border-blue-950 shadow-sm overflow-hidden bg-white">
         <CardHeader className="bg-blue-950">
           <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
             <Wallet className="w-4 h-4" />
@@ -94,7 +94,7 @@ export const BankBalanceWidget = () => {
   }
 
   return (
-    <Card className="border border-blue-950 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-white">
+    <Card className="border-2 border-blue-950 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-white">
       <CardHeader className="bg-blue-950">
         <CardTitle className="text-sm font-semibold uppercase tracking-wide text-white flex items-center gap-2">
           <Wallet className="w-4 h-4" />
