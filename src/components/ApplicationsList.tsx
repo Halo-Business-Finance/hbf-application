@@ -28,9 +28,10 @@ interface LoanApplication {
 
 interface ApplicationsListProps {
   statusFilter?: string | null;
+  applications?: LoanApplication[];
 }
 
-const ApplicationsList = ({ statusFilter = null }: ApplicationsListProps) => {
+const ApplicationsList = ({ statusFilter = null, applications: externalApplications }: ApplicationsListProps) => {
   const [applications, setApplications] = useState<LoanApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [collapsedCards, setCollapsedCards] = useState<Set<string>>(new Set());
@@ -49,6 +50,15 @@ const ApplicationsList = ({ statusFilter = null }: ApplicationsListProps) => {
       return newSet;
     });
   };
+
+  useEffect(() => {
+    if (externalApplications) {
+      setApplications(externalApplications);
+      setIsLoading(false);
+      return;
+    }
+    fetchApplications();
+  }, [externalApplications]);
 
   const fetchApplications = async () => {
     if (!user) return;
@@ -78,8 +88,10 @@ const ApplicationsList = ({ statusFilter = null }: ApplicationsListProps) => {
   };
 
   useEffect(() => {
-    fetchApplications();
-  }, [user]);
+    if (!externalApplications) {
+      fetchApplications();
+    }
+  }, [user, externalApplications]);
 
   const getLoanTypeDisplay = (loanType: string) => {
     const types = {
