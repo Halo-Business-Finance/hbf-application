@@ -195,9 +195,6 @@ const Navbar = () => {
         </span>
       </div>
 
-      {/* Sidebar Trigger */}
-      <SidebarTrigger className="m-0 text-blue-900" />
-
       {/* Left Spacer */}
       <div className="flex-1 hidden md:block"></div>
 
@@ -362,6 +359,9 @@ const Navbar = () => {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Sidebar Trigger */}
+            <SidebarTrigger className="m-0 text-blue-900 hover:bg-muted/50 hover:ring-1 hover:ring-border transition-all" />
 
             {/* Loan Calculator Button */}
             <Button
