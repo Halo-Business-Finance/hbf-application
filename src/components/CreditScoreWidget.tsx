@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 interface CreditScore {
   id: string;
@@ -10,8 +10,13 @@ interface CreditScore {
   score_date: string;
 }
 
+interface ScoreWithChange extends CreditScore {
+  change: number;
+  previousScore: number | null;
+}
+
 export const CreditScoreWidget = () => {
-  const [scores, setScores] = useState<CreditScore[]>([]);
+  const [scores, setScores] = useState<ScoreWithChange[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,15 +28,38 @@ export const CreditScoreWidget = () => {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) return;
 
+      // Fetch all scores ordered by date to calculate changes
       const { data, error } = await supabase
         .from('credit_scores')
         .select('*')
         .eq('user_id', user.user.id)
-        .order('score_date', { ascending: false })
-        .limit(3);
+        .order('score_date', { ascending: false });
 
       if (error) throw error;
-      setScores(data || []);
+
+      // Group scores by bureau and calculate changes
+      const bureauMap = new Map<string, CreditScore[]>();
+      data?.forEach(score => {
+        if (!bureauMap.has(score.bureau)) {
+          bureauMap.set(score.bureau, []);
+        }
+        bureauMap.get(score.bureau)!.push(score);
+      });
+
+      // Get the latest score for each bureau with change calculation
+      const scoresWithChanges: ScoreWithChange[] = [];
+      bureauMap.forEach((bureauScores, bureau) => {
+        const latest = bureauScores[0];
+        const previous = bureauScores[1];
+        
+        scoresWithChanges.push({
+          ...latest,
+          change: previous ? latest.score - previous.score : 0,
+          previousScore: previous ? previous.score : null
+        });
+      });
+
+      setScores(scoresWithChanges);
     } catch (error) {
       console.error('Error loading credit scores:', error);
     } finally {
@@ -88,7 +116,9 @@ export const CreditScoreWidget = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {scores.map((score) => {
         const scoreColor = score.score >= 740 ? 'text-green-600' : score.score >= 670 ? 'text-yellow-600' : 'text-orange-600';
-        const changeColor = 'text-green-600';
+        const changeColor = score.change > 0 ? 'text-green-600' : score.change < 0 ? 'text-red-600' : 'text-gray-500';
+        const ChangeIcon = score.change > 0 ? TrendingUp : score.change < 0 ? TrendingDown : Minus;
+        const changeText = score.change === 0 ? 'No Change' : `${score.change > 0 ? '+' : ''}${score.change} Point${Math.abs(score.change) !== 1 ? 's' : ''}`;
         
         return (
           <Card key={score.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
@@ -101,9 +131,9 @@ export const CreditScoreWidget = () => {
               </div>
               
               <div className="flex items-center gap-3 mb-3">
-                <div className="flex items-center gap-1 text-sm text-green-600">
-                  <TrendingUp className="w-4 h-4" />
-                  <span>+1 Point</span>
+                <div className={`flex items-center gap-1 text-sm ${changeColor}`}>
+                  <ChangeIcon className="w-4 h-4" />
+                  <span>{changeText}</span>
                 </div>
                 <span className="text-gray-400">•</span>
                 <span className="text-sm font-medium text-gray-700">{getScoreRating(score.score)}</span>
