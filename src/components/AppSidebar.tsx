@@ -98,12 +98,6 @@ export function AppSidebar() {
                 </h2>
               </div>
             )}
-            <div className="px-4 mb-3 mt-2">
-              <SidebarTrigger className={`flex items-center gap-3 h-10 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 ${open ? 'w-full justify-start' : 'w-10 justify-center'}`}>
-                {open ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
-                {open && <span className="text-sm font-medium">Collapse Menu</span>}
-              </SidebarTrigger>
-            </div>
             {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
@@ -140,6 +134,14 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <div className="px-4 mb-3">
+                  <SidebarTrigger className={`flex items-center gap-3 h-10 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 ${open ? 'w-full justify-start' : 'w-10 justify-center'}`}>
+                    {open ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
+                    {open && <span className="text-sm font-medium">Collapse Menu</span>}
+                  </SidebarTrigger>
+                </div>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={handleLogout}
