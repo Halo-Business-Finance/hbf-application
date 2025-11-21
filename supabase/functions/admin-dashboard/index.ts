@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.52.1";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -110,7 +111,20 @@ serve(async (req) => {
         return await getFilteredApplications(supabase, filters);
       
       case 'update-status':
-        const { applicationId, status, notes } = await req.json();
+        const updateSchema = z.object({
+          applicationId: z.string().uuid(),
+          status: z.string().max(50),
+          notes: z.string().max(1000).optional()
+        });
+        const updateBody = await req.json();
+        const updateValidation = updateSchema.safeParse(updateBody);
+        if (!updateValidation.success) {
+          return new Response(
+            JSON.stringify({ error: 'Invalid update data', details: updateValidation.error.format() }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        const { applicationId, status, notes } = updateValidation.data;
         return await updateApplicationStatus(supabase, applicationId, status, notes);
       
       case 'export':
@@ -223,11 +237,17 @@ async function getFilteredApplications(supabase: any, filters: ApplicationFilter
     }
 
     if (filters.amountMin) {
-      query = query.gte('amount_requested', parseInt(filters.amountMin));
+      const minAmount = Number(filters.amountMin);
+      if (!isNaN(minAmount)) {
+        query = query.gte('amount_requested', minAmount);
+      }
     }
 
     if (filters.amountMax) {
-      query = query.lte('amount_requested', parseInt(filters.amountMax));
+      const maxAmount = Number(filters.amountMax);
+      if (!isNaN(maxAmount)) {
+        query = query.lte('amount_requested', maxAmount);
+      }
     }
 
     if (filters.searchTerm) {
