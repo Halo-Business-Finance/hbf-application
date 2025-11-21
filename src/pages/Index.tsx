@@ -668,6 +668,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-white py-12">
         <div className="max-w-7xl mx-auto px-6">
+          <main>
           {/* Header with Stats */}
           <div className="text-center mb-12 animate-fade-in">
             <p className="text-2xl font-bold text-foreground mb-4">
@@ -973,6 +974,7 @@ const Index = () => {
             By signing up, you agree to our terms of service and privacy policy.
           </p>
 
+          </main>
         </div>
       </div>
     );
@@ -982,6 +984,7 @@ const Index = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-6 py-10">
+        <main>
         {/* Dashboard for Authenticated Users */}
         {authenticated && !selectedLoanType && (
           <DashboardView />
@@ -1219,6 +1222,7 @@ const Index = () => {
           </div>
         )}
 
+      </main>
       </div>
     </div>
     </Layout>
