@@ -45,6 +45,36 @@ export default defineConfig(({ mode }) => ({
         // Don't include service worker files themselves in precache
         globIgnores: ['**/sw.js', '**/workbox-*.js'],
         runtimeCaching: [
+          // Cache JavaScript chunks with StaleWhileRevalidate
+          {
+            urlPattern: /\/assets\/.*\.js$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'js-chunks-cache',
+              expiration: {
+                maxEntries: 30,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          // Cache CSS files with StaleWhileRevalidate
+          {
+            urlPattern: /\/assets\/.*\.css$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'css-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
