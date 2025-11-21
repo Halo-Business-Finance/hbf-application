@@ -40,17 +40,21 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB
         // Don't include service worker files themselves in precache
         globIgnores: ['**/sw.js', '**/workbox-*.js'],
+        // Add cache versioning - increment this when you want to force cache refresh
+        cacheId: 'hbf-v1',
         runtimeCaching: [
           // Cache JavaScript chunks with StaleWhileRevalidate
           {
             urlPattern: /\/assets\/.*\.js$/,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'js-chunks-cache',
+              cacheName: 'hbf-v1-js-chunks',
               expiration: {
                 maxEntries: 30,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
@@ -65,7 +69,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /\/assets\/.*\.css$/,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'css-cache',
+              cacheName: 'hbf-v1-css',
               expiration: {
                 maxEntries: 20,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
@@ -79,7 +83,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'google-fonts-cache',
+              cacheName: 'hbf-v1-google-fonts',
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
@@ -93,7 +97,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'gstatic-fonts-cache',
+              cacheName: 'hbf-v1-gstatic-fonts',
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
@@ -107,7 +111,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/.*/i,
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'api-cache',
+              cacheName: 'hbf-v1-api',
               networkTimeoutSeconds: 10, // Fallback to cache after 10s
               expiration: {
                 maxEntries: 50,
@@ -122,7 +126,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'images-cache',
+              cacheName: 'hbf-v1-images',
               expiration: {
                 maxEntries: 60,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
