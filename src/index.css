@@ -121,7 +121,7 @@
 }
 
 @layer components {
-  /* Enterprise Components */
+  /* Dashboard Components */
   .metric-card {
     @apply bg-card border border-border rounded-lg p-6 transition-all duration-200;
     box-shadow: var(--shadow-card);
@@ -166,65 +166,5 @@
   
   .dashboard-timestamp {
     @apply flex items-center gap-2 text-sm text-muted-foreground;
-  }
-  
-  /* Enterprise Card Variants */
-  .enterprise-card {
-    @apply bg-card border border-border rounded-lg transition-all duration-200;
-    box-shadow: var(--shadow-card);
-  }
-  
-  .enterprise-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px) scale(1.01);
-  }
-  
-  .enterprise-card-elevated {
-    @apply bg-card border border-border rounded-lg transition-all duration-200;
-    box-shadow: var(--shadow-lg);
-  }
-  
-  .enterprise-card-elevated:hover {
-    box-shadow: var(--shadow-xl);
-    transform: translateY(-3px) scale(1.01);
-  }
-  
-  /* Enterprise Buttons */
-  .btn-enterprise {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-md transition-all duration-200;
-    box-shadow: var(--shadow-sm);
-  }
-  
-  .btn-enterprise:hover {
-    box-shadow: var(--shadow-md);
-  }
-  
-  /* Professional Typography */
-  .heading-xl {
-    @apply text-4xl font-bold tracking-tight text-foreground;
-  }
-  
-  .heading-lg {
-    @apply text-3xl font-bold tracking-tight text-foreground;
-  }
-  
-  .heading-md {
-    @apply text-2xl font-semibold tracking-tight text-foreground;
-  }
-  
-  .heading-sm {
-    @apply text-xl font-semibold text-foreground;
-  }
-  
-  .body-lg {
-    @apply text-base text-foreground leading-relaxed;
-  }
-  
-  .body-sm {
-    @apply text-sm text-muted-foreground;
-  }
-  
-  .label-text {
-    @apply text-xs font-semibold uppercase tracking-wider text-muted-foreground;
   }
 }
