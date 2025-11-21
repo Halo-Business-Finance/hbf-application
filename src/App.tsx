@@ -1,47 +1,58 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminLoanDetail from "./pages/AdminLoanDetail";
-import AdminUserManagement from "./pages/AdminUserManagement";
-import BorrowerPortal from "./pages/BorrowerPortal";
-import ChangePassword from "./pages/ChangePassword";
-import ChangeEmail from "./pages/ChangeEmail";
-import TwoFactorAuth from "./pages/TwoFactorAuth";
-import LoanApplications from "./pages/LoanApplications";
-import Support from "./pages/Support";
-import LoanCalculator from "./pages/LoanCalculator";
-import MyDocuments from "./pages/MyDocuments";
-import CreditReports from "./pages/CreditReports";
-import CreditScoreSimulator from "./pages/CreditScoreSimulator";
-import BankAccounts from "./pages/BankAccounts";
-import ExistingLoans from "./pages/ExistingLoans";
 import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RateLimitProvider } from "./components/RateLimitProvider";
 
-// Admin pages
-import AllApplications from "./pages/admin/AllApplications";
-import ApplicationReview from "./pages/admin/ApplicationReview";
-import Analytics from "./pages/admin/Analytics";
-import SystemSettings from "./pages/admin/SystemSettings";
-import SecurityAudit from "./pages/admin/SecurityAudit";
-import ExportData from "./pages/admin/ExportData";
-import LoanProducts from "./pages/admin/LoanProducts";
-import PaymentManagement from "./pages/admin/PaymentManagement";
-import AdminNotifications from "./pages/admin/Notifications";
-import Notifications from "./pages/Notifications";
-import NotificationPreferences from "./pages/NotificationPreferences";
-import SupportTickets from "./pages/admin/SupportTickets";
-import DatabaseManagement from "./pages/admin/DatabaseManagement";
-import ApiIntegrations from "./pages/admin/ApiIntegrations";
-import ExistingLoansManagement from "./pages/admin/ExistingLoansManagement";
+// Eager load only the landing page and not found for better UX
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+
+// Lazy load all other pages to reduce initial bundle
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminLoanDetail = lazy(() => import("./pages/AdminLoanDetail"));
+const AdminUserManagement = lazy(() => import("./pages/AdminUserManagement"));
+const BorrowerPortal = lazy(() => import("./pages/BorrowerPortal"));
+const ChangePassword = lazy(() => import("./pages/ChangePassword"));
+const ChangeEmail = lazy(() => import("./pages/ChangeEmail"));
+const TwoFactorAuth = lazy(() => import("./pages/TwoFactorAuth"));
+const LoanApplications = lazy(() => import("./pages/LoanApplications"));
+const Support = lazy(() => import("./pages/Support"));
+const LoanCalculator = lazy(() => import("./pages/LoanCalculator"));
+const MyDocuments = lazy(() => import("./pages/MyDocuments"));
+const CreditReports = lazy(() => import("./pages/CreditReports"));
+const CreditScoreSimulator = lazy(() => import("./pages/CreditScoreSimulator"));
+const BankAccounts = lazy(() => import("./pages/BankAccounts"));
+const ExistingLoans = lazy(() => import("./pages/ExistingLoans"));
+
+// Lazy load admin pages
+const AllApplications = lazy(() => import("./pages/admin/AllApplications"));
+const ApplicationReview = lazy(() => import("./pages/admin/ApplicationReview"));
+const Analytics = lazy(() => import("./pages/admin/Analytics"));
+const SystemSettings = lazy(() => import("./pages/admin/SystemSettings"));
+const SecurityAudit = lazy(() => import("./pages/admin/SecurityAudit"));
+const ExportData = lazy(() => import("./pages/admin/ExportData"));
+const LoanProducts = lazy(() => import("./pages/admin/LoanProducts"));
+const PaymentManagement = lazy(() => import("./pages/admin/PaymentManagement"));
+const AdminNotifications = lazy(() => import("./pages/admin/Notifications"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const NotificationPreferences = lazy(() => import("./pages/NotificationPreferences"));
+const SupportTickets = lazy(() => import("./pages/admin/SupportTickets"));
+const DatabaseManagement = lazy(() => import("./pages/admin/DatabaseManagement"));
+const ApiIntegrations = lazy(() => import("./pages/admin/ApiIntegrations"));
+const ExistingLoansManagement = lazy(() => import("./pages/admin/ExistingLoansManagement"));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -53,7 +64,8 @@ const App = () => (
       <BrowserRouter>
         <AuthContextProvider>
           <RateLimitProvider>
-            <Routes>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
               {/* Public routes without Layout */}
               <Route path="/" element={<Index />} />
               <Route path="/calculator" element={<LoanCalculator />} />
@@ -265,7 +277,8 @@ const App = () => (
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
+              </Routes>
+            </Suspense>
           </RateLimitProvider>
         </AuthContextProvider>
       </BrowserRouter>
