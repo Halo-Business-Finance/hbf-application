@@ -4,6 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Footer } from '@/components/Footer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,6 +20,7 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <Breadcrumbs />
             <main className="flex-1 overflow-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 pb-20 md:pb-8">{children}</main>
+            <Footer />
           </div>
         </div>
         <BottomNav />

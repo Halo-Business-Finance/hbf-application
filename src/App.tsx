@@ -8,10 +8,13 @@ import Layout from "./components/Layout";
 import AuthContextProvider from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RateLimitProvider } from "./components/RateLimitProvider";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
-// Eager load only the landing page and not found for better UX
+// Eager load only the landing page, legal pages, and not found for better UX
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 // Lazy load all other pages to reduce initial bundle
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -57,18 +60,21 @@ const LoadingFallback = () => (
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthContextProvider>
-          <RateLimitProvider>
-            <Suspense fallback={<LoadingFallback />}>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthContextProvider>
+            <RateLimitProvider>
+              <Suspense fallback={<LoadingFallback />}>
               <Routes>
               {/* Public routes without Layout */}
               <Route path="/" element={<Index />} />
               <Route path="/calculator" element={<LoanCalculator />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               
               {/* Protected routes with Layout */}
               <Route path="/admin" element={
@@ -284,6 +290,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

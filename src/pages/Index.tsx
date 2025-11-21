@@ -37,6 +37,7 @@ import Layout from "@/components/Layout";
 import { CreditScoreWidget } from '@/components/CreditScoreWidget';
 import { BankBalanceWidget } from '@/components/BankBalanceWidget';
 import { DashboardOverview } from '@/components/DashboardOverview';
+import { Footer } from '@/components/Footer';
 
 const FundedLoansView = ({ userId }: { userId?: string }) => {
   const [fundedLoans, setFundedLoans] = useState<any[]>([]);
@@ -703,12 +704,12 @@ const Index = () => {
           <div className="px-6 w-full flex justify-center">
           <Card className="max-w-md w-full shadow-lg">
             <CardHeader className="text-center pb-3 pt-6">
-              <CardTitle className="text-2xl font-bold text-foreground mb-1">
+              <h2 className="text-2xl font-bold text-foreground mb-1">
                 Welcome to Halo Business Finance
-              </CardTitle>
-              <CardDescription className="text-sm text-foreground">
+              </h2>
+              <p className="text-sm text-foreground">
                 Sign in to your account
-              </CardDescription>
+              </p>
             </CardHeader>
             <CardContent className="px-6 pb-6">
               <Tabs value={isLogin ? "login" : "signup"} onValueChange={switchMode} className="w-full">
@@ -971,11 +972,20 @@ const Index = () => {
           
           {/* Terms text below card */}
           <p className="text-center text-sm text-foreground mt-6 max-w-xl mx-auto">
-            By signing up, you agree to our terms of service and privacy policy.
+            By signing up, you agree to our{" "}
+            <a href="/terms" className="text-primary hover:underline">
+              terms of service
+            </a>{" "}
+            and{" "}
+            <a href="/privacy" className="text-primary hover:underline">
+              privacy policy
+            </a>
+            .
           </p>
 
           </main>
         </div>
+        <Footer />
       </div>
     );
   }
