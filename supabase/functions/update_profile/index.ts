@@ -4,6 +4,7 @@
 // - Uses service role for the DB update
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -37,19 +38,29 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const body = await req.json().catch(() => ({}));
-    const first_name = typeof body.first_name === 'string' ? body.first_name : null;
-    const last_name = typeof body.last_name === 'string' ? body.last_name : null;
-    const phone = typeof body.phone === 'string' ? body.phone : null;
+    const profileSchema = z.object({
+      first_name: z.string().trim().min(1).max(100).optional(),
+      last_name: z.string().trim().min(1).max(100).optional(),
+      phone: z.string().trim().min(10).max(20).optional()
+    });
 
-    // Basic server-side validation
-    const sanitize = (s: string | null, max: number) =>
-      s && s.trim() ? s.trim().slice(0, max) : null;
+    const body = await req.json().catch(() => ({}));
+    const validation = profileSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid profile data',
+          details: validation.error.format()
+        }),
+        { status: 400, headers: { 'content-type': 'application/json', ...corsHeaders } }
+      );
+    }
 
     const payload = {
-      first_name: sanitize(first_name, 100),
-      last_name: sanitize(last_name, 100),
-      phone: sanitize(phone, 20),
+      first_name: validation.data.first_name || null,
+      last_name: validation.data.last_name || null,
+      phone: validation.data.phone || null,
       updated_at: new Date().toISOString(),
     } as const;
 

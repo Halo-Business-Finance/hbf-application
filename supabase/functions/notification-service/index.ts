@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.52.1";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -42,7 +43,63 @@ serve(async (req) => {
       serviceRoleKey
     );
 
-    const { action, notificationData } = await req.json();
+    // Validation schema for request body
+    const requestSchema = z.object({
+      action: z.enum(['send', 'send-bulk', 'get-templates', 'application-status-change', 'loan-funded', 'send-external']),
+      notificationData: z.any().optional()
+    });
+
+    const notificationDataSchema = z.object({
+      type: z.enum(['email', 'sms', 'system']).optional(),
+      recipient: z.string().max(255).optional(),
+      template: z.string().max(100).optional(),
+      data: z.any().optional(),
+      applicationId: z.string().uuid().optional(),
+      notifications: z.array(z.any()).optional(),
+      eventType: z.string().max(100).optional(),
+      title: z.string().max(255).optional(),
+      message: z.string().max(1000).optional(),
+      applicantEmail: z.string().email().max(255).optional(),
+      applicantName: z.string().max(200).optional(),
+      newStatus: z.string().max(50).optional(),
+      applicationNumber: z.string().max(100).optional(),
+      loanNumber: z.string().max(100).optional(),
+      loanAmount: z.number().min(0).max(1000000000).optional(),
+      loanType: z.string().max(100).optional(),
+      monthlyPayment: z.number().min(0).max(10000000).optional(),
+      interestRate: z.number().min(0).max(100).optional(),
+      termMonths: z.number().int().min(1).max(600).optional(),
+      userId: z.string().uuid().optional()
+    });
+
+    const body = await req.json();
+    const requestValidation = requestSchema.safeParse(body);
+    
+    if (!requestValidation.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid request format',
+          details: requestValidation.error.format()
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { action, notificationData } = requestValidation.data;
+
+    // Validate notificationData if present
+    if (notificationData) {
+      const dataValidation = notificationDataSchema.safeParse(notificationData);
+      if (!dataValidation.success) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'Invalid notification data',
+            details: dataValidation.error.format()
+          }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     switch (action) {
       case 'send':

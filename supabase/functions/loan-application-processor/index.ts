@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.52.1";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -62,7 +63,42 @@ serve(async (req) => {
       }
     }
 
-    const { action, applicationData, applicationId } = await req.json();
+    const requestSchema = z.object({
+      action: z.enum(['validate', 'process', 'updateStatus', 'calculate-eligibility']),
+      applicationData: z.object({
+        loan_type: z.string().max(50),
+        amount_requested: z.number().min(1000).max(50000000),
+        first_name: z.string().min(2).max(100),
+        last_name: z.string().min(2).max(100),
+        email: z.string().email().max(255),
+        phone: z.string().max(20),
+        business_name: z.string().min(2).max(200),
+        business_address: z.string().max(255),
+        business_city: z.string().max(100),
+        business_state: z.string().max(50),
+        business_zip: z.string().max(20),
+        years_in_business: z.number().min(0).max(200),
+        loan_details: z.any(),
+        status: z.string().max(50).optional(),
+        notes: z.string().max(1000).optional()
+      }).optional(),
+      applicationId: z.string().uuid().optional()
+    });
+
+    const body = await req.json();
+    const validation = requestSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid request format',
+          details: validation.error.format()
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { action, applicationData, applicationId } = validation.data;
 
     switch (action) {
       case 'validate':
