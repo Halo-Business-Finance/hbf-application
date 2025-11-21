@@ -2,11 +2,51 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { Wallet, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const DashboardOverview = () => {
-  const [totalBalance] = useState(338130);
-  const [averageScore] = useState<number | null>(785);
-  const [isLoading] = useState(false);
+  const { user } = useAuth();
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [averageScore, setAverageScore] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      loadDashboardData();
+    }
+  }, [user]);
+
+  const loadDashboardData = async () => {
+    try {
+      // Fetch total bank balance
+      const { data: accounts, error: accountsError } = await supabase
+        .from('bank_accounts')
+        .select('balance')
+        .eq('user_id', user?.id);
+
+      if (accountsError) throw accountsError;
+
+      const total = accounts?.reduce((sum, account) => sum + Number(account.balance), 0) || 0;
+      setTotalBalance(total);
+
+      // Fetch average credit score
+      const { data: scores, error: scoresError } = await supabase
+        .from('credit_scores')
+        .select('score')
+        .eq('user_id', user?.id);
+
+      if (scoresError) throw scoresError;
+
+      if (scores && scores.length > 0) {
+        const avg = scores.reduce((sum, score) => sum + Number(score.score), 0) / scores.length;
+        setAverageScore(Math.round(avg));
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

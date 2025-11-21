@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface CreditScore {
   id: string;
@@ -16,34 +18,56 @@ interface ScoreWithChange extends CreditScore {
 }
 
 export const CreditScoreWidget = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | string>('all');
-  const [scores] = useState<ScoreWithChange[]>([
-    {
-      id: '1',
-      score: 785,
-      bureau: 'experian',
-      score_date: '2025-11-15',
-      change: 12,
-      previousScore: 773
-    },
-    {
-      id: '2',
-      score: 792,
-      bureau: 'equifax',
-      score_date: '2025-11-15',
-      change: -5,
-      previousScore: 797
-    },
-    {
-      id: '3',
-      score: 778,
-      bureau: 'transunion',
-      score_date: '2025-11-15',
-      change: 8,
-      previousScore: 770
+  const [scores, setScores] = useState<ScoreWithChange[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      loadCreditScores();
     }
-  ]);
-  const [isLoading] = useState(false);
+  }, [user]);
+
+  const loadCreditScores = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('credit_scores')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('score_date', { ascending: false });
+
+      if (error) throw error;
+
+      // Get latest score for each bureau and calculate changes
+      const bureaus = ['experian', 'equifax', 'transunion'];
+      const latestScores: ScoreWithChange[] = [];
+
+      for (const bureau of bureaus) {
+        const bureauScores = (data || [])
+          .filter(s => s.bureau.toLowerCase() === bureau)
+          .sort((a, b) => new Date(b.score_date).getTime() - new Date(a.score_date).getTime());
+
+        if (bureauScores.length > 0) {
+          const latest = bureauScores[0];
+          const previous = bureauScores[1];
+          
+          latestScores.push({
+            ...latest,
+            change: previous ? Number(latest.score) - Number(previous.score) : 0,
+            previousScore: previous ? Number(previous.score) : null
+          });
+        }
+      }
+
+      setScores(latestScores);
+    } catch (error) {
+      console.error('Error loading credit scores:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getScoreRating = (score: number) => {
     if (score >= 800) return 'Exceptional';
@@ -128,7 +152,11 @@ export const CreditScoreWidget = () => {
         const changeText = score.change === 0 ? 'No Change' : `${score.change > 0 ? '+' : ''}${score.change} Point${Math.abs(score.change) !== 1 ? 's' : ''}`;
         
         return (
-          <Card key={score.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
+          <Card 
+            key={score.id} 
+            className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer"
+            onClick={() => navigate('/credit-reports')}
+          >
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">{getBureauDisplay(score.bureau)}</h3>
               
