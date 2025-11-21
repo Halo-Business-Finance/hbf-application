@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, DollarSign, FileText, User, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, DollarSign, FileText, User, ChevronDown, ChevronUp, Download } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { LoanProgressBar } from '@/components/LoanProgressBar';
 import { LoanTimeline } from '@/components/LoanTimeline';
+import { generateApplicationPDF } from '@/utils/pdfGenerator';
 
 interface LoanApplication {
   id: string;
@@ -345,13 +346,18 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                               View Application
                             </Button>
                           )}
-                          <Button variant="ghost" size="sm" className="w-full sm:w-auto text-gray-700 hover:bg-gray-100 transition-all">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full sm:w-auto text-gray-700 hover:bg-gray-100 transition-all"
+                            onClick={() => generateApplicationPDF(application as any)}
+                          >
+                            <Download className="w-4 h-4 mr-2" />
                             Download PDF
                           </Button>
                         </div>
                       </div>
 
-                      {/* Horizontal Actions Section at Bottom */}
                       <Separator className="bg-gray-200" />
                       <div className="flex flex-wrap gap-2">
                         <Button 
@@ -363,7 +369,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                             toggleCard(application.id);
                           }}
                         >
-                          View Status
+                          {isCollapsed ? 'View Details' : 'Hide Details'}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -393,7 +399,7 @@ const ApplicationsList = ({ statusFilter = null, applications: externalApplicati
                           className="flex-1 min-w-[120px] text-gray-700 hover:bg-gray-100 transition-all text-xs h-8"
                           onClick={(e) => {
                             e.stopPropagation();
-                            window.print();
+                            generateApplicationPDF(application as any);
                           }}
                         >
                           Print Application

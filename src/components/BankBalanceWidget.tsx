@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Building2, User } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface BankAccount {
   id: string;
@@ -12,42 +15,36 @@ interface BankAccount {
 }
 
 export const BankBalanceWidget = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | 'personal' | 'business'>('all');
-  const [accounts] = useState<BankAccount[]>([
-    {
-      id: '1',
-      account_name: 'Main Checking',
-      institution: 'Chase Bank',
-      balance: 45230,
-      is_business: false,
-      status: 'active'
-    },
-    {
-      id: '2',
-      account_name: 'Savings Account',
-      institution: 'Wells Fargo',
-      balance: 78500,
-      is_business: false,
-      status: 'active'
-    },
-    {
-      id: '3',
-      account_name: 'Business Checking',
-      institution: 'Bank of America',
-      balance: 125000,
-      is_business: true,
-      status: 'active'
-    },
-    {
-      id: '4',
-      account_name: 'Payroll Account',
-      institution: 'Silicon Valley Bank',
-      balance: 89400,
-      is_business: true,
-      status: 'active'
+  const [accounts, setAccounts] = useState<BankAccount[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      loadBankAccounts();
     }
-  ]);
-  const [isLoading] = useState(false);
+  }, [user]);
+
+  const loadBankAccounts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bank_accounts')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('status', 'active')
+        .order('balance', { ascending: false });
+
+      if (error) throw error;
+
+      setAccounts(data || []);
+    } catch (error) {
+      console.error('Error loading bank accounts:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -132,7 +129,11 @@ export const BankBalanceWidget = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {displayedAccounts.map((account) => (
-          <Card key={account.id} className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer">
+          <Card 
+            key={account.id} 
+            className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer"
+            onClick={() => navigate('/bank-accounts')}
+          >
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 {account.is_business ? (
