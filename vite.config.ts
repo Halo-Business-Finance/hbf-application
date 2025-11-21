@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => ({
     componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'inline', // Inline SW registration to avoid blocking
       includeAssets: ['favicon.ico', 'robots.txt'],
       manifest: {
         name: 'Halo Business Finance',
