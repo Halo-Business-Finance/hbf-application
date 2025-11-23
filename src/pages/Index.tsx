@@ -232,7 +232,7 @@ const DashboardView = () => {
       {/* Main Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex-1">
-          <h1 className="text-lg sm:text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress</h1>
+          <h1 className="text-lg sm:text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress here</h1>
         </div>
         <Button 
           size="lg" 
