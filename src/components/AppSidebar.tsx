@@ -87,7 +87,7 @@ export function AppSidebar() {
       : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'} transition-all duration-200 group`;
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="w-56">
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
