@@ -103,7 +103,6 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton onClick={toggleSidebar} tooltip="Toggle Menu">
                     <Menu className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                    <span>Toggle Menu</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
