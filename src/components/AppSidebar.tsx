@@ -93,8 +93,8 @@ export function AppSidebar() {
           <SidebarGroup className="mt-4">
             {open && (
               <div className="px-2 py-3 mb-2 pt-8">
-                <h2 className="text-lg font-semibold text-sidebar-foreground">
-                  Welcome{firstName ? `, ${firstName}` : ''}!
+                <h2 className="text-sm font-medium text-sidebar-foreground/70">
+                  Dashboard
                 </h2>
               </div>
             )}
