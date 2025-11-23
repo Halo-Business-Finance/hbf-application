@@ -109,16 +109,6 @@ export const CreditScoreWidget = () => {
     );
   }
 
-  if (scores.length === 0) {
-    return (
-      <Card className="border border-gray-200 shadow-sm bg-white">
-        <CardContent className="p-6">
-          <p className="text-sm text-gray-700">No credit scores available</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   const renderScoreCards = (scoreList: ScoreWithChange[]) => {
     if (scoreList.length === 0) {
       return (
