@@ -98,7 +98,6 @@ export function AppSidebar() {
                 </h2>
               </div>
             )}
-            {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
@@ -107,6 +106,11 @@ export function AppSidebar() {
                     <span>Toggle Menu</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+            {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
+            <SidebarGroupContent>
+              <SidebarMenu>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild tooltip={item.title}>
