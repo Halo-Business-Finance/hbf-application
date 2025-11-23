@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut, Menu } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {
   Sidebar,
@@ -91,8 +91,13 @@ export function AppSidebar() {
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
+            <div className="px-4 py-3 mb-2">
+              <SidebarTrigger className="flex items-center justify-center h-10 w-10 rounded-lg hover:bg-sidebar-accent transition-all duration-200">
+                <Menu className="h-5 w-5" />
+              </SidebarTrigger>
+            </div>
             {open && (
-              <div className="px-4 py-3 mb-2 pt-8">
+              <div className="px-4 py-3 mb-2">
                 <h2 className="text-lg font-semibold text-sidebar-foreground">
                   Welcome{firstName ? `, ${firstName}` : ''}!
                 </h2>
@@ -134,14 +139,6 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <div className="px-4 mb-3">
-                  <SidebarTrigger className={`flex items-center gap-3 h-10 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 ${open ? 'w-full justify-start' : 'w-10 justify-center'}`}>
-                    {open ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
-                    {open && <span className="text-sm font-medium">Collapse Menu</span>}
-                  </SidebarTrigger>
-                </div>
-              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={handleLogout}
