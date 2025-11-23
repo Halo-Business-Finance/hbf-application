@@ -37,7 +37,7 @@ export function AppSidebar() {
   const { isAdmin } = useUserRole();
   const { signOut, user } = useAuth();
   const { toast } = useToast();
-  const { open } = useSidebar();
+  const { open, toggleSidebar } = useSidebar();
   const currentPath = location.pathname;
   const [firstName, setFirstName] = useState<string>('');
 
@@ -92,9 +92,12 @@ export function AppSidebar() {
         <div className="flex-1">
           <SidebarGroup className="mt-4">
             <div className="px-4 py-3 mb-2">
-              <SidebarTrigger className="flex items-center justify-center h-10 w-10 rounded-lg hover:bg-sidebar-accent transition-all duration-200">
+              <button 
+                onClick={toggleSidebar}
+                className="flex items-center justify-center h-10 w-10 rounded-lg hover:bg-sidebar-accent transition-all duration-200"
+              >
                 <Menu className="h-5 w-5" />
-              </SidebarTrigger>
+              </button>
             </div>
             {open && (
               <div className="px-4 py-3 mb-2">
