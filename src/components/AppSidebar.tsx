@@ -91,16 +91,8 @@ export function AppSidebar() {
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
           <SidebarGroup className="mt-4">
-            <div className="px-4 py-3 mb-2">
-              <button 
-                onClick={toggleSidebar}
-                className="flex items-center justify-center h-10 w-10 rounded-lg hover:bg-sidebar-accent transition-all duration-200"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-            </div>
             {open && (
-              <div className="px-4 py-3 mb-2">
+              <div className="px-4 py-3 mb-2 pt-8">
                 <h2 className="text-lg font-semibold text-sidebar-foreground">
                   Welcome{firstName ? `, ${firstName}` : ''}!
                 </h2>
@@ -109,6 +101,12 @@ export function AppSidebar() {
             {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={toggleSidebar} tooltip="Toggle Menu">
+                    <Menu className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                    <span>Toggle Menu</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild tooltip={item.title}>
