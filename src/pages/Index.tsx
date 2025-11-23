@@ -220,27 +220,27 @@ const DashboardView = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5 mb-12">
-      {/* Welcome Message */}
-      {firstName && (
-        <div className="mb-2">
-          <h2 className="text-2xl font-semibold text-foreground">
-            Welcome, {firstName}!
-          </h2>
+      {/* Header with top separator */}
+      <div className="border-t-4 border-primary pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex-1">
+            {firstName && (
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
+                Welcome, {firstName}
+              </h2>
+            )}
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Manage your loan applications and track your progress here
+            </p>
+          </div>
+          <Button 
+            size="lg" 
+            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            + New Loan Application
+          </Button>
         </div>
-      )}
-      
-      {/* Main Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex-1">
-          <h1 className="text-lg sm:text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress here</h1>
-        </div>
-        <Button 
-          size="lg" 
-          onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-          className="w-full sm:w-auto bg-blue-950 hover:bg-blue-900 text-white"
-        >
-          + New Loan Application
-        </Button>
       </div>
 
       {/* Overview Card */}
