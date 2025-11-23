@@ -3,40 +3,35 @@ import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { Wallet, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-
 export const DashboardOverview = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const [totalBalance, setTotalBalance] = useState(0);
   const [averageScore, setAverageScore] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     if (user) {
       loadDashboardData();
     }
   }, [user]);
-
   const loadDashboardData = async () => {
     try {
       // Fetch total bank balance
-      const { data: accounts, error: accountsError } = await supabase
-        .from('bank_accounts')
-        .select('balance')
-        .eq('user_id', user?.id);
-
+      const {
+        data: accounts,
+        error: accountsError
+      } = await supabase.from('bank_accounts').select('balance').eq('user_id', user?.id);
       if (accountsError) throw accountsError;
-
       const total = accounts?.reduce((sum, account) => sum + Number(account.balance), 0) || 0;
       setTotalBalance(total);
 
       // Fetch average credit score
-      const { data: scores, error: scoresError } = await supabase
-        .from('credit_scores')
-        .select('score')
-        .eq('user_id', user?.id);
-
+      const {
+        data: scores,
+        error: scoresError
+      } = await supabase.from('credit_scores').select('score').eq('user_id', user?.id);
       if (scoresError) throw scoresError;
-
       if (scores && scores.length > 0) {
         const avg = scores.reduce((sum, score) => sum + Number(score.score), 0) / scores.length;
         setAverageScore(Math.round(avg));
@@ -47,19 +42,16 @@ export const DashboardOverview = () => {
       setIsLoading(false);
     }
   };
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
-
   if (isLoading) {
-    return (
-      <Card className="border-2 border-blue-950 bg-gradient-to-br from-blue-950 to-blue-900 shadow-lg">
+    return <Card className="border-2 border-blue-950 bg-gradient-to-br from-blue-950 to-blue-900 shadow-lg">
         <CardContent className="p-8">
           <div className="animate-pulse flex items-center justify-between">
             <div className="space-y-3 flex-1">
@@ -72,39 +64,9 @@ export const DashboardOverview = () => {
             </div>
           </div>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
-  return (
-    <Card className="border-2 border-blue-950 bg-gradient-to-br from-blue-950 to-blue-900 shadow-lg hover:shadow-xl transition-all duration-200">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Total Balance */}
-          <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all duration-200 cursor-pointer hover:scale-105">
-            <div className="p-2 bg-white/10 rounded-lg">
-              <Wallet className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Total Balance</p>
-              <p className="text-2xl font-bold text-white">{formatCurrency(totalBalance)}</p>
-            </div>
-          </div>
-
-          {/* Average Credit Score */}
-          <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all duration-200 cursor-pointer hover:scale-105">
-            <div className="p-2 bg-white/10 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Average Credit Score</p>
-              <p className="text-2xl font-bold text-white">
-                {averageScore !== null ? averageScore : 'N/A'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  return <Card className="border-2 border-blue-950 bg-gradient-to-br from-blue-950 to-blue-900 shadow-lg hover:shadow-xl transition-all duration-200">
+      
+    </Card>;
 };
