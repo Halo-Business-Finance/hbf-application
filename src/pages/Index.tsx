@@ -38,29 +38,26 @@ import { CreditScoreWidget } from '@/components/CreditScoreWidget';
 import { BankBalanceWidget } from '@/components/BankBalanceWidget';
 import { DashboardOverview } from '@/components/DashboardOverview';
 import { Footer } from '@/components/Footer';
-
-const FundedLoansView = ({ userId }: { userId?: string }) => {
+const FundedLoansView = ({
+  userId
+}: {
+  userId?: string;
+}) => {
   const [fundedLoans, setFundedLoans] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchFundedLoans = async () => {
       if (!userId) return;
-
-      const { data } = await supabase
-        .from('loan_applications')
-        .select('*')
-        .eq('user_id', userId)
-        .in('status', ['funded', 'approved'])
-        .order('application_submitted_date', { ascending: false });
-
+      const {
+        data
+      } = await supabase.from('loan_applications').select('*').eq('user_id', userId).in('status', ['funded', 'approved']).order('application_submitted_date', {
+        ascending: false
+      });
       setFundedLoans(data || []);
       setIsLoading(false);
     };
-
     fetchFundedLoans();
   }, [userId]);
-
   const getLoanTypeDisplay = (loanType: string) => {
     const types = {
       refinance: 'Refinance',
@@ -74,45 +71,34 @@ const FundedLoansView = ({ userId }: { userId?: string }) => {
     };
     return types[loanType as keyof typeof types] || loanType;
   };
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
-
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2].map((i) => (
-          <Card key={i} className="animate-pulse">
+    return <div className="space-y-4">
+        {[1, 2].map(i => <Card key={i} className="animate-pulse">
             <CardContent className="p-6">
               <div className="h-6 bg-muted rounded w-1/3 mb-4"></div>
               <div className="h-4 bg-muted rounded w-1/2"></div>
             </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
+          </Card>)}
+      </div>;
   }
-
   if (fundedLoans.length === 0) {
-    return (
-      <Card>
+    return <Card>
         <CardContent className="p-12 text-center">
           <CheckCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">No Funded Loans</h3>
           <p className="text-muted-foreground">You don't have any funded or closed loans yet</p>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
-  return (
-    <div>
+  return <div>
       <div className="mb-6 flex items-start gap-3">
         <CheckCircle className="w-6 h-6 text-green-600 mt-1" />
         <div>
@@ -124,8 +110,7 @@ const FundedLoansView = ({ userId }: { userId?: string }) => {
       </div>
 
       <div className="space-y-4">
-        {fundedLoans.map((loan) => (
-          <Card key={loan.id} className="hover:shadow-md transition-shadow border-l-4 border-l-green-500">
+        {fundedLoans.map(loan => <Card key={loan.id} className="hover:shadow-md transition-shadow border-l-4 border-l-green-500">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -157,13 +142,10 @@ const FundedLoansView = ({ userId }: { userId?: string }) => {
                 </div>
               </div>
             </CardContent>
-          </Card>
-        ))}
+          </Card>)}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 const DashboardView = () => {
   const [stats, setStats] = useState({
     totalApplications: 0,
@@ -173,71 +155,57 @@ const DashboardView = () => {
   });
   const [activeTab, setActiveTab] = useState('applications');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const [firstName, setFirstName] = useState<string | null>(null);
   useEffect(() => {
     const fetchStats = async () => {
       if (!user) return;
 
       // Fetch user's first name from profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('first_name')
-        .eq('id', user.id)
-        .maybeSingle();
-
+      const {
+        data: profile
+      } = await supabase.from('profiles').select('first_name').eq('id', user.id).maybeSingle();
       setFirstName(profile?.first_name ?? null);
-
-      const { data: applications } = await supabase
-        .from('loan_applications')
-        .select('*')
-        .eq('user_id', user.id);
-
+      const {
+        data: applications
+      } = await supabase.from('loan_applications').select('*').eq('user_id', user.id);
       if (applications) {
         const total = applications.length;
         const approved = applications.filter(app => app.status === 'approved').length;
         const pending = applications.filter(app => app.status === 'under_review' || app.status === 'submitted').length;
-        const approvedSum = applications
-          .filter(app => app.status === 'approved')
-          .reduce((sum, app) => sum + (app.amount_requested || 0), 0);
-
+        const approvedSum = applications.filter(app => app.status === 'approved').reduce((sum, app) => sum + (app.amount_requested || 0), 0);
         setStats({
           totalApplications: total,
           approvedAmount: approvedSum,
           pendingReview: pending,
-          successRate: total > 0 ? Math.round((approved / total) * 100) : 0
+          successRate: total > 0 ? Math.round(approved / total * 100) : 0
         });
       }
     };
-
     fetchStats();
   }, [user]);
-
   const handleMetricClick = (filter: string) => {
     setStatusFilter(filter);
     setActiveTab('applications');
   };
-
-  return (
-    <div className="space-y-4 sm:space-y-5 mb-12">
+  return <div className="space-y-4 sm:space-y-5 mb-12">
       {/* Header with bottom separator */}
       <div className="-mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-4">
           <div className="flex-1">
-            {firstName && (
-              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
+            {firstName && <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
                 Welcome, {firstName}
-              </h2>
-            )}
+              </h2>}
             <p className="text-sm sm:text-base text-muted-foreground">
               Manage your loan applications and track your progress here
             </p>
           </div>
-          <Button 
-            size="lg" 
-            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
-          >
+          <Button size="lg" onClick={() => window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: 'smooth'
+        })} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
             + New Loan Application
           </Button>
         </div>
@@ -260,10 +228,7 @@ const DashboardView = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <Card 
-          className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => handleMetricClick('all')}
-        >
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('all')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Total Applications</p>
@@ -272,10 +237,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card 
-          className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => handleMetricClick('approved')}
-        >
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('approved')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Approved Amount</p>
@@ -284,10 +246,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card 
-          className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => handleMetricClick('pending')}
-        >
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('pending')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Pending Review</p>
@@ -296,10 +255,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card 
-          className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => handleMetricClick('approved')}
-        >
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('approved')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Success Rate</p>
@@ -318,25 +274,16 @@ const DashboardView = () => {
         </TabsList>
 
         <TabsContent value="applications" className="mt-6">
-          {statusFilter && (
-            <div className="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
+          {statusFilter && <div className="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="bg-blue-900 text-white">
-                  Filter: {statusFilter === 'all' ? 'All Applications' : 
-                           statusFilter === 'pending' ? 'Pending Review' : 
-                           statusFilter === 'approved' ? 'Approved/Funded' : statusFilter}
+                  Filter: {statusFilter === 'all' ? 'All Applications' : statusFilter === 'pending' ? 'Pending Review' : statusFilter === 'approved' ? 'Approved/Funded' : statusFilter}
                 </Badge>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setStatusFilter(null)}
-                className="text-blue-900 hover:text-blue-700"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setStatusFilter(null)} className="text-blue-900 hover:text-blue-700">
                 Clear Filter
               </Button>
-            </div>
-          )}
+            </div>}
           <ApplicationsList statusFilter={statusFilter} />
         </TabsContent>
 
@@ -354,17 +301,22 @@ const DashboardView = () => {
           <FundedLoansView userId={user?.id} />
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 };
-
 const Index = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { authenticated, loading, signIn, signUp } = useAuth();
-  const { toast } = useToast();
-  
+  const {
+    authenticated,
+    loading,
+    signIn,
+    signUp
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
+
   // Auth form state - must be at top level, not conditional
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -376,139 +328,119 @@ const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
-  
   const loanTypeId = searchParams.get('id');
-
   useEffect(() => {
     if (loanTypeId) {
       setSelectedLoanType(parseInt(loanTypeId));
     }
   }, [loanTypeId]);
-
-  const loanPrograms = [
-    {
-      id: 1,
-      title: "SBA 7(a) Loans",
-      icon: Shield,
-      description: "Versatile financing for working capital, equipment, and real estate purchases",
-      badge: "Prime + 2.75%",
-      badgeColor: "bg-primary",
-      details: "Up to $5 million | Long-term financing | Most popular SBA program"
-    },
-    {
-      id: 2,
-      title: "SBA 504 Loans", 
-      icon: Building,
-      description: "Fixed-rate financing for real estate and major equipment purchases",
-      badge: "Fixed Rate",
-      badgeColor: "bg-primary",
-      details: "Up to $5.5 million | 10% down payment | Long-term fixed rates"
-    },
-    {
-      id: 3,
-      title: "USDA B&I Loans",
-      icon: Shield,
-      description: "Rural business development financing backed by USDA guarantee",
-      badge: "Prime + 2%",
-      badgeColor: "bg-primary",
-      details: "Up to $25 million | Rural area focus | Job creation requirements"
-    },
-    {
-      id: 4,
-      title: "Bridge Loans",
-      icon: Building2, 
-      description: "Short-term financing to bridge cash flow gaps while securing permanent financing",
-      badge: "8.5% APR",
-      badgeColor: "bg-accent",
-      details: "Fast 7-day closing | Up to $10 million | Quick access to capital"
-    },
-    {
-      id: 5,
-      title: "Conventional Loans",
-      icon: CreditCard,
-      description: "Traditional commercial financing for established businesses with strong credit profiles",
-      badge: "5.25% APR",
-      badgeColor: "bg-accent",
-      details: "No government guarantee | Faster approval | Flexible terms"
-    },
-    {
-      id: 6,
-      title: "Equipment Financing",
-      icon: Settings,
-      description: "Fund new or used equipment purchases with competitive terms",
-      badge: "6.25% APR",
-      badgeColor: "bg-accent",
-      details: "100% financing available | Fast approval | Equipment as collateral"
-    },
-    {
-      id: 7,
-      title: "Working Capital",
-      icon: TrendingUp,
-      description: "Bridge cash flow gaps and fund day-to-day business operations",
-      badge: "Prime + 1%",
-      badgeColor: "bg-accent",
-      details: "Revolving credit line | Quick access | Fund daily operations"
-    },
-    {
-      id: 8,
-      title: "Business Line of Credit",
-      icon: CreditCard,
-      description: "Flexible access to capital when you need it with revolving credit lines",
-      badge: "Prime + 2%",
-      badgeColor: "bg-accent",
-      details: "Draw as needed | Pay interest only on used funds | Revolving credit"
-    },
-    {
-      id: 9,
-      title: "Term Loans",
-      icon: Banknote,
-      description: "Fixed-rate business loans for major investments and growth initiatives",
-      badge: "5.75% APR",
-      badgeColor: "bg-accent",
-      details: "Fixed monthly payments | Competitive rates | Major investments"
-    },
-    {
-      id: 10,
-      title: "Invoice Factoring",
-      icon: FileText,
-      description: "Convert outstanding invoices into immediate cash flow for your business",
-      badge: "1.5% Factor",
-      badgeColor: "bg-accent",
-      details: "90% advance rate | Same-day funding | No debt on balance sheet"
-    },
-    {
-      id: 11,
-      title: "Refinance Loans",
-      icon: RotateCcw,
-      description: "Refinance existing debt to improve cash flow and reduce monthly payments",
-      badge: "4.5% APR",
-      badgeColor: "bg-accent",
-      details: "Lower payments | Improved terms | Debt consolidation"
-    },
-    {
-      id: 12,
-      title: "SBA Express Loans",
-      icon: Zap,
-      description: "Fast-track SBA financing with expedited approval process",
-      badge: "Prime + 4.5%",
-      badgeColor: "bg-primary",
-      details: "Up to $500K | 36-hour approval | Express processing"
-    }
-  ];
-
+  const loanPrograms = [{
+    id: 1,
+    title: "SBA 7(a) Loans",
+    icon: Shield,
+    description: "Versatile financing for working capital, equipment, and real estate purchases",
+    badge: "Prime + 2.75%",
+    badgeColor: "bg-primary",
+    details: "Up to $5 million | Long-term financing | Most popular SBA program"
+  }, {
+    id: 2,
+    title: "SBA 504 Loans",
+    icon: Building,
+    description: "Fixed-rate financing for real estate and major equipment purchases",
+    badge: "Fixed Rate",
+    badgeColor: "bg-primary",
+    details: "Up to $5.5 million | 10% down payment | Long-term fixed rates"
+  }, {
+    id: 3,
+    title: "USDA B&I Loans",
+    icon: Shield,
+    description: "Rural business development financing backed by USDA guarantee",
+    badge: "Prime + 2%",
+    badgeColor: "bg-primary",
+    details: "Up to $25 million | Rural area focus | Job creation requirements"
+  }, {
+    id: 4,
+    title: "Bridge Loans",
+    icon: Building2,
+    description: "Short-term financing to bridge cash flow gaps while securing permanent financing",
+    badge: "8.5% APR",
+    badgeColor: "bg-accent",
+    details: "Fast 7-day closing | Up to $10 million | Quick access to capital"
+  }, {
+    id: 5,
+    title: "Conventional Loans",
+    icon: CreditCard,
+    description: "Traditional commercial financing for established businesses with strong credit profiles",
+    badge: "5.25% APR",
+    badgeColor: "bg-accent",
+    details: "No government guarantee | Faster approval | Flexible terms"
+  }, {
+    id: 6,
+    title: "Equipment Financing",
+    icon: Settings,
+    description: "Fund new or used equipment purchases with competitive terms",
+    badge: "6.25% APR",
+    badgeColor: "bg-accent",
+    details: "100% financing available | Fast approval | Equipment as collateral"
+  }, {
+    id: 7,
+    title: "Working Capital",
+    icon: TrendingUp,
+    description: "Bridge cash flow gaps and fund day-to-day business operations",
+    badge: "Prime + 1%",
+    badgeColor: "bg-accent",
+    details: "Revolving credit line | Quick access | Fund daily operations"
+  }, {
+    id: 8,
+    title: "Business Line of Credit",
+    icon: CreditCard,
+    description: "Flexible access to capital when you need it with revolving credit lines",
+    badge: "Prime + 2%",
+    badgeColor: "bg-accent",
+    details: "Draw as needed | Pay interest only on used funds | Revolving credit"
+  }, {
+    id: 9,
+    title: "Term Loans",
+    icon: Banknote,
+    description: "Fixed-rate business loans for major investments and growth initiatives",
+    badge: "5.75% APR",
+    badgeColor: "bg-accent",
+    details: "Fixed monthly payments | Competitive rates | Major investments"
+  }, {
+    id: 10,
+    title: "Invoice Factoring",
+    icon: FileText,
+    description: "Convert outstanding invoices into immediate cash flow for your business",
+    badge: "1.5% Factor",
+    badgeColor: "bg-accent",
+    details: "90% advance rate | Same-day funding | No debt on balance sheet"
+  }, {
+    id: 11,
+    title: "Refinance Loans",
+    icon: RotateCcw,
+    description: "Refinance existing debt to improve cash flow and reduce monthly payments",
+    badge: "4.5% APR",
+    badgeColor: "bg-accent",
+    details: "Lower payments | Improved terms | Debt consolidation"
+  }, {
+    id: 12,
+    title: "SBA Express Loans",
+    icon: Zap,
+    description: "Fast-track SBA financing with expedited approval process",
+    badge: "Prime + 4.5%",
+    badgeColor: "bg-primary",
+    details: "Up to $500K | 36-hour approval | Express processing"
+  }];
   const handleLoanTypeSelect = (id: number) => {
     setSelectedLoanType(id);
     navigate(`/?id=${id}`);
   };
-
   const handleBackToHome = () => {
     navigate('/');
     setSelectedLoanType(null);
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    return <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center animate-fade-in">
           <div className="relative mb-6">
             <div className="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin border-t-primary mx-auto"></div>
@@ -517,157 +449,151 @@ const Index = () => {
           <h3 className="text-lg font-semibold text-foreground mb-2">Loading Your Dashboard</h3>
           <p className="text-sm text-muted-foreground">Preparing your loan application experience...</p>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Auth form handlers
   const handleAuthSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setAuthError("");
-      setAuthLoading(true);
-
-      try {
-        if (!isLogin) {
-          // Validation for signup
-          if (password !== confirmPassword) {
-            setAuthError("Passwords do not match");
-            setAuthLoading(false);
-            return;
-          }
-          if (password.length < 6) {
-            setAuthError("Password must be at least 6 characters long");
-            setAuthLoading(false);
-            return;
-          }
-          if (!firstName.trim() || !lastName.trim()) {
-            setAuthError("First name and last name are required");
-            setAuthLoading(false);
-            return;
-          }
-
-          const { error } = await signUp(email, password);
-          
-          if (error) {
-            if (error.message?.includes("User already registered")) {
-              setAuthError("An account with this email already exists. Please sign in instead.");
-            } else if (error.message?.includes("Invalid email")) {
-              setAuthError("Please enter a valid email address");
-            } else {
-              setAuthError(error.message || "Failed to create account");
-            }
+    e.preventDefault();
+    setAuthError("");
+    setAuthLoading(true);
+    try {
+      if (!isLogin) {
+        // Validation for signup
+        if (password !== confirmPassword) {
+          setAuthError("Passwords do not match");
+          setAuthLoading(false);
+          return;
+        }
+        if (password.length < 6) {
+          setAuthError("Password must be at least 6 characters long");
+          setAuthLoading(false);
+          return;
+        }
+        if (!firstName.trim() || !lastName.trim()) {
+          setAuthError("First name and last name are required");
+          setAuthLoading(false);
+          return;
+        }
+        const {
+          error
+        } = await signUp(email, password);
+        if (error) {
+          if (error.message?.includes("User already registered")) {
+            setAuthError("An account with this email already exists. Please sign in instead.");
+          } else if (error.message?.includes("Invalid email")) {
+            setAuthError("Please enter a valid email address");
           } else {
-            setTimeout(() => {
-              toast({
-                title: "Account created successfully!",
-                description: "Please check your email to verify your account, then sign in.",
-              });
-            }, 7000);
-            setIsLogin(true);
-            setPassword("");
-            setConfirmPassword("");
+            setAuthError(error.message || "Failed to create account");
           }
         } else {
-          // Sign in
-          const { error } = await signIn(email, password);
-          
-          if (error) {
-            if (error.message?.includes("Invalid login credentials")) {
-              setAuthError("Invalid email or password. Please check your credentials and try again.");
-            } else if (error.message?.includes("Email not confirmed")) {
-              setAuthError("Please check your email and click the confirmation link before signing in.");
-            } else {
-              setAuthError(error.message || "Failed to sign in");
-            }
-          } else {
+          setTimeout(() => {
             toast({
-              title: "Welcome!",
-              description: "You have successfully signed in.",
+              title: "Account created successfully!",
+              description: "Please check your email to verify your account, then sign in."
             });
-          }
+          }, 7000);
+          setIsLogin(true);
+          setPassword("");
+          setConfirmPassword("");
         }
-      } catch (err) {
-        setAuthError("An unexpected error occurred. Please try again.");
-      } finally {
-        setAuthLoading(false);
+      } else {
+        // Sign in
+        const {
+          error
+        } = await signIn(email, password);
+        if (error) {
+          if (error.message?.includes("Invalid login credentials")) {
+            setAuthError("Invalid email or password. Please check your credentials and try again.");
+          } else if (error.message?.includes("Email not confirmed")) {
+            setAuthError("Please check your email and click the confirmation link before signing in.");
+          } else {
+            setAuthError(error.message || "Failed to sign in");
+          }
+        } else {
+          toast({
+            title: "Welcome!",
+            description: "You have successfully signed in."
+          });
+        }
       }
+    } catch (err) {
+      setAuthError("An unexpected error occurred. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
   };
-
   const handleMicrosoftSignIn = async () => {
-      setAuthLoading(true);
-      setAuthError("");
-      
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'azure',
-          options: {
-            redirectTo: `${window.location.origin}/`
-          }
-        });
-        
-        if (error) {
-          setAuthError(error.message || "Failed to sign in with Microsoft");
+    setAuthLoading(true);
+    setAuthError("");
+    try {
+      const {
+        error
+      } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: {
+          redirectTo: `${window.location.origin}/`
         }
-      } catch (err) {
-        setAuthError("An unexpected error occurred. Please try again.");
-      } finally {
-        setAuthLoading(false);
+      });
+      if (error) {
+        setAuthError(error.message || "Failed to sign in with Microsoft");
       }
+    } catch (err) {
+      setAuthError("An unexpected error occurred. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
   };
-
   const handleGoogleSignIn = async () => {
-      setAuthLoading(true);
-      setAuthError("");
-      
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}/`
-          }
-        });
-        
-        if (error) {
-          setAuthError(error.message || "Failed to sign in with Google");
+    setAuthLoading(true);
+    setAuthError("");
+    try {
+      const {
+        error
+      } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`
         }
-      } catch (err) {
-        setAuthError("An unexpected error occurred. Please try again.");
-      } finally {
-        setAuthLoading(false);
+      });
+      if (error) {
+        setAuthError(error.message || "Failed to sign in with Google");
       }
+    } catch (err) {
+      setAuthError("An unexpected error occurred. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
   };
-
   const handleAppleSignIn = async () => {
-      setAuthLoading(true);
-      setAuthError("");
-      
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'apple',
-          options: {
-            redirectTo: `${window.location.origin}/`
-          }
-        });
-        
-        if (error) {
-          setAuthError(error.message || "Failed to sign in with Apple");
+    setAuthLoading(true);
+    setAuthError("");
+    try {
+      const {
+        error
+      } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: `${window.location.origin}/`
         }
-      } catch (err) {
-        setAuthError("An unexpected error occurred. Please try again.");
-      } finally {
-        setAuthLoading(false);
+      });
+      if (error) {
+        setAuthError(error.message || "Failed to sign in with Apple");
       }
+    } catch (err) {
+      setAuthError("An unexpected error occurred. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
   };
-
   const resetForm = () => {
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setFirstName("");
-      setLastName("");
-      setAuthError("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setFirstName("");
+    setLastName("");
+    setAuthError("");
   };
-
   const switchMode = (mode: string) => {
     setIsLogin(mode === "login");
     resetForm();
@@ -675,8 +601,7 @@ const Index = () => {
 
   // Show auth forms for unauthenticated users
   if (!authenticated && !loading) {
-    return (
-      <div className="min-h-screen bg-white py-12">
+    return <div className="min-h-screen bg-white py-12">
         <div className="max-w-7xl mx-auto px-6">
           <main>
           {/* Header with Stats */}
@@ -731,54 +656,22 @@ const Index = () => {
                   <form onSubmit={handleAuthSubmit} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-foreground font-normal text-sm">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={authLoading}
-                        className="h-10"
-                      />
+                      <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} required disabled={authLoading} className="h-10" />
                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="password" className="text-foreground font-normal text-sm">Password</Label>
                       <div className="relative">
-                        <Input
-                          id="password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                          disabled={authLoading}
-                          className="h-10 pr-10"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-10 px-3 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                          disabled={authLoading}
-                          aria-label={showPassword ? "Hide password" : "Show password"}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
+                        <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} required disabled={authLoading} className="h-10 pr-10" />
+                        <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-10 px-3 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)} disabled={authLoading} aria-label={showPassword ? "Hide password" : "Show password"}>
+                          {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                         </Button>
                       </div>
                     </div>
 
-                    {authError && (
-                      <Alert variant="destructive">
+                    {authError && <Alert variant="destructive">
                         <AlertDescription>{authError}</AlertDescription>
-                      </Alert>
-                    )}
+                      </Alert>}
 
                     <Button type="submit" className="w-full h-11 text-base font-medium" disabled={authLoading}>
                       {authLoading ? "Signing in..." : "Sign In"}
@@ -798,33 +691,28 @@ const Index = () => {
                     <div className="grid grid-cols-3 gap-3">
                       <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading} aria-label="Sign in with Google">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M23.498 12.275c0-.813-.073-1.594-.21-2.347H12v4.437h6.437c-.278 1.49-1.121 2.752-2.39 3.598v2.989h3.867c2.265-2.083 3.571-5.15 3.571-8.677z" fill="#4285F4"/>
-                          <path d="M12 24c3.24 0 5.957-1.075 7.942-2.913l-3.867-2.99c-1.075.72-2.45 1.145-4.075 1.145-3.132 0-5.785-2.115-6.735-4.952H1.248v3.086C3.215 21.318 7.289 24 12 24z" fill="#34A853"/>
-                          <path d="M5.265 14.29c-.242-.72-.38-1.49-.38-2.29s.138-1.57.38-2.29V6.623H1.248C.455 8.216 0 10.054 0 12s.455 3.784 1.248 5.377l4.017-3.087z" fill="#FBBC05"/>
-                          <path d="M12 4.758c1.765 0 3.35.606 4.596 1.796l3.447-3.447C17.953 1.142 15.24 0 12 0 7.289 0 3.215 2.682 1.248 6.623l4.017 3.087c.95-2.837 3.603-4.952 6.735-4.952z" fill="#EA4335"/>
+                          <path d="M23.498 12.275c0-.813-.073-1.594-.21-2.347H12v4.437h6.437c-.278 1.49-1.121 2.752-2.39 3.598v2.989h3.867c2.265-2.083 3.571-5.15 3.571-8.677z" fill="#4285F4" />
+                          <path d="M12 24c3.24 0 5.957-1.075 7.942-2.913l-3.867-2.99c-1.075.72-2.45 1.145-4.075 1.145-3.132 0-5.785-2.115-6.735-4.952H1.248v3.086C3.215 21.318 7.289 24 12 24z" fill="#34A853" />
+                          <path d="M5.265 14.29c-.242-.72-.38-1.49-.38-2.29s.138-1.57.38-2.29V6.623H1.248C.455 8.216 0 10.054 0 12s.455 3.784 1.248 5.377l4.017-3.087z" fill="#FBBC05" />
+                          <path d="M12 4.758c1.765 0 3.35.606 4.596 1.796l3.447-3.447C17.953 1.142 15.24 0 12 0 7.289 0 3.215 2.682 1.248 6.623l4.017 3.087c.95-2.837 3.603-4.952 6.735-4.952z" fill="#EA4335" />
                         </svg>
                       </Button>
 
                       <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading} aria-label="Sign in with Apple">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 384 512">
-                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
                         </svg>
                       </Button>
 
                       <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading} aria-label="Sign in with X (Twitter)">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M20.145 12.086c.007.206.01.412.01.62 0 6.337-4.824 10.81-13.615 10.81-2.711 0-5.234-.78-7.354-2.116.375.041.756.062 1.142.062 2.244 0 4.309-.757 5.954-2.03-2.098-.038-3.868-1.416-4.478-3.307.293.056.593.086.902.086.437 0 .86-.058 1.262-.167-2.189-.439-3.838-2.364-3.838-4.673v-.061c.645.356 1.383.57 2.169.595-1.284-.853-2.128-2.313-2.128-3.963 0-.874.237-1.693.65-2.397 2.359 2.883 5.887 4.78 9.864 4.979-.082-.348-.124-.711-.124-1.084 0-2.624 2.138-4.755 4.773-4.755 1.373 0 2.613.575 3.484 1.495 1.088-.213 2.11-.61 3.034-1.155-.357 1.106-1.114 2.035-2.099 2.621.967-.115 1.887-.369 2.742-.746-.64.955-1.448 1.794-2.38 2.467z"/>
+                          <path d="M20.145 12.086c.007.206.01.412.01.62 0 6.337-4.824 10.81-13.615 10.81-2.711 0-5.234-.78-7.354-2.116.375.041.756.062 1.142.062 2.244 0 4.309-.757 5.954-2.03-2.098-.038-3.868-1.416-4.478-3.307.293.056.593.086.902.086.437 0 .86-.058 1.262-.167-2.189-.439-3.838-2.364-3.838-4.673v-.061c.645.356 1.383.57 2.169.595-1.284-.853-2.128-2.313-2.128-3.963 0-.874.237-1.693.65-2.397 2.359 2.883 5.887 4.78 9.864 4.979-.082-.348-.124-.711-.124-1.084 0-2.624 2.138-4.755 4.773-4.755 1.373 0 2.613.575 3.484 1.495 1.088-.213 2.11-.61 3.034-1.155-.357 1.106-1.114 2.035-2.099 2.621.967-.115 1.887-.369 2.742-.746-.64.955-1.448 1.794-2.38 2.467z" />
                         </svg>
                       </Button>
                     </div>
 
                     <div className="text-center">
-                      <Button 
-                        type="button"
-                        variant="link" 
-                        className="text-xs text-foreground"
-                        onClick={() => navigate('/forgot-password')}
-                      >
+                      <Button type="button" variant="link" className="text-xs text-foreground" onClick={() => navigate('/forgot-password')}>
                         Forgot your password?
                       </Button>
                     </div>
@@ -836,93 +724,37 @@ const Index = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName" className="text-foreground font-normal text-sm">First Name</Label>
-                        <Input
-                          id="firstName"
-                          placeholder="John"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          required
-                          disabled={authLoading}
-                          className="h-10"
-                        />
+                        <Input id="firstName" placeholder="John" value={firstName} onChange={e => setFirstName(e.target.value)} required disabled={authLoading} className="h-10" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lastName" className="text-foreground font-normal text-sm">Last Name</Label>
-                        <Input
-                          id="lastName"
-                          placeholder="Smith"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          required
-                          disabled={authLoading}
-                          className="h-10"
-                        />
+                        <Input id="lastName" placeholder="Smith" value={lastName} onChange={e => setLastName(e.target.value)} required disabled={authLoading} className="h-10" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="business" className="text-foreground font-normal text-sm">Business Name</Label>
-                      <Input
-                        id="business"
-                        placeholder="Your Business LLC"
-                        value={businessName}
-                        onChange={(e) => setBusinessName(e.target.value)}
-                        required
-                        disabled={authLoading}
-                        className="h-10"
-                      />
+                      <Input id="business" placeholder="Your Business LLC" value={businessName} onChange={e => setBusinessName(e.target.value)} required disabled={authLoading} className="h-10" />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="signup-email" className="text-foreground font-normal text-sm">Email</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={authLoading}
-                        className="h-10"
-                      />
+                      <Input id="signup-email" type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} required disabled={authLoading} className="h-10" />
                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="signup-password" className="text-foreground font-normal text-sm">Password</Label>
                       <div className="relative">
-                        <Input
-                          id="signup-password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Create a password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                          disabled={authLoading}
-                          className="h-10 pr-10"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-10 px-3 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                          disabled={authLoading}
-                          aria-label={showPassword ? "Hide password" : "Show password"}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
+                        <Input id="signup-password" type={showPassword ? "text" : "password"} placeholder="Create a password" value={password} onChange={e => setPassword(e.target.value)} required disabled={authLoading} className="h-10 pr-10" />
+                        <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-10 px-3 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)} disabled={authLoading} aria-label={showPassword ? "Hide password" : "Show password"}>
+                          {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                         </Button>
                       </div>
                     </div>
 
-                    {authError && (
-                      <Alert variant="destructive">
+                    {authError && <Alert variant="destructive">
                         <AlertDescription>{authError}</AlertDescription>
-                      </Alert>
-                    )}
+                      </Alert>}
 
                     <Button type="submit" className="w-full h-11 text-base font-medium" disabled={authLoading}>
                       {authLoading ? "Creating Account..." : "Create Account"}
@@ -942,33 +774,28 @@ const Index = () => {
                     <div className="grid grid-cols-3 gap-3">
                       <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading} aria-label="Sign up with Google">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M23.498 12.275c0-.813-.073-1.594-.21-2.347H12v4.437h6.437c-.278 1.49-1.121 2.752-2.39 3.598v2.989h3.867c2.265-2.083 3.571-5.15 3.571-8.677z" fill="#4285F4"/>
-                          <path d="M12 24c3.24 0 5.957-1.075 7.942-2.913l-3.867-2.99c-1.075.72-2.45 1.145-4.075 1.145-3.132 0-5.785-2.115-6.735-4.952H1.248v3.086C3.215 21.318 7.289 24 12 24z" fill="#34A853"/>
-                          <path d="M5.265 14.29c-.242-.72-.38-1.49-.38-2.29s.138-1.57.38-2.29V6.623H1.248C.455 8.216 0 10.054 0 12s.455 3.784 1.248 5.377l4.017-3.087z" fill="#FBBC05"/>
-                          <path d="M12 4.758c1.765 0 3.35.606 4.596 1.796l3.447-3.447C17.953 1.142 15.24 0 12 0 7.289 0 3.215 2.682 1.248 6.623l4.017 3.087c.95-2.837 3.603-4.952 6.735-4.952z" fill="#EA4335"/>
+                          <path d="M23.498 12.275c0-.813-.073-1.594-.21-2.347H12v4.437h6.437c-.278 1.49-1.121 2.752-2.39 3.598v2.989h3.867c2.265-2.083 3.571-5.15 3.571-8.677z" fill="#4285F4" />
+                          <path d="M12 24c3.24 0 5.957-1.075 7.942-2.913l-3.867-2.99c-1.075.72-2.45 1.145-4.075 1.145-3.132 0-5.785-2.115-6.735-4.952H1.248v3.086C3.215 21.318 7.289 24 12 24z" fill="#34A853" />
+                          <path d="M5.265 14.29c-.242-.72-.38-1.49-.38-2.29s.138-1.57.38-2.29V6.623H1.248C.455 8.216 0 10.054 0 12s.455 3.784 1.248 5.377l4.017-3.087z" fill="#FBBC05" />
+                          <path d="M12 4.758c1.765 0 3.35.606 4.596 1.796l3.447-3.447C17.953 1.142 15.24 0 12 0 7.289 0 3.215 2.682 1.248 6.623l4.017 3.087c.95-2.837 3.603-4.952 6.735-4.952z" fill="#EA4335" />
                         </svg>
                       </Button>
 
                       <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading} aria-label="Sign up with Apple">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 384 512">
-                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
                         </svg>
                       </Button>
 
                       <Button type="button" variant="outline" className="w-full h-10" disabled={authLoading} aria-label="Sign up with X (Twitter)">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M20.145 12.086c.007.206.01.412.01.62 0 6.337-4.824 10.81-13.615 10.81-2.711 0-5.234-.78-7.354-2.116.375.041.756.062 1.142.062 2.244 0 4.309-.757 5.954-2.03-2.098-.038-3.868-1.416-4.478-3.307.293.056.593.086.902.086.437 0 .86-.058 1.262-.167-2.189-.439-3.838-2.364-3.838-4.673v-.061c.645.356 1.383.57 2.169.595-1.284-.853-2.128-2.313-2.128-3.963 0-.874.237-1.693.65-2.397 2.359 2.883 5.887 4.78 9.864 4.979-.082-.348-.124-.711-.124-1.084 0-2.624 2.138-4.755 4.773-4.755 1.373 0 2.613.575 3.484 1.495 1.088-.213 2.11-.61 3.034-1.155-.357 1.106-1.114 2.035-2.099 2.621.967-.115 1.887-.369 2.742-.746-.64.955-1.448 1.794-2.38 2.467z"/>
+                          <path d="M20.145 12.086c.007.206.01.412.01.62 0 6.337-4.824 10.81-13.615 10.81-2.711 0-5.234-.78-7.354-2.116.375.041.756.062 1.142.062 2.244 0 4.309-.757 5.954-2.03-2.098-.038-3.868-1.416-4.478-3.307.293.056.593.086.902.086.437 0 .86-.058 1.262-.167-2.189-.439-3.838-2.364-3.838-4.673v-.061c.645.356 1.383.57 2.169.595-1.284-.853-2.128-2.313-2.128-3.963 0-.874.237-1.693.65-2.397 2.359 2.883 5.887 4.78 9.864 4.979-.082-.348-.124-.711-.124-1.084 0-2.624 2.138-4.755 4.773-4.755 1.373 0 2.613.575 3.484 1.495 1.088-.213 2.11-.61 3.034-1.155-.357 1.106-1.114 2.035-2.099 2.621.967-.115 1.887-.369 2.742-.746-.64.955-1.448 1.794-2.38 2.467z" />
                         </svg>
                       </Button>
                     </div>
 
                     <div className="text-center">
-                      <Button 
-                        type="button"
-                        variant="link" 
-                        className="text-xs text-foreground"
-                        onClick={() => navigate('/forgot-password')}
-                      >
+                      <Button type="button" variant="link" className="text-xs text-foreground" onClick={() => navigate('/forgot-password')}>
                         Forgot your password?
                       </Button>
                     </div>
@@ -995,30 +822,20 @@ const Index = () => {
           </main>
         </div>
         <Footer />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <Layout>
+  return <Layout>
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-6 py-10">
         <main>
         {/* Dashboard for Authenticated Users */}
-        {authenticated && !selectedLoanType && (
-          <DashboardView />
-        )}
+        {authenticated && !selectedLoanType && <DashboardView />}
 
         {/* Back Button */}
-        {selectedLoanType && (
-          <div className="mb-8 animate-slide-up">
+        {selectedLoanType && <div className="mb-8 animate-slide-up">
             <Alert className="border-border bg-background">
               <AlertDescription className="flex items-center justify-between">
-                <Button 
-                  variant="ghost" 
-                  onClick={handleBackToHome}
-                  className="p-0 h-auto text-foreground hover:text-foreground/80 font-semibold group"
-                >
+                <Button variant="ghost" onClick={handleBackToHome} className="p-0 h-auto text-foreground hover:text-foreground/80 font-semibold group">
                   <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                   Return to Loan Types
                 </Button>
@@ -1027,17 +844,15 @@ const Index = () => {
                 </span>
               </AlertDescription>
             </Alert>
-          </div>
-        )}
+          </div>}
 
         {/* Loan Type Selection */}
-        {!selectedLoanType && (
-          <Card className="mb-12 border shadow-sm animate-scale-in">
+        {!selectedLoanType && <Card className="mb-12 border shadow-sm animate-scale-in">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl font-bold text-foreground mb-2">
                 Choose Your Financing Solution
               </CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
+              <CardDescription className="text-base text-slate-50">
                 Select the loan type that best fits your business needs
               </CardDescription>
             </CardHeader>
@@ -1046,27 +861,20 @@ const Index = () => {
                 {loanPrograms.map((program, index) => {
                   const IconComponent = program.icon;
                   const isComingSoon = ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(program.id);
-                  return (
-                    <Card
-                      key={program.id}
-                      className={`cursor-pointer transition-all duration-200 flex flex-col h-full border ${
-                        isComingSoon 
-                          ? 'opacity-60 cursor-not-allowed' 
-                          : 'hover:shadow-lg hover:border-primary/50'
-                      }`}
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <CardContent className="p-5 flex-1 flex flex-col">
+                  return <Card key={program.id} className={`cursor-pointer transition-all duration-200 flex flex-col h-full border ${isComingSoon ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-lg hover:border-primary/50'}`} style={{
+                    animationDelay: `${index * 50}ms`
+                  }}>
+                      <CardContent className="p-5 flex-1 flex flex-col bg-blue-950">
                         {/* Icon and Title */}
                         <div className="flex items-start gap-3 mb-4">
-                          <div className="p-2 bg-primary/10 rounded-lg">
-                            <IconComponent className="w-6 h-6 text-primary" />
+                          <div className="p-2 rounded-lg bg-transparent">
+                            <IconComponent className="w-6 h-6 text-slate-50" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-bold text-base mb-1 leading-tight">
+                            <h3 className="font-bold text-base mb-1 leading-tight text-slate-50">
                               {program.title}
                             </h3>
-                            <p className="text-xs text-muted-foreground leading-snug line-clamp-2">
+                            <p className="text-xs leading-snug line-clamp-2 text-slate-50">
                               {program.description}
                             </p>
                           </div>
@@ -1074,50 +882,40 @@ const Index = () => {
 
                         {/* Rate Badge */}
                         <div className="mb-4 pb-4 border-b">
-                          <div className="text-2xl font-bold text-primary mb-1">
+                          <div className="text-2xl font-bold mb-1 text-slate-50">
                             {program.badge}
                           </div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-slate-50">
                             Starting Rate
                           </div>
                         </div>
 
                         {/* Details */}
-                        <div className="space-y-2 mb-4 flex-1">
-                          <div className="text-xs">
-                            <span className="font-medium text-foreground">
+                        <div className="space-y-2 mb-4 flex-1 text-slate-50">
+                          <div className="text-xs text-slate-50">
+                            <span className="font-medium text-slate-50">
                               {program.details?.split('|')[0]?.trim() || 'Contact for details'}
                             </span>
                           </div>
-                          {program.details?.split('|').slice(1, 3).map((detail, i) => (
-                            <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          {program.details?.split('|').slice(1, 3).map((detail, i) => <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
                               <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1 flex-shrink-0" />
-                              <span className="line-clamp-1">{detail.trim()}</span>
-                            </div>
-                          ))}
+                              <span className="line-clamp-1 text-slate-50">{detail.trim()}</span>
+                            </div>)}
                         </div>
 
                         {/* Apply Button */}
-                        <Button 
-                          className="w-full"
-                          size="sm"
-                          onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)}
-                          disabled={isComingSoon}
-                        >
+                        <Button className="w-full" size="sm" onClick={() => !isComingSoon && handleLoanTypeSelect(program.id)} disabled={isComingSoon}>
                           {isComingSoon ? 'Coming Soon' : 'Apply Now'}
                         </Button>
                       </CardContent>
-                    </Card>
-                  );
+                    </Card>;
                 })}
               </div>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
 
         {/* Loan Application Forms */}
-        {selectedLoanType && (
-          <div className="space-y-6 animate-fade-in">
+        {selectedLoanType && <div className="space-y-6 animate-fade-in">
             {/* Active Forms */}
             {selectedLoanType === 1 && <SBA7aLoanForm />}
             {selectedLoanType === 2 && <SBA504LoanForm />}
@@ -1133,8 +931,7 @@ const Index = () => {
             {selectedLoanType === 12 && <SBAExpressLoanForm />}
             
             {/* Coming Soon Forms */}
-            {selectedLoanType === 1 && (
-              <Card className="shadow-lg">
+            {selectedLoanType === 1 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Shield className="w-8 h-8 text-primary" />
@@ -1146,10 +943,8 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">Prime + 2.75% Starting Rate • Up to $5M • SBA Guarantee</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 2 && (
-              <Card className="shadow-lg">
+              </Card>}
+            {selectedLoanType === 2 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Building className="w-8 h-8 text-primary" />
@@ -1161,10 +956,8 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">Fixed Rate Long-term • Up to $5.5M • 10% Down Payment</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 3 && (
-              <Card className="shadow-lg">
+              </Card>}
+            {selectedLoanType === 3 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Shield className="w-8 h-8 text-primary" />
@@ -1176,10 +969,8 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">Prime + 2% Starting Rate • Up to $25M • Rural Focus • Job Creation Requirements</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 5 && (
-              <Card className="shadow-lg">
+              </Card>}
+            {selectedLoanType === 5 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CreditCard className="w-8 h-8 text-accent" />
@@ -1191,10 +982,8 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">5.25% Starting APR • No Government Guarantee • Fast Approval</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 6 && (
-              <Card className="shadow-lg">
+              </Card>}
+            {selectedLoanType === 6 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Settings className="w-8 h-8 text-accent" />
@@ -1206,10 +995,8 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">6.25% Starting APR • 100% Financing Available • Fast Approval</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 8 && (
-              <Card className="shadow-lg">
+              </Card>}
+            {selectedLoanType === 8 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CreditCard className="w-8 h-8 text-accent" />
@@ -1221,10 +1008,8 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">Prime + 2% Starting Rate • Draw as Needed • Revolving Credit</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-            {selectedLoanType === 9 && (
-              <Card className="shadow-lg">
+              </Card>}
+            {selectedLoanType === 9 && <Card className="shadow-lg">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Banknote className="w-8 h-8 text-accent" />
@@ -1236,16 +1021,12 @@ const Index = () => {
                     <span className="text-sm text-muted-foreground">5.75% Starting APR • Fixed Monthly Payments • Quick Approval</span>
                   </CardDescription>
                 </CardHeader>
-              </Card>
-            )}
-          </div>
-        )}
+              </Card>}
+          </div>}
 
       </main>
       </div>
     </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
