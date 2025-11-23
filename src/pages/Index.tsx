@@ -220,7 +220,16 @@ const DashboardView = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5 mb-12">
-      {/* Welcome Header */}
+      {/* Welcome Message */}
+      {firstName && (
+        <div className="mb-2">
+          <h2 className="text-2xl font-semibold text-foreground">
+            Welcome, {firstName}!
+          </h2>
+        </div>
+      )}
+      
+      {/* Main Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex-1">
           <h1 className="text-lg sm:text-xl font-bold text-foreground mb-2">Manage your loan applications and track your progress</h1>
