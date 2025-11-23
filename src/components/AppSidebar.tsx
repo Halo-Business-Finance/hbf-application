@@ -92,7 +92,7 @@ export function AppSidebar() {
         <div className="flex-1">
           <SidebarGroup className="mt-4">
             {open && (
-              <div className="px-4 py-3 mb-2 pt-8">
+              <div className="px-2 py-3 mb-2 pt-8">
                 <h2 className="text-lg font-semibold text-sidebar-foreground">
                   Welcome{firstName ? `, ${firstName}` : ''}!
                 </h2>
