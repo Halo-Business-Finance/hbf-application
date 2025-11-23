@@ -220,9 +220,9 @@ const DashboardView = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5 mb-12">
-      {/* Header with top separator */}
-      <div className="border-t-4 border-primary pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* Header with bottom separator */}
+      <div className="pt-6 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-4 border-primary pb-4">
           <div className="flex-1">
             {firstName && (
               <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
