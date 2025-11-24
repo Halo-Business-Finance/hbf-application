@@ -202,7 +202,7 @@ const DashboardView = () => {
               Manage your loan applications and track your progress here
             </p>
           </div>
-          <Button size="lg" onClick={() => window.scrollTo({
+          <Button size="default" onClick={() => window.scrollTo({
           top: document.body.scrollHeight,
           behavior: 'smooth'
         })} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
