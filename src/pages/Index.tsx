@@ -38,6 +38,15 @@ import { CreditScoreWidget } from '@/components/CreditScoreWidget';
 import { BankBalanceWidget } from '@/components/BankBalanceWidget';
 import { DashboardOverview } from '@/components/DashboardOverview';
 import { Footer } from '@/components/Footer';
+import {
+  ApplicationProgressTracker,
+  QuickActions,
+  OnboardingGuide,
+  FloatingSupportButton,
+  DocumentChecklist,
+  EstimatedTimeline,
+  DashboardCharts
+} from '@/components/dashboard';
 const FundedLoansView = ({
   userId
 }: {
@@ -191,6 +200,9 @@ const DashboardView = () => {
     setActiveTab('applications');
   };
   return <div className="space-y-4 sm:space-y-5 mb-12">
+      {/* Onboarding Guide for new users */}
+      <OnboardingGuide userId={user?.id} />
+
       {/* Header with bottom separator */}
       <div className="-mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="border-b border-border pb-4">
@@ -201,18 +213,29 @@ const DashboardView = () => {
             <p className="text-sm sm:text-base text-black mb-4">
               Manage your loan applications and track your progress here
             </p>
-            <Button size="default" onClick={() => window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: 'smooth'
-          })} className="bg-blue-600 hover:bg-blue-700 text-white">
-              + New Loan Application
-            </Button>
           </div>
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <QuickActions />
+
       {/* Overview Card */}
       <DashboardOverview />
+
+      {/* Dashboard Charts */}
+      <DashboardCharts userId={user?.id} />
+
+      {/* Progress & Timeline Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <ApplicationProgressTracker 
+          currentStatus={stats.pendingReview > 0 ? 'under_review' : stats.totalApplications > 0 ? 'submitted' : 'draft'} 
+        />
+        <EstimatedTimeline 
+          currentStatus={stats.pendingReview > 0 ? 'under_review' : stats.totalApplications > 0 ? 'submitted' : 'draft'}
+        />
+        <DocumentChecklist userId={user?.id} />
+      </div>
 
       {/* Bank Accounts & Credit Scores Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -229,7 +252,7 @@ const DashboardView = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('all')}>
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('all')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Total Applications</p>
@@ -238,7 +261,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('approved')}>
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('approved')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Approved Amount</p>
@@ -247,7 +270,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('pending')}>
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('pending')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Pending Review</p>
@@ -256,7 +279,7 @@ const DashboardView = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleMetricClick('approved')}>
+        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('approved')}>
           <CardContent className="p-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Success Rate</p>
@@ -302,6 +325,9 @@ const DashboardView = () => {
           <FundedLoansView userId={user?.id} />
         </TabsContent>
       </Tabs>
+
+      {/* Floating Support Button */}
+      <FloatingSupportButton />
     </div>;
 };
 const Index = () => {
