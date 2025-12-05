@@ -10,7 +10,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { AutoSaveIndicator } from '@/components/ui/auto-save-indicator';
 import { useLoanApplication } from '@/hooks/useLoanApplication';
+import { useFormAutoSave } from '@/hooks/useFormAutoSave';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, FileText, DollarSign } from 'lucide-react';
 
@@ -73,6 +75,8 @@ const invoiceFactoringSchema = z.object({
 
 type InvoiceFactoringFormData = z.infer<typeof invoiceFactoringSchema>;
 
+const STORAGE_KEY = 'invoice-factoring-draft';
+
 const InvoiceFactoringForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 6;
@@ -89,6 +93,12 @@ const InvoiceFactoringForm: React.FC = () => {
       certifyInformation: false,
       factorAdvanceRate: 80,
     },
+  });
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['federalTaxId', 'agreeToTerms', 'agreeToCredit', 'certifyInformation'],
   });
 
   const nextStep = () => {
@@ -128,6 +138,7 @@ const InvoiceFactoringForm: React.FC = () => {
       const result = await submitApplication(applicationData);
       
       if (result) {
+        clearOnSubmit();
         toast({
           title: "Application Submitted Successfully",
           description: `Your Invoice Factoring application has been submitted. Application ID: ${result.applicationNumber}`,

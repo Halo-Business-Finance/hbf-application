@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AutoSaveIndicator } from "@/components/ui/auto-save-indicator";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoanApplication } from "@/hooks/useLoanApplication";
+import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { useNavigate } from "react-router-dom";
 
 interface TermLoanFormData {
@@ -34,13 +36,22 @@ interface TermLoanFormData {
   email: string;
 }
 
+const STORAGE_KEY = 'term-loan-draft';
+
 export const TermLoanForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<TermLoanFormData>();
+  const form = useForm<TermLoanFormData>();
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = form;
   const { toast } = useToast();
   const { user } = useAuth();
   const { submitApplication, isLoading } = useLoanApplication();
   const navigate = useNavigate();
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['ownerSSN'],
+  });
 
   const totalSteps = 4;
 
@@ -87,6 +98,7 @@ export const TermLoanForm: React.FC = () => {
     const result = await submitApplication(applicationData);
     
     if (result) {
+      clearOnSubmit();
       toast({
         title: "Application submitted successfully!",
         description: "We'll review your term loan application and get back to you soon.",

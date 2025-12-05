@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { AutoSaveIndicator } from '@/components/ui/auto-save-indicator';
 import { useToast } from '@/hooks/use-toast';
+import { useFormAutoSave } from '@/hooks/useFormAutoSave';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -29,14 +31,22 @@ interface RefinanceFormData {
   property_address: string;
 }
 
+const STORAGE_KEY = 'refinance-draft';
+
 const RefinanceForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<RefinanceFormData>();
+  const form = useForm<RefinanceFormData>();
+  const { register, handleSubmit, formState: { errors }, setValue } = form;
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const appId = searchParams.get('app');
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+  });
 
   useEffect(() => {
     const loadExisting = async () => {

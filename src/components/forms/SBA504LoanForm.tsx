@@ -10,8 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { AutoSaveIndicator } from "@/components/ui/auto-save-indicator";
 import { useToast } from "@/hooks/use-toast";
 import { useLoanApplication } from "@/hooks/useLoanApplication";
+import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const sba504Schema = z.object({
@@ -51,6 +53,8 @@ const sba504Schema = z.object({
 
 type SBA504FormData = z.infer<typeof sba504Schema>;
 
+const STORAGE_KEY = 'sba504-loan-draft';
+
 export default function SBA504LoanForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const { submitApplication, isLoading } = useLoanApplication();
@@ -59,6 +63,12 @@ export default function SBA504LoanForm() {
   const form = useForm<SBA504FormData>({
     resolver: zodResolver(sba504Schema),
     mode: "onChange",
+  });
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['termsAccepted', 'creditAuthorizationAccepted'],
   });
 
   const totalSteps = 5;
@@ -127,6 +137,7 @@ export default function SBA504LoanForm() {
       const result = await submitApplication(transformedData);
       
       if (result) {
+        clearOnSubmit();
         toast({
           title: "Application Submitted Successfully",
           description: "Your SBA 504 loan application has been submitted. You'll receive updates via email.",

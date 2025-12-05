@@ -10,7 +10,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { AutoSaveIndicator } from '@/components/ui/auto-save-indicator';
 import { useLoanApplication } from '@/hooks/useLoanApplication';
+import { useFormAutoSave } from '@/hooks/useFormAutoSave';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 
@@ -72,6 +74,8 @@ const sbaExpressSchema = z.object({
 
 type SBAExpressFormData = z.infer<typeof sbaExpressSchema>;
 
+const STORAGE_KEY = 'sba-express-draft';
+
 const SBAExpressLoanForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
@@ -88,6 +92,12 @@ const SBAExpressLoanForm: React.FC = () => {
       agreeToCredit: false,
       certifyInformation: false,
     },
+  });
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['ssn', 'federalTaxId', 'agreeToTerms', 'agreeToCredit', 'certifyInformation'],
   });
 
   const nextStep = () => {
@@ -127,6 +137,7 @@ const SBAExpressLoanForm: React.FC = () => {
       const result = await submitApplication(applicationData);
       
       if (result) {
+        clearOnSubmit();
         toast({
           title: "Application Submitted Successfully",
           description: `Your SBA Express loan application has been submitted. Application ID: ${result.applicationNumber}`,

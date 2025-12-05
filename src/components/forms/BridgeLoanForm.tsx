@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { AutoSaveIndicator } from '@/components/ui/auto-save-indicator';
 import { useToast } from '@/hooks/use-toast';
+import { useFormAutoSave } from '@/hooks/useFormAutoSave';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -29,12 +31,20 @@ interface BridgeLoanFormData {
   project_description: string;
 }
 
+const STORAGE_KEY = 'bridge-loan-draft';
+
 const BridgeLoanForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<BridgeLoanFormData>();
+  const form = useForm<BridgeLoanFormData>();
+  const { register, handleSubmit, formState: { errors }, setValue } = form;
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+  });
 
   const onSubmit = async (data: BridgeLoanFormData) => {
     if (!user) {
@@ -78,6 +88,7 @@ const BridgeLoanForm = () => {
         throw error;
       }
 
+      clearOnSubmit();
       toast({
         title: "Application Submitted",
         description: "Your bridge loan application has been submitted successfully.",
@@ -100,10 +111,15 @@ const BridgeLoanForm = () => {
     <div className="max-w-4xl mx-auto p-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Bridge Loan Application</CardTitle>
-          <CardDescription>
-            Complete this form to apply for short-term bridge financing
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-2xl">Bridge Loan Application</CardTitle>
+              <CardDescription>
+                Complete this form to apply for short-term bridge financing
+              </CardDescription>
+            </div>
+            <AutoSaveIndicator storageKey={STORAGE_KEY} />
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
