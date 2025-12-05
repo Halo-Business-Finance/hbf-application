@@ -72,14 +72,11 @@ serve(async (req) => {
       );
     }
 
-    // Check if user has admin role
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+    // Check if user has admin role using secure has_role RPC function
+    const { data: isAdmin, error: roleError } = await supabase
+      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
 
-    if (!profile || profile.role !== 'admin') {
+    if (roleError || !isAdmin) {
       return new Response(
         JSON.stringify({ error: 'Admin access required' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
