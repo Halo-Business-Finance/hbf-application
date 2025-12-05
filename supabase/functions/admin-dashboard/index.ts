@@ -248,12 +248,19 @@ async function getFilteredApplications(supabase: any, filters: ApplicationFilter
     }
 
     if (filters.searchTerm) {
-      query = query.or(`
-        business_name.ilike.%${filters.searchTerm}%,
-        first_name.ilike.%${filters.searchTerm}%,
-        last_name.ilike.%${filters.searchTerm}%,
-        application_number.ilike.%${filters.searchTerm}%
-      `);
+      // SECURITY: Sanitize search term to prevent query manipulation
+      // - Escape SQL LIKE wildcards (% and _)
+      // - Remove any PostgREST operators or special characters
+      // - Limit length to prevent abuse
+      const sanitizedSearch = String(filters.searchTerm)
+        .slice(0, 100) // Limit length
+        .replace(/[%_]/g, '\\$&') // Escape LIKE wildcards
+        .replace(/[(),.'"\[\]{}|\\^$*+?]/g, '') // Remove special chars that could break query
+        .trim();
+      
+      if (sanitizedSearch.length > 0) {
+        query = query.or(`business_name.ilike.%${sanitizedSearch}%,first_name.ilike.%${sanitizedSearch}%,last_name.ilike.%${sanitizedSearch}%,application_number.ilike.%${sanitizedSearch}%`);
+      }
     }
 
     // Order by most recent first
