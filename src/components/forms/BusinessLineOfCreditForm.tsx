@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AutoSaveIndicator } from "@/components/ui/auto-save-indicator";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoanApplication } from "@/hooks/useLoanApplication";
+import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { useNavigate } from "react-router-dom";
 
 interface BusinessLineOfCreditFormData {
@@ -33,13 +35,22 @@ interface BusinessLineOfCreditFormData {
   email: string;
 }
 
+const STORAGE_KEY = 'business-loc-draft';
+
 export const BusinessLineOfCreditForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<BusinessLineOfCreditFormData>();
+  const form = useForm<BusinessLineOfCreditFormData>();
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = form;
   const { toast } = useToast();
   const { user } = useAuth();
   const { submitApplication, isLoading } = useLoanApplication();
   const navigate = useNavigate();
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['ownerSSN'],
+  });
 
   const totalSteps = 4;
 
@@ -86,6 +97,7 @@ export const BusinessLineOfCreditForm: React.FC = () => {
     const result = await submitApplication(applicationData);
     
     if (result) {
+      clearOnSubmit();
       toast({
         title: "Application submitted successfully!",
         description: "We'll review your business line of credit application and get back to you soon.",
@@ -347,10 +359,15 @@ export const BusinessLineOfCreditForm: React.FC = () => {
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>Business Line of Credit Application</CardTitle>
-        <CardDescription>
-          Step {currentStep} of {totalSteps}: Complete your line of credit application
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Business Line of Credit Application</CardTitle>
+            <CardDescription>
+              Step {currentStep} of {totalSteps}: Complete your line of credit application
+            </CardDescription>
+          </div>
+          <AutoSaveIndicator storageKey={STORAGE_KEY} />
+        </div>
         <div className="w-full bg-muted rounded-full h-2">
           <div
             className="bg-primary h-2 rounded-full transition-all duration-300"

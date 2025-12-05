@@ -10,8 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { AutoSaveIndicator } from "@/components/ui/auto-save-indicator";
 import { useToast } from "@/hooks/use-toast";
 import { useLoanApplication } from "@/hooks/useLoanApplication";
+import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const equipmentFinancingSchema = z.object({
@@ -51,6 +53,8 @@ const equipmentFinancingSchema = z.object({
 
 type EquipmentFinancingFormData = z.infer<typeof equipmentFinancingSchema>;
 
+const STORAGE_KEY = 'equipment-financing-draft';
+
 export default function EquipmentFinancingForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const { submitApplication, isLoading } = useLoanApplication();
@@ -59,6 +63,12 @@ export default function EquipmentFinancingForm() {
   const form = useForm<EquipmentFinancingFormData>({
     resolver: zodResolver(equipmentFinancingSchema),
     mode: "onChange",
+  });
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['termsAccepted', 'creditAuthorizationAccepted'],
   });
 
   const totalSteps = 5;
@@ -126,6 +136,7 @@ export default function EquipmentFinancingForm() {
     try {
       const result = await submitApplication(transformedData);
       if (result) {
+        clearOnSubmit();
         toast({
           title: "Application Submitted Successfully",
           description: "Your equipment financing application has been submitted. You'll receive updates via email.",

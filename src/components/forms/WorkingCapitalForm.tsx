@@ -11,8 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Progress } from '@/components/ui/progress';
+import { AutoSaveIndicator } from '@/components/ui/auto-save-indicator';
 import { useToast } from '@/hooks/use-toast';
 import { useLoanApplication } from '@/hooks/useLoanApplication';
+import { useFormAutoSave } from '@/hooks/useFormAutoSave';
 import { TrendingUp, Building, DollarSign, FileText, Check } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,6 +54,8 @@ const workingCapitalSchema = z.object({
 
 type WorkingCapitalFormData = z.infer<typeof workingCapitalSchema>;
 
+const STORAGE_KEY = 'working-capital-draft';
+
 const WorkingCapitalForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { toast } = useToast();
@@ -64,6 +68,12 @@ const WorkingCapitalForm = () => {
       acceptTerms: false,
       currentCashFlow: 0
     }
+  });
+
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['acceptTerms'],
   });
 
   const totalSteps = 4;
@@ -129,6 +139,7 @@ const WorkingCapitalForm = () => {
       const result = await submitApplication(applicationData);
       
       if (result) {
+        clearOnSubmit();
         toast({
           title: "Application Submitted Successfully!",
           description: `Your working capital application #${result.application_number} has been submitted for review.`
