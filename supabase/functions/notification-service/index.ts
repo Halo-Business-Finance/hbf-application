@@ -22,6 +22,9 @@ interface EmailTemplate {
   text: string;
 }
 
+// Actions that require admin role
+const ADMIN_ONLY_ACTIONS = ['loan-funded', 'send-external', 'send-bulk'];
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -29,8 +32,20 @@ serve(async (req) => {
   }
 
   try {
-    // Get service role key from environment
-    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    // ========== AUTHENTICATION ==========
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
     if (!serviceRoleKey) {
       return new Response(
         JSON.stringify({ error: 'Service configuration error' }),
@@ -38,10 +53,25 @@ serve(async (req) => {
       );
     }
 
-    const supabase = createClient(
-      "https://zosgzkpfgaaadadezpxo.supabase.co",
-      serviceRoleKey
-    );
+    // Create client with user's auth token to validate their identity
+    const userSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await userSupabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Authenticated user:', user.id);
+
+    // Create service role client for privileged operations
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     // Validation schema for request body
     const requestSchema = z.object({
@@ -87,6 +117,21 @@ serve(async (req) => {
 
     const { action, notificationData } = requestValidation.data;
 
+    // ========== AUTHORIZATION - Check admin role for sensitive actions ==========
+    if (ADMIN_ONLY_ACTIONS.includes(action)) {
+      const { data: roleCheck, error: roleError } = await supabase
+        .rpc('has_role', { _user_id: user.id, _role: 'admin' });
+
+      if (roleError || !roleCheck) {
+        console.error('Admin role check failed for user:', user.id, 'Action:', action);
+        return new Response(
+          JSON.stringify({ error: 'Forbidden - admin role required for this action' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      console.log('Admin role verified for user:', user.id);
+    }
+
     // Validate notificationData if present
     if (notificationData) {
       const dataValidation = notificationDataSchema.safeParse(notificationData);
@@ -100,6 +145,9 @@ serve(async (req) => {
         );
       }
     }
+
+    // Log the action for audit purposes
+    console.log(`User ${user.id} executing action: ${action}`);
 
     switch (action) {
       case 'send':
@@ -130,7 +178,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in notification-service:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -155,8 +203,7 @@ async function sendNotification(notificationData: NotificationData): Promise<Res
     return new Response(
       JSON.stringify({ 
         success: false, 
-        message: 'Failed to send notification',
-        error: error.message 
+        message: 'Failed to send notification'
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -198,8 +245,7 @@ async function sendEmail(notificationData: NotificationData): Promise<Response> 
     return new Response(
       JSON.stringify({ 
         success: false, 
-        message: 'Failed to send email',
-        error: error.message 
+        message: 'Failed to send email'
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -239,8 +285,7 @@ async function sendSMS(notificationData: NotificationData): Promise<Response> {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        message: 'Failed to send SMS',
-        error: error.message 
+        message: 'Failed to send SMS'
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -285,8 +330,7 @@ async function handleApplicationStatusChange(supabase: any, notificationData: an
     return new Response(
       JSON.stringify({ 
         success: false, 
-        message: 'Failed to handle application status change',
-        error: error.message 
+        message: 'Failed to handle application status change'
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -374,8 +418,7 @@ async function handleLoanFunded(supabase: any, notificationData: any): Promise<R
     return new Response(
       JSON.stringify({ 
         success: false, 
-        message: 'Failed to send loan funded notification',
-        error: error.message 
+        message: 'Failed to send loan funded notification'
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -445,7 +488,7 @@ async function sendExternalNotifications(supabase: any, notificationData: any): 
           webhook: webhook.name,
           platform: webhook.platform,
           success: false,
-          error: error.message,
+          error: 'Failed to send'
         });
       }
     }
@@ -458,7 +501,7 @@ async function sendExternalNotifications(supabase: any, notificationData: any): 
   } catch (error) {
     console.error('Error in sendExternalNotifications:', error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: 'Internal error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -501,7 +544,7 @@ function formatSlackMessage(title: string, message: string, data: any) {
         elements: [
           {
             type: 'mrkdwn',
-            text: `Heritage Business Funding • ${new Date().toLocaleString()}`
+            text: `Sent from Heritage Business Funding | ${new Date().toLocaleString()}`
           }
         ]
       }
@@ -520,91 +563,76 @@ function formatDiscordMessage(title: string, message: string, data: any) {
   }
 
   return {
-    content: `**${title}**`,
     embeds: [{
-      title: title,
+      title,
       description: message,
-      color: 3447003,
-      fields: fields,
+      color: 0x00d26a,
+      fields: fields.length > 0 ? fields : undefined,
+      timestamp: new Date().toISOString(),
       footer: {
         text: 'Heritage Business Funding'
-      },
-      timestamp: new Date().toISOString()
+      }
     }]
   };
 }
 
 async function sendBulkNotifications(notifications: NotificationData[]): Promise<Response> {
-  const results = [];
-  
-  for (const notification of notifications) {
-    try {
-      const response = await sendNotification(notification);
-      const result = await response.json();
-      results.push({ notification, result });
-    } catch (error) {
-      results.push({ 
-        notification, 
-        result: { success: false, error: error.message } 
-      });
-    }
-  }
+  try {
+    const results = await Promise.all(
+      notifications.map(notification => sendNotification(notification))
+    );
 
-  return new Response(
-    JSON.stringify({
-      success: true,
-      message: `Processed ${results.length} notifications`,
-      results
-    }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: 'Bulk notifications processed',
+        resultsCount: results.length
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Error sending bulk notifications:', error);
+    return new Response(
+      JSON.stringify({ success: false, message: 'Failed to send bulk notifications' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
 }
 
 async function getEmailTemplates(): Promise<Response> {
   const templates = {
     application_submitted: {
-      subject: 'Application Received - {{applicationNumber}}',
-      html: `
-        <h2>Thank you for your loan application!</h2>
-        <p>Dear {{applicantName}},</p>
-        <p>We have received your loan application #{{applicationNumber}}.</p>
-        <p>Our team will review your application and contact you within 2-3 business days.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: 'Thank you for your loan application! We have received your application #{{applicationNumber}} and will review it within 2-3 business days.'
+      subject: 'Application Received - Heritage Business Funding',
+      description: 'Sent when a new application is submitted'
     },
     application_under_review: {
-      subject: 'Application Under Review - {{applicationNumber}}',
-      html: `
-        <h2>Your application is under review</h2>
-        <p>Dear {{applicantName}},</p>
-        <p>Your loan application #{{applicationNumber}} is currently under review by our underwriting team.</p>
-        <p>We may contact you for additional documentation if needed.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: 'Your loan application #{{applicationNumber}} is currently under review by our underwriting team.'
+      subject: 'Application Under Review - Heritage Business Funding',
+      description: 'Sent when application moves to review stage'
     },
     application_approved: {
-      subject: 'Congratulations! Application Approved - {{applicationNumber}}',
-      html: `
-        <h2>Congratulations! Your loan has been approved!</h2>
-        <p>Dear {{applicantName}},</p>
-        <p>We are pleased to inform you that your loan application #{{applicationNumber}} has been approved.</p>
-        <p>Our team will contact you shortly to discuss the next steps.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: 'Congratulations! Your loan application #{{applicationNumber}} has been approved. Our team will contact you shortly.'
+      subject: 'Congratulations! Your Application is Approved',
+      description: 'Sent when application is approved'
     },
     application_rejected: {
-      subject: 'Application Update - {{applicationNumber}}',
-      html: `
-        <h2>Application Update</h2>
-        <p>Dear {{applicantName}},</p>
-        <p>After careful review, we are unable to approve your loan application #{{applicationNumber}} at this time.</p>
-        <p>Please feel free to contact us to discuss alternative options.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: 'After careful review, we are unable to approve your loan application #{{applicationNumber}} at this time.'
+      subject: 'Application Update - Heritage Business Funding',
+      description: 'Sent when application is declined'
+    },
+    loan_funded: {
+      subject: 'Your Loan Has Been Funded!',
+      description: 'Sent when loan is funded'
+    },
+    document_required: {
+      subject: 'Document Required - Heritage Business Funding',
+      description: 'Sent when additional documents are needed'
+    },
+    payment_reminder: {
+      subject: 'Payment Reminder - Heritage Business Funding',
+      description: 'Sent before payment due date'
+    },
+    welcome: {
+      subject: 'Welcome to Heritage Business Funding',
+      description: 'Sent to new users'
     }
   };
 
@@ -615,110 +643,58 @@ async function getEmailTemplates(): Promise<Response> {
 }
 
 function getEmailTemplate(templateName: string, data: any): EmailTemplate {
-  const templates: { [key: string]: EmailTemplate } = {
-    application_submitted: {
-      subject: `Application Received - ${data.applicationNumber}`,
-      html: `
-        <h2>Thank you for your loan application!</h2>
-        <p>Dear ${data.applicantName},</p>
-        <p>We have received your loan application #${data.applicationNumber}.</p>
-        <p>Our team will review your application and contact you within 2-3 business days.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: `Thank you for your loan application! We have received your application #${data.applicationNumber} and will review it within 2-3 business days.`
-    },
-    application_under_review: {
-      subject: `Application Under Review - ${data.applicationNumber}`,
-      html: `
-        <h2>Your application is under review</h2>
-        <p>Dear ${data.applicantName},</p>
-        <p>Your loan application #${data.applicationNumber} is currently under review by our underwriting team.</p>
-        <p>We may contact you for additional documentation if needed.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: `Your loan application #${data.applicationNumber} is currently under review by our underwriting team.`
-    },
-    application_approved: {
-      subject: `Congratulations! Application Approved - ${data.applicationNumber}`,
-      html: `
-        <h2>Congratulations! Your loan has been approved!</h2>
-        <p>Dear ${data.applicantName},</p>
-        <p>We are pleased to inform you that your loan application #${data.applicationNumber} has been approved.</p>
-        <p>Our team will contact you shortly to discuss the next steps.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: `Congratulations! Your loan application #${data.applicationNumber} has been approved. Our team will contact you shortly.`
-    },
-    application_rejected: {
-      subject: `Application Update - ${data.applicationNumber}`,
-      html: `
-        <h2>Application Update</h2>
-        <p>Dear ${data.applicantName},</p>
-        <p>After careful review, we are unable to approve your loan application #${data.applicationNumber} at this time.</p>
-        <p>Please feel free to contact us to discuss alternative options.</p>
-        <p>Best regards,<br>Halo Business Finance Team</p>
-      `,
-      text: `After careful review, we are unable to approve your loan application #${data.applicationNumber} at this time.`
-    },
-    loan_funded: {
-      subject: `🎉 Your Loan Has Been Funded - ${data.loanNumber}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #10b981;">Congratulations! Your Loan Has Been Funded</h2>
-          <p>Dear ${data.applicantName},</p>
-          <p>Great news! Your loan application #${data.loanNumber} has been successfully funded and is now active in your account.</p>
-          
-          <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #374151;">Loan Details</h3>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr>
-                <td style="padding: 8px 0;"><strong>Loan Type:</strong></td>
-                <td style="padding: 8px 0;">${data.loanType}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>Loan Amount:</strong></td>
-                <td style="padding: 8px 0;">${data.loanAmount}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>Interest Rate:</strong></td>
-                <td style="padding: 8px 0;">${data.interestRate}%</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>Term:</strong></td>
-                <td style="padding: 8px 0;">${data.termMonths} months</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>Monthly Payment:</strong></td>
-                <td style="padding: 8px 0; font-size: 18px; color: #10b981;"><strong>${data.monthlyPayment}</strong></td>
-              </tr>
-            </table>
-          </div>
-          
-          <p>You can view your loan details, payment schedule, and make payments through your borrower portal.</p>
-          
-          <p>If you have any questions, please don't hesitate to contact our support team.</p>
-          
-          <p>Best regards,<br>Heritage Business Funding Team</p>
-        </div>
-      `,
-      text: `Congratulations! Your loan #${data.loanNumber} has been funded. Loan Amount: ${data.loanAmount}, Monthly Payment: ${data.monthlyPayment}, Interest Rate: ${data.interestRate}%, Term: ${data.termMonths} months. View details in your borrower portal.`
-    }
+  const templates: Record<string, (data: any) => EmailTemplate> = {
+    application_submitted: (data) => ({
+      subject: 'Application Received - Heritage Business Funding',
+      html: `<h1>Thank you, ${data.applicantName}!</h1><p>Your application #${data.applicationNumber} has been received.</p>`,
+      text: `Thank you, ${data.applicantName}! Your application #${data.applicationNumber} has been received.`
+    }),
+    application_under_review: (data) => ({
+      subject: 'Application Under Review - Heritage Business Funding',
+      html: `<h1>Hello, ${data.applicantName}</h1><p>Your application #${data.applicationNumber} is now under review.</p>`,
+      text: `Hello, ${data.applicantName}. Your application #${data.applicationNumber} is now under review.`
+    }),
+    application_approved: (data) => ({
+      subject: 'Congratulations! Your Application is Approved',
+      html: `<h1>Great news, ${data.applicantName}!</h1><p>Your application #${data.applicationNumber} has been approved!</p>`,
+      text: `Great news, ${data.applicantName}! Your application #${data.applicationNumber} has been approved!`
+    }),
+    application_rejected: (data) => ({
+      subject: 'Application Update - Heritage Business Funding',
+      html: `<h1>Hello, ${data.applicantName}</h1><p>We regret to inform you that your application #${data.applicationNumber} was not approved.</p>`,
+      text: `Hello, ${data.applicantName}. We regret to inform you that your application #${data.applicationNumber} was not approved.`
+    }),
+    loan_funded: (data) => ({
+      subject: 'Your Loan Has Been Funded!',
+      html: `<h1>Congratulations, ${data.applicantName}!</h1><p>Your ${data.loanType} loan of ${data.loanAmount} has been funded!</p>`,
+      text: `Congratulations, ${data.applicantName}! Your ${data.loanType} loan of ${data.loanAmount} has been funded!`
+    }),
+    welcome: (data) => ({
+      subject: 'Welcome to Heritage Business Funding',
+      html: `<h1>Welcome, ${data.userName}!</h1><p>Thank you for joining Heritage Business Funding.</p>`,
+      text: `Welcome, ${data.userName}! Thank you for joining Heritage Business Funding.`
+    }),
+    application_reminder: (data) => ({
+      subject: 'Complete Your Application - Heritage Business Funding',
+      html: `<h1>Hello, ${data.userName}</h1><p>You have an incomplete application from ${data.daysAgo} days ago.</p>`,
+      text: `Hello, ${data.userName}. You have an incomplete application from ${data.daysAgo} days ago.`
+    })
   };
 
-  return templates[templateName] || {
-    subject: 'Notification from Halo Business Finance',
-    html: '<p>You have received a notification from Halo Business Finance.</p>',
-    text: 'You have received a notification from Halo Business Finance.'
-  };
+  const templateFn = templates[templateName] || templates.welcome;
+  return templateFn(data);
 }
 
 function getSMSTemplate(templateName: string, data: any): string {
-  const templates: { [key: string]: string } = {
-    application_submitted: `Halo Business Finance: Your application #${data.applicationNumber} has been received. We'll review it within 2-3 business days.`,
-    application_under_review: `Halo Business Finance: Your application #${data.applicationNumber} is under review. We may contact you for additional info.`,
-    application_approved: `Halo Business Finance: Congratulations! Your application #${data.applicationNumber} has been approved. We'll contact you soon.`,
-    application_rejected: `Halo Business Finance: Your application #${data.applicationNumber} update. Please contact us to discuss options.`
+  const templates: Record<string, (data: any) => string> = {
+    application_submitted: (data) => 
+      `Heritage Business Funding: Your application #${data.applicationNumber} has been received. We'll be in touch soon!`,
+    application_approved: (data) => 
+      `Heritage Business Funding: Great news! Your application #${data.applicationNumber} has been approved! Log in for details.`,
+    loan_funded: (data) => 
+      `Heritage Business Funding: Your ${data.loanType} loan of ${data.loanAmount} has been funded! Check your account for details.`,
   };
 
-  return templates[templateName] || 'You have received a notification from Halo Business Finance.';
+  const templateFn = templates[templateName] || (() => `Heritage Business Funding notification`);
+  return templateFn(data);
 }
