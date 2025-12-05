@@ -11,8 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormProgress, FormProgressStep } from "@/components/ui/form-progress";
 import { FormSection, FormRow } from "@/components/ui/form-section";
+import { AutoSaveIndicator } from "@/components/ui/auto-save-indicator";
 import { useToast } from "@/hooks/use-toast";
 import { useLoanApplication } from "@/hooks/useLoanApplication";
+import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -122,6 +124,14 @@ export default function SBA7aLoanForm() {
     },
   });
 
+  const STORAGE_KEY = 'sba7a-loan-draft';
+  
+  const { clearOnSubmit } = useFormAutoSave({
+    form,
+    storageKey: STORAGE_KEY,
+    excludeFields: ['ssn', 'termsAccepted', 'creditAuthorizationAccepted'],
+  });
+
   const totalSteps = 5;
 
   const nextStep = async () => {
@@ -193,6 +203,7 @@ export default function SBA7aLoanForm() {
     try {
       const result = await submitApplication(transformedData);
       if (result) {
+        clearOnSubmit();
         toast({
           title: "Application Submitted Successfully",
           description: "Your SBA 7(a) loan application has been submitted. You'll receive updates via email.",
@@ -816,16 +827,19 @@ export default function SBA7aLoanForm() {
   return (
     <Card className="w-full max-w-4xl mx-auto elevated-card overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-primary/5 via-transparent to-accent/5 border-b">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-primary text-primary-foreground shadow-primary">
-            <DollarSign className="h-6 w-6" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-primary text-primary-foreground shadow-primary">
+              <DollarSign className="h-6 w-6" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl">SBA 7(a) Loan Application</CardTitle>
+              <CardDescription>
+                Complete this application for SBA 7(a) financing up to $5,000,000
+              </CardDescription>
+            </div>
           </div>
-          <div>
-            <CardTitle className="text-2xl">SBA 7(a) Loan Application</CardTitle>
-            <CardDescription>
-              Complete this application for SBA 7(a) financing up to $5,000,000
-            </CardDescription>
-          </div>
+          <AutoSaveIndicator storageKey={STORAGE_KEY} />
         </div>
         
         {/* Progress Indicator */}
