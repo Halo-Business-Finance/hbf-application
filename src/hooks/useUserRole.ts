@@ -18,18 +18,39 @@ export const useUserRole = () => {
       }
 
       try {
-        // Fetch user role from database profiles table
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
+        // Check roles using the secure has_role RPC function
+        // This queries the user_roles table via a SECURITY DEFINER function
+        const { data: isAdmin, error: adminError } = await supabase
+          .rpc('has_role', { _user_id: user.id, _role: 'admin' });
 
-        if (error) {
-          console.error('Error fetching user role:', error);
-          setRole('user'); // Default fallback
+        if (adminError) {
+          console.error('Error checking admin role:', adminError);
+          setRole('user');
+          setLoading(false);
+          return;
+        }
+
+        if (isAdmin) {
+          setRole('admin');
+          setLoading(false);
+          return;
+        }
+
+        // Check for moderator role
+        const { data: isModerator, error: modError } = await supabase
+          .rpc('has_role', { _user_id: user.id, _role: 'moderator' });
+
+        if (modError) {
+          console.error('Error checking moderator role:', modError);
+          setRole('user');
+          setLoading(false);
+          return;
+        }
+
+        if (isModerator) {
+          setRole('moderator');
         } else {
-          setRole(profile?.role || 'user');
+          setRole('user');
         }
       } catch (error) {
         console.error('Error determining user role:', error);
