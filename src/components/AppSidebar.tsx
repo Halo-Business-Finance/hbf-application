@@ -1,5 +1,17 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, Shield, Users, Building2, LayoutDashboard, FolderKanban, FolderOpen, CreditCard, Landmark, Wallet, LogOut, Menu } from 'lucide-react';
+import { 
+  Home, 
+  FileText, 
+  Wallet, 
+  FolderOpen, 
+  CreditCard, 
+  Landmark, 
+  LogOut, 
+  ChevronLeft,
+  ChevronRight,
+  LayoutDashboard,
+  Shield
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {
   Sidebar,
@@ -10,25 +22,26 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const items = [
-  { title: 'My Dashboard', url: '/', icon: LayoutDashboard },
-  { title: 'Loan Applications', url: '/loan-applications', icon: FileText },
+  { title: 'Dashboard', url: '/', icon: LayoutDashboard },
+  { title: 'Applications', url: '/loan-applications', icon: FileText },
   { title: 'Existing Loans', url: '/existing-loans', icon: Wallet },
-  { title: 'Document Storage', url: '/document-storage', icon: FolderOpen },
+  { title: 'Documents', url: '/document-storage', icon: FolderOpen },
   { title: 'Credit Reports', url: '/credit-reports', icon: CreditCard },
   { title: 'Bank Accounts', url: '/bank-accounts', icon: Landmark },
 ];
 
 const adminItems = [
-  { title: 'Admin Dashboard', url: '/admin', icon: LayoutDashboard },
+  { title: 'Admin Portal', url: '/admin', icon: Shield },
 ];
 
 export function AppSidebar() {
@@ -81,70 +94,167 @@ export function AppSidebar() {
     }
   };
 
-  const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    `${isActive 
-      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
-      : 'hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'} transition-all duration-200 group`;
+  const isActive = (url: string) => {
+    if (url === '/') return currentPath === '/';
+    return currentPath.startsWith(url);
+  };
 
   return (
-    <Sidebar collapsible="icon" className="w-56">
-      <SidebarContent className="flex flex-col">
-        <div className="flex-1">
-          <SidebarGroup className="mt-4">
+    <Sidebar 
+      collapsible="icon" 
+      className={cn(
+        "border-r-0 transition-all duration-300",
+        open ? "w-64" : "w-16"
+      )}
+    >
+      <SidebarContent className="flex flex-col bg-sidebar px-3 py-4">
+        {/* Collapse Toggle */}
+        <div className="flex items-center justify-end mb-4">
+          <button
+            onClick={toggleSidebar}
+            className={cn(
+              "p-2 rounded-lg transition-all duration-200",
+              "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground"
+            )}
+          >
+            {open ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </button>
+        </div>
+
+        {/* Main Navigation */}
+        <div className="flex-1 space-y-1">
+          <SidebarGroup>
+            {open && (
+              <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
+                Main Menu
+              </SidebarGroupLabel>
+            )}
             <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton onClick={toggleSidebar} tooltip="Toggle Menu">
-                    <Menu className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-            {open && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
-            <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="space-y-1">
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <NavLink to={item.url} end className={getNavCls}>
-                        <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                        <span>{item.title}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-                {isAdmin() && (
-                  <>
-                    {open && <SidebarGroupLabel className="mt-4">Admin</SidebarGroupLabel>}
-                    {adminItems.map((item) => (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild tooltip={item.title}>
-                          <NavLink to={item.url} end className={getNavCls}>
-                            <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                            <span>{item.title}</span>
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger asChild>
+                        <SidebarMenuButton asChild>
+                          <NavLink
+                            to={item.url}
+                            end={item.url === '/'}
+                            className={cn(
+                              "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                              "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+                              isActive(item.url) 
+                                ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" 
+                                : "hover:bg-sidebar-accent"
+                            )}
+                          >
+                            <item.icon className={cn(
+                              "h-5 w-5 flex-shrink-0 transition-transform duration-200",
+                              isActive(item.url) && "scale-110"
+                            )} />
+                            {open && (
+                              <span className="truncate">{item.title}</span>
+                            )}
                           </NavLink>
                         </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </>
-                )}
+                      </TooltipTrigger>
+                      {!open && (
+                        <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
+                          {item.title}
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+
+          {/* Admin Section */}
+          {isAdmin() && (
+            <SidebarGroup className="mt-6">
+              {open && (
+                <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
+                  Administration
+                </SidebarGroupLabel>
+              )}
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-1">
+                  {adminItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                          <SidebarMenuButton asChild>
+                            <NavLink
+                              to={item.url}
+                              className={cn(
+                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                                "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+                                isActive(item.url)
+                                  ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium"
+                                  : "hover:bg-sidebar-accent"
+                              )}
+                            >
+                              <item.icon className={cn(
+                                "h-5 w-5 flex-shrink-0 transition-transform duration-200",
+                                isActive(item.url) && "scale-110"
+                              )} />
+                              {open && (
+                                <span className="truncate">{item.title}</span>
+                              )}
+                            </NavLink>
+                          </SidebarMenuButton>
+                        </TooltipTrigger>
+                        {!open && (
+                          <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
+                            {item.title}
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
         </div>
         
-        <SidebarGroup>
+        {/* User & Logout Section */}
+        <SidebarGroup className="mt-auto pt-4 border-t border-sidebar-border">
           <SidebarGroupContent>
             <SidebarMenu>
+              {/* User Info */}
+              {open && firstName && (
+                <div className="px-3 py-2 mb-2">
+                  <p className="text-xs text-sidebar-muted">Logged in as</p>
+                  <p className="text-sm font-medium text-sidebar-foreground truncate">{firstName}</p>
+                </div>
+              )}
+              
+              {/* Logout Button */}
               <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={handleLogout}
-                  tooltip="Log Out"
-                  className="hover:bg-destructive/10 hover:text-destructive transition-all duration-200 group cursor-pointer"
-                >
-                  <LogOut className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-                  <span>Log Out</span>
-                </SidebarMenuButton>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <SidebarMenuButton 
+                      onClick={handleLogout}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full",
+                        "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive"
+                      )}
+                    >
+                      <LogOut className="h-5 w-5 flex-shrink-0" />
+                      {open && <span>Log Out</span>}
+                    </SidebarMenuButton>
+                  </TooltipTrigger>
+                  {!open && (
+                    <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
+                      Log Out
+                    </TooltipContent>
+                  )}
+                </Tooltip>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
