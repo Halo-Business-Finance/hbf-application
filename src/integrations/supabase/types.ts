@@ -798,6 +798,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -811,13 +835,21 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Json
       }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["user_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      has_role:
+        | {
+            Args: {
+              _role: Database["public"]["Enums"]["user_role"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
+        | {
+            Args: {
+              _role: Database["public"]["Enums"]["app_role"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
       mark_all_notifications_read: { Args: never; Returns: undefined }
       mark_notification_read: {
         Args: { notification_id: string }
@@ -829,6 +861,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       application_status:
         | "draft"
         | "submitted"
@@ -971,6 +1004,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       application_status: [
         "draft",
         "submitted",
