@@ -3,23 +3,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useUserRole } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
-import { Shield, AlertTriangle, Info, User, FileText } from 'lucide-react';
+import { Shield, AlertTriangle, Info, User, FileText, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface AuditEvent {
   id: string;
   user_id: string;
   action: string;
   resource_type: string;
-  resource_id?: string;
-  ip_address?: string;
-  user_agent?: string;
+  resource_id: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
   created_at: string;
-  details?: Record<string, any>;
+  details: Record<string, unknown> | null;
 }
 
 export const SecurityAuditLog: React.FC = () => {
   const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { isAdmin } = useUserRole();
 
   useEffect(() => {
@@ -29,31 +31,41 @@ export const SecurityAuditLog: React.FC = () => {
   }, [isAdmin]);
 
   const fetchAuditEvents = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
-      // For now, create mock audit events since audit_logs table doesn't exist
-      const mockEvents: AuditEvent[] = [
-        {
-          id: '1',
-          user_id: 'user-123',
-          action: 'login',
-          resource_type: 'authentication',
-          ip_address: '192.168.1.1',
-          created_at: new Date().toISOString(),
-          details: { success: true }
-        },
-        {
-          id: '2',
-          user_id: 'admin-456',
-          action: 'create_application',
-          resource_type: 'loan_application',
-          ip_address: '192.168.1.2',
-          created_at: new Date(Date.now() - 3600000).toISOString(),
-          details: { application_type: 'conventional' }
-        }
-      ];
-      setAuditEvents(mockEvents);
-    } catch (error) {
-      console.error('Error fetching audit events:', error);
+      const { data, error: queryError } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (queryError) {
+        console.error('Error fetching audit events:', queryError);
+        setError('Failed to load audit events');
+        setAuditEvents([]);
+      } else {
+        // Map the data to ensure correct typing
+        const mappedData: AuditEvent[] = (data || []).map(item => ({
+          id: item.id,
+          user_id: item.user_id,
+          action: item.action,
+          resource_type: item.resource_type,
+          resource_id: item.resource_id,
+          ip_address: item.ip_address,
+          user_agent: item.user_agent,
+          created_at: item.created_at,
+          details: typeof item.details === 'object' && item.details !== null && !Array.isArray(item.details) 
+            ? item.details as Record<string, unknown>
+            : null
+        }));
+        setAuditEvents(mappedData);
+      }
+    } catch (err) {
+      console.error('Error fetching audit events:', err);
+      setError('Failed to load audit events');
+      setAuditEvents([]);
     } finally {
       setLoading(false);
     }
@@ -63,22 +75,25 @@ export const SecurityAuditLog: React.FC = () => {
     switch (action) {
       case 'login':
       case 'logout':
+      case 'mfa_verify':
         return <User className="w-4 h-4" />;
       case 'create_application':
       case 'update_application':
+      case 'submit_application':
         return <FileText className="w-4 h-4" />;
       case 'access_denied':
+      case 'failed_login':
         return <AlertTriangle className="w-4 h-4" />;
       default:
         return <Info className="w-4 h-4" />;
     }
   };
 
-  const getEventSeverity = (action: string) => {
+  const getEventSeverity = (action: string): "destructive" | "default" | "secondary" => {
     if (action.includes('denied') || action.includes('failed')) {
       return 'destructive';
     }
-    if (action.includes('admin') || action.includes('role')) {
+    if (action.includes('admin') || action.includes('role') || action.includes('mfa')) {
       return 'default';
     }
     return 'secondary';
@@ -109,17 +124,30 @@ export const SecurityAuditLog: React.FC = () => {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Shield className="w-5 h-5" />
           Security Audit Log
         </CardTitle>
+        <Button variant="ghost" size="sm" onClick={fetchAuditEvents}>
+          <RefreshCw className="w-4 h-4" />
+        </Button>
       </CardHeader>
       <CardContent>
-        {auditEvents.length === 0 ? (
+        {error && (
+          <div className="text-center py-4">
+            <AlertTriangle className="w-8 h-8 text-destructive mx-auto mb-2" />
+            <p className="text-sm text-destructive">{error}</p>
+          </div>
+        )}
+        
+        {!error && auditEvents.length === 0 ? (
           <div className="text-center py-4">
             <Info className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">No audit events found</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Events will appear here as users perform actions
+            </p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -130,8 +158,8 @@ export const SecurityAuditLog: React.FC = () => {
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm">{event.action.replace('_', ' ')}</span>
-                    <Badge variant={getEventSeverity(event.action) as any} className="text-xs">
+                    <span className="font-medium text-sm">{event.action.replace(/_/g, ' ')}</span>
+                    <Badge variant={getEventSeverity(event.action)} className="text-xs">
                       {event.resource_type}
                     </Badge>
                   </div>
@@ -140,7 +168,7 @@ export const SecurityAuditLog: React.FC = () => {
                     {event.ip_address && ` IP: ${event.ip_address} •`}
                     {new Date(event.created_at).toLocaleString()}
                   </p>
-                  {event.details && (
+                  {event.details && Object.keys(event.details).length > 0 && (
                     <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
                       {JSON.stringify(event.details, null, 2)}
                     </div>
