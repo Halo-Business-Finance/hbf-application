@@ -1,16 +1,30 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
 
 export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  error?: boolean;
+}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, error, ...props }, ref) => {
     return (
       <textarea
         className={cn(
-          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm text-foreground ring-offset-background transition-all duration-200 placeholder:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-100 disabled:text-foreground shadow-sm focus-visible:shadow-md",
+          // Base styles
+          "flex min-h-[120px] w-full rounded-lg border bg-background text-sm text-foreground",
+          "px-4 py-3 ring-offset-background transition-all duration-200",
+          "placeholder:text-muted-foreground",
+          // Focus styles
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-0 focus-visible:border-primary",
+          // Shadow and hover
+          "shadow-sm hover:shadow-md hover:border-muted-foreground/30",
+          // Disabled styles
+          "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-sm",
+          // Error state
+          error && "border-destructive focus-visible:ring-destructive/30 focus-visible:border-destructive",
+          // Default border
+          !error && "border-border",
           className
         )}
         ref={ref}
