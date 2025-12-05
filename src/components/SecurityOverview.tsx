@@ -70,10 +70,10 @@ export const SecurityOverview = () => {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         
-        // Get admin users count
-        const { data: adminProfiles } = await supabase
-          .from('profiles')
-          .select('id, role')
+        // Get admin users count from user_roles table
+        const { data: adminRoles } = await supabase
+          .from('user_roles')
+          .select('id, user_id, role')
           .eq('role', 'admin');
 
         // Get recent admin actions from status history
@@ -137,7 +137,7 @@ export const SecurityOverview = () => {
         setMetrics({
           recentLogins: 0, // Would need auth.audit_log_entries access
           failedAuthAttempts: 0, // Would need auth logs
-          activeAdmins: adminProfiles?.length || 0,
+          activeAdmins: adminRoles?.length || 0,
           recentAdminActions: adminActions?.length || 0,
           pendingApplications: pendingCount || 0,
           databaseSize: ((loansCount || 0) + (docsCount || 0))
