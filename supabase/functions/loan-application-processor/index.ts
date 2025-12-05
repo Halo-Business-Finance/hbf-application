@@ -108,6 +108,25 @@ serve(async (req) => {
         return await processApplication(supabase, applicationData, userId);
       
       case 'updateStatus':
+        // SECURITY: Verify admin role before allowing status updates
+        if (!userId) {
+          return new Response(
+            JSON.stringify({ error: 'Authentication required' }),
+            { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
+        const { data: isAdmin, error: roleError } = await supabase
+          .rpc('has_role', { _user_id: userId, _role: 'admin' });
+        
+        if (roleError || !isAdmin) {
+          console.warn(`Unauthorized status update attempt by user ${userId}`);
+          return new Response(
+            JSON.stringify({ error: 'Admin access required to update application status' }),
+            { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
         return await updateApplicationStatus(supabase, applicationId, applicationData.status, applicationData.notes);
       
       case 'calculate-eligibility':
