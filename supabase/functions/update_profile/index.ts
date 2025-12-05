@@ -1,7 +1,7 @@
 // Supabase Edge Function: update-profile
-// Updates the current user's profile using service role to bypass RLS safely
+// Updates the current user's profile using authenticated client
 // - Validates JWT to identify the user
-// - Uses service role for the DB update
+// - Uses authenticated client with RLS for security transparency
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
@@ -19,9 +19,8 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-    // Client bound to the caller JWT to read the user
+    // Client bound to the caller JWT - RLS policies will be enforced
     const supabase = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: req.headers.get('Authorization')! } },
     });
@@ -31,7 +30,9 @@ Deno.serve(async (req: Request) => {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser();
+    
     if (userError || !user) {
+      console.error('Authentication failed:', userError?.message);
       return new Response(JSON.stringify({ error: 'Not authenticated' }), {
         status: 401,
         headers: { 'content-type': 'application/json', ...corsHeaders },
@@ -48,6 +49,7 @@ Deno.serve(async (req: Request) => {
     const validation = profileSchema.safeParse(body);
     
     if (!validation.success) {
+      console.warn('Profile validation failed for user:', user.id);
       return new Response(
         JSON.stringify({ 
           error: 'Invalid profile data',
@@ -64,27 +66,29 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     } as const;
 
-    // Service-role client to bypass RLS safely
-    const admin = createClient(supabaseUrl, serviceRoleKey);
-
-    const { error } = await admin
+    // Use authenticated client - RLS policy ensures users can only update their own profile
+    // The RLS policy "Users can update their own profile" already enforces auth.uid() = id
+    const { error } = await supabase
       .from('profiles')
       .update(payload)
       .eq('id', user.id);
 
     if (error) {
+      console.error('Profile update failed for user:', user.id, error.message);
       return new Response(
         JSON.stringify({ error: error.message || 'Update failed' }),
         { status: 400, headers: { 'content-type': 'application/json', ...corsHeaders } },
       );
     }
 
+    console.log('Profile updated successfully for user:', user.id);
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'content-type': 'application/json', ...corsHeaders },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) } ), {
+    console.error('Unexpected error in update_profile:', e);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'content-type': 'application/json', ...corsHeaders },
     });
