@@ -40,7 +40,54 @@ serve(async (req) => {
 
     console.log('Authenticated user:', user.id);
 
-    const { recipientEmail, documentName, shareableLink, senderName } = await req.json();
+    const { recipientEmail, documentName, shareableLink, senderName, documentId } = await req.json();
+
+    // SECURITY: Verify document ownership before allowing email sharing
+    // Use service role to bypass RLS for ownership check
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!serviceRoleKey) {
+      console.error('Service role key not configured');
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+    
+    // Query to verify the user owns the document they're trying to share
+    let ownershipQuery = supabaseAdmin
+      .from('borrower_documents')
+      .select('id, file_name')
+      .eq('user_id', user.id);
+    
+    // If documentId is provided, use it for more precise matching
+    if (documentId) {
+      ownershipQuery = ownershipQuery.eq('id', documentId);
+    } else {
+      // Fallback to matching by document name (less secure but maintains backwards compatibility)
+      ownershipQuery = ownershipQuery.eq('file_name', documentName);
+    }
+    
+    const { data: document, error: docError } = await ownershipQuery.maybeSingle();
+
+    if (docError) {
+      console.error('Document ownership check failed:', docError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to verify document ownership' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!document) {
+      console.warn(`Unauthorized document share attempt by user ${user.id} for document: ${documentId || documentName}`);
+      return new Response(
+        JSON.stringify({ error: 'Document not found or access denied' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Document ownership verified: ${document.id} belongs to user ${user.id}`);
 
     // Check if Microsoft 365 credentials are configured
     const clientId = Deno.env.get('MICROSOFT_CLIENT_ID');
