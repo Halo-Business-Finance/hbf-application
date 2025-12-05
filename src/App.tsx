@@ -24,6 +24,7 @@ const BorrowerPortal = lazy(() => import("./pages/BorrowerPortal"));
 const ChangePassword = lazy(() => import("./pages/ChangePassword"));
 const ChangeEmail = lazy(() => import("./pages/ChangeEmail"));
 const TwoFactorAuth = lazy(() => import("./pages/TwoFactorAuth"));
+const MFAVerification = lazy(() => import("./pages/MFAVerification"));
 const LoanApplications = lazy(() => import("./pages/LoanApplications"));
 const Support = lazy(() => import("./pages/Support"));
 const LoanCalculator = lazy(() => import("./pages/LoanCalculator"));
@@ -230,6 +231,11 @@ const App = () => (
                     <TwoFactorAuth />
                   </ProtectedRoute>
                 </Layout>
+              } />
+              <Route path="/mfa-verify" element={
+                <ProtectedRoute>
+                  <MFAVerification />
+                </ProtectedRoute>
               } />
               <Route path="/loan-applications" element={
                 <Layout>

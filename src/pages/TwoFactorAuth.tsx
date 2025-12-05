@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,10 +8,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Shield, Smartphone, AlertCircle, CheckCircle, Copy } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const TwoFactorAuth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { isAdmin } = useUserRole();
   
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
@@ -22,6 +25,9 @@ const TwoFactorAuth = () => {
   const [verificationCode, setVerificationCode] = useState('');
   const [enrolledFactors, setEnrolledFactors] = useState<any[]>([]);
   const [hasEnrolledFactor, setHasEnrolledFactor] = useState(false);
+
+  const returnTo = (location.state as any)?.returnTo;
+  const requireSetup = (location.state as any)?.requireSetup;
 
   useEffect(() => {
     checkEnrollmentStatus();
@@ -108,6 +114,12 @@ const TwoFactorAuth = () => {
       setVerificationCode('');
       setEnrolling(false);
       
+      // Redirect to intended destination if this was a required setup
+      if (returnTo) {
+        navigate(returnTo, { replace: true });
+        return;
+      }
+      
       // Refresh status
       checkEnrollmentStatus();
     } catch (error: any) {
@@ -122,9 +134,19 @@ const TwoFactorAuth = () => {
     }
   };
 
-  const unenrollFactor = async (factorId: string) => {
+  const unenrollFactor = async (factorIdToRemove: string) => {
+    // Prevent admins from disabling MFA
+    if (isAdmin()) {
+      toast({
+        title: "Cannot Disable MFA",
+        description: "Admin accounts are required to have two-factor authentication enabled for security.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
-      const { error } = await supabase.auth.mfa.unenroll({ factorId });
+      const { error } = await supabase.auth.mfa.unenroll({ factorId: factorIdToRemove });
       
       if (error) throw error;
 
@@ -196,6 +218,17 @@ const TwoFactorAuth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Admin Requirement Alert */}
+            {requireSetup && isAdmin() && (
+              <Alert className="border-orange-500 bg-orange-50 dark:bg-orange-950">
+                <Shield className="h-4 w-4 text-orange-600" />
+                <AlertTitle className="text-orange-800 dark:text-orange-200">MFA Required for Admin Access</AlertTitle>
+                <AlertDescription className="text-orange-700 dark:text-orange-300">
+                  As an administrator, you must enable two-factor authentication to access admin features. This helps protect sensitive data and operations.
+                </AlertDescription>
+              </Alert>
+            )}
+
             {/* Information Alert */}
             <Alert>
               <Smartphone className="h-4 w-4" />
@@ -309,6 +342,14 @@ const TwoFactorAuth = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
+                    {isAdmin() && (
+                      <Alert className="border-blue-500 bg-blue-50 dark:bg-blue-950">
+                        <Shield className="h-4 w-4 text-blue-600" />
+                        <AlertDescription className="text-blue-700 dark:text-blue-300">
+                          Admin accounts cannot disable two-factor authentication for security reasons.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                     <div>
                       <h3 className="text-sm font-medium mb-2">Enrolled Authenticators</h3>
                       {enrolledFactors.map((factor) => (
@@ -322,13 +363,15 @@ const TwoFactorAuth = () => {
                               </p>
                             </div>
                           </div>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => unenrollFactor(factor.id)}
-                          >
-                            Disable
-                          </Button>
+                          {!isAdmin() && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => unenrollFactor(factor.id)}
+                            >
+                              Disable
+                            </Button>
+                          )}
                         </div>
                       ))}
                     </div>
