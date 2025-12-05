@@ -824,6 +824,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_old_crm_sync_logs: { Args: never; Returns: number }
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
