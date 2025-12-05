@@ -4,43 +4,62 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
+import { FormProgress, FormProgressStep } from "@/components/ui/form-progress";
+import { FormSection, FormRow } from "@/components/ui/form-section";
 import { useToast } from "@/hooks/use-toast";
 import { useLoanApplication } from "@/hooks/useLoanApplication";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { 
+  ArrowLeft, 
+  ArrowRight, 
+  User, 
+  Building2, 
+  DollarSign, 
+  TrendingUp, 
+  FileCheck,
+  Mail,
+  Phone,
+  MapPin,
+  Hash,
+  Briefcase,
+  Users,
+  Target,
+  CreditCard,
+  Loader2
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const sba7aSchema = z.object({
   // Personal Information
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Valid email is required"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  ssn: z.string().min(9, "SSN is required"),
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(5, "ZIP code is required"),
+  firstName: z.string().min(1, "First name is required").max(50, "First name must be less than 50 characters"),
+  lastName: z.string().min(1, "Last name is required").max(50, "Last name must be less than 50 characters"),
+  email: z.string().email("Valid email is required").max(255, "Email must be less than 255 characters"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits").max(20, "Phone number is too long"),
+  ssn: z.string().min(9, "SSN is required").max(11, "SSN format is invalid"),
+  address: z.string().min(1, "Address is required").max(200, "Address is too long"),
+  city: z.string().min(1, "City is required").max(100, "City name is too long"),
+  state: z.string().min(1, "State is required").max(50, "State name is too long"),
+  zipCode: z.string().min(5, "ZIP code is required").max(10, "ZIP code is too long"),
   
   // Business Information
-  businessName: z.string().min(1, "Business name is required"),
-  businessAddress: z.string().min(1, "Business address is required"),
-  businessCity: z.string().min(1, "Business city is required"),
-  businessState: z.string().min(1, "Business state is required"),
-  businessZip: z.string().min(5, "Business ZIP code is required"),
+  businessName: z.string().min(1, "Business name is required").max(200, "Business name is too long"),
+  businessAddress: z.string().min(1, "Business address is required").max(200, "Address is too long"),
+  businessCity: z.string().min(1, "Business city is required").max(100, "City name is too long"),
+  businessState: z.string().min(1, "Business state is required").max(50, "State name is too long"),
+  businessZip: z.string().min(5, "Business ZIP code is required").max(10, "ZIP code is too long"),
   businessType: z.string().min(1, "Business type is required"),
   industryType: z.string().min(1, "Industry type is required"),
-  yearsInBusiness: z.number().min(0, "Years in business must be 0 or greater"),
-  numberOfEmployees: z.number().min(0, "Number of employees must be 0 or greater"),
+  yearsInBusiness: z.number().min(0, "Years in business must be 0 or greater").max(200, "Invalid years"),
+  numberOfEmployees: z.number().min(0, "Number of employees must be 0 or greater").max(100000, "Invalid number"),
   
   // Loan Details
   loanAmount: z.number().min(1000, "Minimum loan amount is $1,000").max(5000000, "Maximum SBA 7(a) loan is $5,000,000"),
   loanPurpose: z.string().min(1, "Loan purpose is required"),
-  useOfFunds: z.string().min(10, "Please provide detailed use of funds"),
+  useOfFunds: z.string().min(10, "Please provide detailed use of funds (minimum 10 characters)").max(2000, "Description is too long"),
   
   // Financial Information
   annualRevenue: z.number().min(0, "Annual revenue must be 0 or greater"),
@@ -55,14 +74,52 @@ const sba7aSchema = z.object({
 
 type SBA7aFormData = z.infer<typeof sba7aSchema>;
 
+const formSteps: FormProgressStep[] = [
+  { title: "Personal", description: "Your information", icon: User },
+  { title: "Business", description: "Company details", icon: Building2 },
+  { title: "Loan", description: "Funding needs", icon: DollarSign },
+  { title: "Financial", description: "Business finances", icon: TrendingUp },
+  { title: "Review", description: "Terms & submit", icon: FileCheck },
+];
+
 export default function SBA7aLoanForm() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const { submitApplication, isLoading } = useLoanApplication();
   const { toast } = useToast();
 
   const form = useForm<SBA7aFormData>({
     resolver: zodResolver(sba7aSchema),
     mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      ssn: "",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      businessName: "",
+      businessAddress: "",
+      businessCity: "",
+      businessState: "",
+      businessZip: "",
+      businessType: "",
+      industryType: "",
+      yearsInBusiness: 0,
+      numberOfEmployees: 0,
+      loanAmount: 0,
+      loanPurpose: "",
+      useOfFunds: "",
+      annualRevenue: 0,
+      netIncome: 0,
+      currentDebt: 0,
+      creditScore: 0,
+      termsAccepted: false,
+      creditAuthorizationAccepted: false,
+    },
   });
 
   const totalSteps = 5;
@@ -72,12 +129,14 @@ export default function SBA7aLoanForm() {
     const isValid = await form.trigger(fields);
     
     if (isValid && currentStep < totalSteps) {
+      setDirection("forward");
       setCurrentStep(currentStep + 1);
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
+      setDirection("backward");
       setCurrentStep(currentStep - 1);
     }
   };
@@ -154,17 +213,25 @@ export default function SBA7aLoanForm() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-foreground">Personal Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormSection 
+            title="Personal Information" 
+            description="Please provide your personal details"
+            icon={User}
+            direction={direction}
+          >
+            <FormRow cols={2}>
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name *</FormLabel>
+                    <FormLabel required>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter first name" {...field} />
+                      <Input 
+                        icon={User}
+                        placeholder="Enter first name" 
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -175,25 +242,34 @@ export default function SBA7aLoanForm() {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name *</FormLabel>
+                    <FormLabel required>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter last name" {...field} />
+                      <Input 
+                        icon={User}
+                        placeholder="Enter last name" 
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+            </FormRow>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormRow cols={2}>
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address *</FormLabel>
+                    <FormLabel required>Email Address</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="Enter email address" {...field} />
+                      <Input 
+                        type="email" 
+                        icon={Mail}
+                        placeholder="Enter email address" 
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -204,25 +280,34 @@ export default function SBA7aLoanForm() {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number *</FormLabel>
+                    <FormLabel required>Phone Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter phone number" {...field} />
+                      <Input 
+                        icon={Phone}
+                        placeholder="(555) 555-5555" 
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+            </FormRow>
 
             <FormField
               control={form.control}
               name="ssn"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Social Security Number *</FormLabel>
+                  <FormLabel required>Social Security Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="XXX-XX-XXXX" {...field} />
+                    <Input 
+                      icon={Hash}
+                      placeholder="XXX-XX-XXXX" 
+                      {...field} 
+                    />
                   </FormControl>
+                  <FormDescription>Your SSN is encrypted and securely stored</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -233,22 +318,26 @@ export default function SBA7aLoanForm() {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address *</FormLabel>
+                  <FormLabel required>Street Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter street address" {...field} />
+                    <Input 
+                      icon={MapPin}
+                      placeholder="Enter street address" 
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormRow cols={3}>
               <FormField
                 control={form.control}
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>City *</FormLabel>
+                    <FormLabel required>City</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter city" {...field} />
                     </FormControl>
@@ -261,7 +350,7 @@ export default function SBA7aLoanForm() {
                 name="state"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>State *</FormLabel>
+                    <FormLabel required>State</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter state" {...field} />
                     </FormControl>
@@ -274,30 +363,38 @@ export default function SBA7aLoanForm() {
                 name="zipCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>ZIP Code *</FormLabel>
+                    <FormLabel required>ZIP Code</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter ZIP code" {...field} />
+                      <Input placeholder="12345" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-          </div>
+            </FormRow>
+          </FormSection>
         );
 
       case 2:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-foreground">Business Information</h3>
+          <FormSection 
+            title="Business Information" 
+            description="Tell us about your company"
+            icon={Building2}
+            direction={direction}
+          >
             <FormField
               control={form.control}
               name="businessName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Business Name *</FormLabel>
+                  <FormLabel required>Business Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter business name" {...field} />
+                    <Input 
+                      icon={Building2}
+                      placeholder="Enter business name" 
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -309,22 +406,26 @@ export default function SBA7aLoanForm() {
               name="businessAddress"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Business Address *</FormLabel>
+                  <FormLabel required>Business Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter business address" {...field} />
+                    <Input 
+                      icon={MapPin}
+                      placeholder="Enter business address" 
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormRow cols={3}>
               <FormField
                 control={form.control}
                 name="businessCity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Business City *</FormLabel>
+                    <FormLabel required>City</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter city" {...field} />
                     </FormControl>
@@ -337,7 +438,7 @@ export default function SBA7aLoanForm() {
                 name="businessState"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Business State *</FormLabel>
+                    <FormLabel required>State</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter state" {...field} />
                     </FormControl>
@@ -350,26 +451,26 @@ export default function SBA7aLoanForm() {
                 name="businessZip"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Business ZIP *</FormLabel>
+                    <FormLabel required>ZIP Code</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter ZIP code" {...field} />
+                      <Input placeholder="12345" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+            </FormRow>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormRow cols={2}>
               <FormField
                 control={form.control}
                 name="businessType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Business Type *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel required>Business Type</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-11">
                           <SelectValue placeholder="Select business type" />
                         </SelectTrigger>
                       </FormControl>
@@ -390,10 +491,10 @@ export default function SBA7aLoanForm() {
                 name="industryType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Industry Type *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel required>Industry Type</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-11">
                           <SelectValue placeholder="Select industry" />
                         </SelectTrigger>
                       </FormControl>
@@ -413,18 +514,19 @@ export default function SBA7aLoanForm() {
                   </FormItem>
                 )}
               />
-            </div>
+            </FormRow>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormRow cols={2}>
               <FormField
                 control={form.control}
                 name="yearsInBusiness"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Years in Business *</FormLabel>
+                    <FormLabel required>Years in Business</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
+                        icon={Briefcase}
                         placeholder="Enter years" 
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -439,10 +541,11 @@ export default function SBA7aLoanForm() {
                 name="numberOfEmployees"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Number of Employees *</FormLabel>
+                    <FormLabel required>Number of Employees</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
+                        icon={Users}
                         placeholder="Enter employee count" 
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -452,30 +555,37 @@ export default function SBA7aLoanForm() {
                   </FormItem>
                 )}
               />
-            </div>
-          </div>
+            </FormRow>
+          </FormSection>
         );
 
       case 3:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-foreground">Loan Details</h3>
+          <FormSection 
+            title="Loan Details" 
+            description="Specify your funding requirements"
+            icon={DollarSign}
+            direction={direction}
+          >
             <FormField
               control={form.control}
               name="loanAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Loan Amount Requested *</FormLabel>
+                  <FormLabel required>Loan Amount Requested</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
+                      icon={DollarSign}
                       placeholder="Enter loan amount" 
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormDescription>
+                    SBA 7(a) loans available from $1,000 to $5,000,000
+                  </FormDescription>
                   <FormMessage />
-                  <p className="text-sm text-muted-foreground">Maximum SBA 7(a) loan amount: $5,000,000</p>
                 </FormItem>
               )}
             />
@@ -485,10 +595,10 @@ export default function SBA7aLoanForm() {
               name="loanPurpose"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Primary Loan Purpose *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel required>Primary Loan Purpose</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-11">
                         <SelectValue placeholder="Select loan purpose" />
                       </SelectTrigger>
                     </FormControl>
@@ -512,35 +622,44 @@ export default function SBA7aLoanForm() {
               name="useOfFunds"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Detailed Use of Funds *</FormLabel>
+                  <FormLabel required>Detailed Use of Funds</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Please provide a detailed description of how the loan funds will be used..."
-                      rows={4}
+                      placeholder="Please describe how you plan to use the loan funds. Include specific allocations if possible..."
+                      rows={5}
+                      className="resize-none"
                       {...field} 
                     />
                   </FormControl>
+                  <FormDescription>
+                    Provide a detailed breakdown of how funds will be allocated
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
+          </FormSection>
         );
 
       case 4:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-foreground">Financial Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormSection 
+            title="Financial Information" 
+            description="Share your business financials"
+            icon={TrendingUp}
+            direction={direction}
+          >
+            <FormRow cols={2}>
               <FormField
                 control={form.control}
                 name="annualRevenue"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Annual Revenue *</FormLabel>
+                    <FormLabel required>Annual Revenue</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
+                        icon={DollarSign}
                         placeholder="Enter annual revenue" 
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -559,27 +678,30 @@ export default function SBA7aLoanForm() {
                     <FormControl>
                       <Input 
                         type="number" 
+                        icon={TrendingUp}
                         placeholder="Enter net income" 
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
+                    <FormDescription>Can be negative if operating at a loss</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+            </FormRow>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormRow cols={2}>
               <FormField
                 control={form.control}
                 name="currentDebt"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Total Debt *</FormLabel>
+                    <FormLabel required>Current Total Debt</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
+                        icon={Target}
                         placeholder="Enter current debt" 
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -594,49 +716,67 @@ export default function SBA7aLoanForm() {
                 name="creditScore"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Personal Credit Score *</FormLabel>
+                    <FormLabel required>Personal Credit Score</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
+                        icon={CreditCard}
                         placeholder="Enter credit score" 
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
+                    <FormDescription>Minimum recommended: 680</FormDescription>
                     <FormMessage />
-                    <p className="text-sm text-muted-foreground">Minimum recommended: 680</p>
                   </FormItem>
                 )}
               />
-            </div>
-          </div>
+            </FormRow>
+          </FormSection>
         );
 
       case 5:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-foreground">Terms and Authorization</h3>
-            <div className="space-y-4">
+          <FormSection 
+            title="Terms & Authorization" 
+            description="Review and accept the terms to submit"
+            icon={FileCheck}
+            direction={direction}
+          >
+            <div className="space-y-6">
+              {/* Application Summary */}
+              <div className="rounded-lg bg-muted/50 p-4 space-y-3">
+                <h4 className="font-medium text-sm text-foreground">Application Summary</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <span className="text-muted-foreground">Loan Amount:</span>
+                  <span className="font-medium">${form.getValues("loanAmount")?.toLocaleString() || 0}</span>
+                  <span className="text-muted-foreground">Business:</span>
+                  <span className="font-medium">{form.getValues("businessName") || "—"}</span>
+                  <span className="text-muted-foreground">Applicant:</span>
+                  <span className="font-medium">{form.getValues("firstName")} {form.getValues("lastName")}</span>
+                </div>
+              </div>
+
               <FormField
                 control={form.control}
                 name="termsAccepted"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border border-border p-4 hover:bg-muted/30 transition-colors">
                     <FormControl>
                       <Checkbox 
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-0.5"
                       />
                     </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        I accept the terms and conditions *
+                    <div className="space-y-1 leading-none flex-1">
+                      <FormLabel className="text-sm font-medium cursor-pointer">
+                        I accept the terms and conditions
                       </FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        By checking this box, I agree to the loan terms and conditions, privacy policy, and acknowledge that all information provided is accurate.
+                      <p className="text-xs text-muted-foreground">
+                        By checking this box, I agree to the loan terms and conditions, privacy policy, and acknowledge that all information provided is accurate and complete.
                       </p>
                     </div>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -645,27 +785,27 @@ export default function SBA7aLoanForm() {
                 control={form.control}
                 name="creditAuthorizationAccepted"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border border-border p-4 hover:bg-muted/30 transition-colors">
                     <FormControl>
                       <Checkbox 
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-0.5"
                       />
                     </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        I authorize credit check *
+                    <div className="space-y-1 leading-none flex-1">
+                      <FormLabel className="text-sm font-medium cursor-pointer">
+                        I authorize credit check
                       </FormLabel>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         I authorize the lender to obtain my personal and business credit reports and verify the information provided in this application.
                       </p>
                     </div>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-          </div>
+          </FormSection>
         );
 
       default:
@@ -674,32 +814,42 @@ export default function SBA7aLoanForm() {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl">SBA 7(a) Loan Application</CardTitle>
-        <CardDescription>
-          Complete this step-by-step application for SBA 7(a) financing up to $5,000,000
-        </CardDescription>
-        <div className="mt-4">
-          <div className="flex justify-between text-sm text-muted-foreground mb-2">
-            <span>Step {currentStep} of {totalSteps}</span>
-            <span>{Math.round((currentStep / totalSteps) * 100)}% Complete</span>
+    <Card className="w-full max-w-4xl mx-auto elevated-card overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-primary/5 via-transparent to-accent/5 border-b">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-primary text-primary-foreground shadow-primary">
+            <DollarSign className="h-6 w-6" />
           </div>
-          <Progress value={(currentStep / totalSteps) * 100} className="w-full" />
+          <div>
+            <CardTitle className="text-2xl">SBA 7(a) Loan Application</CardTitle>
+            <CardDescription>
+              Complete this application for SBA 7(a) financing up to $5,000,000
+            </CardDescription>
+          </div>
+        </div>
+        
+        {/* Progress Indicator */}
+        <div className="mt-6">
+          <FormProgress steps={formSteps} currentStep={currentStep} />
         </div>
       </CardHeader>
-      <CardContent>
+      
+      <CardContent className="p-6 md:p-8">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {renderStep()}
             
-            <div className="flex justify-between pt-6">
+            {/* Navigation Buttons */}
+            <div className="flex justify-between pt-6 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="flex items-center gap-2"
+                className={cn(
+                  "flex items-center gap-2 h-11 px-6",
+                  currentStep === 1 && "opacity-50"
+                )}
               >
                 <ArrowLeft className="w-4 h-4" />
                 Previous
@@ -709,18 +859,27 @@ export default function SBA7aLoanForm() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 h-11 px-8 bg-gradient-primary hover:opacity-90 shadow-primary"
                 >
-                  {isLoading ? "Submitting..." : "Submit Application"}
-                  <ArrowRight className="w-4 h-4" />
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      Submit Application
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </Button>
               ) : (
                 <Button
                   type="button"
                   onClick={nextStep}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 h-11 px-8 bg-gradient-primary hover:opacity-90 shadow-primary"
                 >
-                  Next
+                  Continue
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               )}

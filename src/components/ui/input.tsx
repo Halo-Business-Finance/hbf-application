@@ -1,19 +1,58 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+import { LucideIcon } from "lucide-react"
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+export interface InputProps extends React.ComponentProps<"input"> {
+  icon?: LucideIcon;
+  iconPosition?: "left" | "right";
+  error?: boolean;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, icon: Icon, iconPosition = "left", error, ...props }, ref) => {
+    const hasIcon = !!Icon;
+    
     return (
-      <input
-        type={type}
-        className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm text-foreground ring-offset-background transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-100 disabled:text-foreground shadow-sm focus-visible:shadow-md",
-          className
+      <div className="relative">
+        {hasIcon && iconPosition === "left" && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+            <Icon className="h-4 w-4" />
+          </div>
         )}
-        ref={ref}
-        {...props}
-      />
+        <input
+          type={type}
+          className={cn(
+            // Base styles
+            "flex h-11 w-full rounded-lg border bg-background text-sm text-foreground",
+            "ring-offset-background transition-all duration-200",
+            "placeholder:text-muted-foreground",
+            // Focus styles
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-0 focus-visible:border-primary",
+            // Shadow and hover
+            "shadow-sm hover:shadow-md hover:border-muted-foreground/30",
+            // Disabled styles
+            "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-sm",
+            // File input styles
+            "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
+            // Icon padding
+            hasIcon && iconPosition === "left" && "pl-10",
+            hasIcon && iconPosition === "right" && "pr-10",
+            !hasIcon && "px-4",
+            // Error state
+            error && "border-destructive focus-visible:ring-destructive/30 focus-visible:border-destructive",
+            // Default border
+            !error && "border-border",
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        {hasIcon && iconPosition === "right" && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+            <Icon className="h-4 w-4" />
+          </div>
+        )}
+      </div>
     )
   }
 )
