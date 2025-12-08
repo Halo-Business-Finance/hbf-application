@@ -18,10 +18,10 @@ export const useUserRole = () => {
       }
 
       try {
-        // Check roles using the secure has_role RPC function
+        // Check roles using the secure has_app_role RPC function
         // This queries the user_roles table via a SECURITY DEFINER function
         const { data: isAdmin, error: adminError } = await supabase
-          .rpc('has_role', { _user_id: user.id, _role: 'admin' });
+          .rpc('has_app_role', { _user_id: user.id, _role: 'admin' });
 
         if (adminError) {
           console.error('Error checking admin role:', adminError);
@@ -38,7 +38,7 @@ export const useUserRole = () => {
 
         // Check for moderator role
         const { data: isModerator, error: modError } = await supabase
-          .rpc('has_role', { _user_id: user.id, _role: 'moderator' });
+          .rpc('has_app_role', { _user_id: user.id, _role: 'moderator' });
 
         if (modError) {
           console.error('Error checking moderator role:', modError);
