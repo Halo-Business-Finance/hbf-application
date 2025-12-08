@@ -162,7 +162,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {/* User Info */}
               {open && firstName && <div className="px-3 py-2 mb-2">
-                  <p className="text-xs text-sidebar-muted">Logged in as</p>
+                  <p className="text-white text-sm">Logged in as</p>
                   <p className="text-sm font-medium text-sidebar-foreground truncate">{firstName}</p>
                 </div>}
               
