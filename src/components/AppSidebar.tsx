@@ -94,7 +94,7 @@ export function AppSidebar() {
     if (url === '/') return currentPath === '/';
     return currentPath.startsWith(url);
   };
-  return <Sidebar collapsible="icon" className={cn("border-r-0 transition-all duration-300", open ? "w-64" : "w-16")}>
+  return <Sidebar collapsible="icon" className={cn("border-r-0 transition-all duration-300", open ? "w-64" : "w-20")}>
       <SidebarContent className={cn("flex flex-col bg-sidebar py-4", open ? "px-3" : "px-2")}>
         {/* Main Navigation */}
         <div className="flex-1 space-y-1">
