@@ -161,8 +161,8 @@ const Navbar = () => {
           <Popover open={searchOpen} onOpenChange={setSearchOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className={cn("w-full justify-start text-muted-foreground font-normal", "bg-muted/50 border-transparent hover:bg-muted hover:border-border", "transition-all duration-200")} onClick={() => setSearchOpen(true)}>
-                <Search className="mr-2 h-4 w-4 text-muted-foreground" />
-                <span>Search applications, documents...</span>
+                <Search className="mr-2 h-4 w-4 text-black" />
+                <span className="text-black">Search applications, documents...</span>
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                   <span className="text-xs">⌘</span>K
                 </kbd>
