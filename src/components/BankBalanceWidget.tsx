@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Building2, User } from 'lucide-react';
+import { Building2, Landmark } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,6 @@ interface BankAccount {
 export const BankBalanceWidget = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<'all' | 'personal' | 'business'>('all');
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -55,111 +54,69 @@ export const BankBalanceWidget = () => {
     }).format(amount);
   };
 
-  const personalAccounts = accounts.filter(a => !a.is_business);
-  const businessAccounts = accounts.filter(a => a.is_business);
-  
-  const displayedAccounts = filter === 'all' ? accounts : 
-                           filter === 'personal' ? personalAccounts : 
-                           businessAccounts;
+  const totalBalance = accounts.reduce((sum, acc) => sum + Number(acc.balance), 0);
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1, 2, 3].map((i) => (
-          <Card key={i} className="border border-gray-200 shadow-sm bg-white">
-            <CardContent className="p-6">
-              <div className="animate-pulse space-y-3">
-                <div className="h-6 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-12 bg-gray-200 rounded w-2/3"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card className="dashboard-widget-card">
+        <CardContent className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 w-12 bg-white/10 rounded-xl mx-auto"></div>
+            <div className="h-5 bg-white/10 rounded w-2/3 mx-auto"></div>
+            <div className="h-4 bg-white/10 rounded w-1/2 mx-auto"></div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (accounts.length === 0) {
     return (
-      <Card className="border border-gray-200 shadow-sm bg-white">
+      <Card 
+        className="dashboard-widget-card cursor-pointer"
+        onClick={() => navigate('/bank-accounts')}
+      >
         <CardContent className="p-6 text-center">
-          <Building2 className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-          <p className="text-lg font-semibold text-gray-900 mb-1">No Bank Accounts</p>
-          <p className="text-sm text-gray-600">Connect your first bank account to get started</p>
+          <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Landmark className="w-6 h-6 text-white/60" />
+          </div>
+          <p className="text-lg font-semibold text-white mb-1">No Bank Accounts</p>
+          <p className="text-sm text-white/60">Connect your first bank account to get started</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
-        <button
-          onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            filter === 'all' 
-              ? 'bg-blue-600 text-white shadow-sm' 
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-          }`}
-        >
-          All Accounts ({accounts.length})
-        </button>
-        <button
-          onClick={() => setFilter('personal')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            filter === 'personal' 
-              ? 'bg-blue-600 text-white shadow-sm' 
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-          }`}
-        >
-          Personal ({personalAccounts.length})
-        </button>
-        <button
-          onClick={() => setFilter('business')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            filter === 'business' 
-              ? 'bg-blue-600 text-white shadow-sm' 
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-          }`}
-        >
-          Business ({businessAccounts.length})
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayedAccounts.map((account) => (
-          <Card 
-            key={account.id} 
-            className="border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 bg-white group hover:scale-105 cursor-pointer"
-            onClick={() => navigate('/bank-accounts')}
-          >
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                {account.is_business ? (
-                  <Building2 className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
-                ) : (
-                  <User className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
-                )}
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {account.is_business ? 'Business Account' : 'Personal Account'}
-                </h3>
+    <Card 
+      className="dashboard-widget-card cursor-pointer"
+      onClick={() => navigate('/bank-accounts')}
+    >
+      <CardContent className="p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+            <Building2 className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-sm text-white/60">Total Balance</p>
+            <p className="text-2xl font-bold text-white">{formatCurrency(totalBalance)}</p>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {accounts.slice(0, 3).map((account) => (
+            <div key={account.id} className="flex justify-between items-center py-2 border-t border-white/10">
+              <div>
+                <p className="text-sm font-medium text-white">{account.account_name}</p>
+                <p className="text-xs text-white/50">{account.institution}</p>
               </div>
-              
-              <div className="mb-4">
-                <p className="text-sm text-gray-600 mb-1">{account.account_name}</p>
-                <p className="text-sm font-medium text-gray-700">{account.institution}</p>
-              </div>
-              
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-green-600">{formatCurrency(Number(account.balance))}</span>
-              </div>
-              
-              <p className="text-xs text-gray-600 mt-3">Last synced: Recently</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+              <p className="text-sm font-semibold text-white">{formatCurrency(Number(account.balance))}</p>
+            </div>
+          ))}
+          {accounts.length > 3 && (
+            <p className="text-xs text-white/50 text-center pt-2">+{accounts.length - 3} more accounts</p>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
