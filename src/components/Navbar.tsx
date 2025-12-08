@@ -209,7 +209,7 @@ const Navbar = () => {
       <div className="flex-1" />
 
       {/* Right Navigation */}
-      <div className="flex items-center gap-1 sm:gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 text-black">
         {authenticated && <>
             {/* Mobile Search Button */}
             <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted" onClick={() => setSearchOpen(true)}>
@@ -220,7 +220,7 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted relative">
-                  <Bell className="h-5 w-5" />
+                  <Bell className="h-5 w-5 text-yellow-400" />
                   {notificationCount > 0 && <span className="absolute -top-0.5 -right-0.5 h-4 w-4 flex items-center justify-center text-[10px] font-bold bg-destructive text-destructive-foreground rounded-full">
                       {notificationCount > 9 ? '9+' : notificationCount}
                     </span>}
@@ -265,21 +265,21 @@ const Navbar = () => {
 
             {/* Calculator */}
             <Button variant="ghost" size="icon" onClick={() => setCalculatorOpen(true)} className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted" title="Loan Calculator">
-              <Calculator className="h-5 w-5" />
+              <Calculator className="text-black h-[20px] w-[19px]" />
             </Button>
 
             <LoanCalculatorDialog open={calculatorOpen} onOpenChange={setCalculatorOpen} />
 
             {/* Help */}
             <Button variant="ghost" size="icon" onClick={() => navigate('/support')} className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted hidden sm:flex">
-              <HelpCircle className="h-5 w-5" />
+              <HelpCircle className="h-5 w-5 text-black" />
             </Button>
             
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted">
-                  <UserCircle className="h-5 w-5" />
+                  <UserCircle className="h-5 w-5 text-black" />
                 </Button>
               </DropdownMenuTrigger>
               
