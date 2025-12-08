@@ -7,8 +7,7 @@ import {
   CreditCard, 
   Landmark, 
   LogOut, 
-  ChevronLeft,
-  ChevronRight,
+  Menu,
   LayoutDashboard,
   Shield
 } from 'lucide-react';
@@ -109,7 +108,7 @@ export function AppSidebar() {
     >
       <SidebarContent className={cn("flex flex-col bg-sidebar py-4", open ? "px-3" : "px-2")}>
         {/* Collapse Toggle */}
-        <div className={cn("flex items-center mb-4", open ? "justify-end" : "justify-center")}>
+        <div className="flex items-center justify-center mb-4">
           <button
             onClick={toggleSidebar}
             className={cn(
@@ -117,11 +116,7 @@ export function AppSidebar() {
               "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground"
             )}
           >
-            {open ? (
-              <ChevronLeft className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
+            <Menu className="h-5 w-5" />
           </button>
         </div>
 
