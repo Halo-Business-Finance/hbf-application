@@ -240,62 +240,85 @@ const DashboardView = () => {
       {/* Bank Accounts & Credit Scores Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900">Bank Accounts</h2>
+          <h2 className="text-2xl font-bold text-foreground">Bank Accounts</h2>
           <BankBalanceWidget />
         </div>
         
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900">Credit Scores</h2>
+          <h2 className="text-2xl font-bold text-foreground">Credit Scores</h2>
           <CreditScoreWidget />
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('all')}>
-          <CardContent className="p-6">
-            <div>
-              <p className="text-sm text-white/70 mb-1">Total Applications</p>
-              <p className="text-3xl font-bold text-white">{stats.totalApplications}</p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div 
+          className="dashboard-stat-card cursor-pointer" 
+          onClick={() => handleMetricClick('all')}
+        >
+          <p className="stat-label">Total<br />Applications</p>
+          <p className="stat-value">{stats.totalApplications}</p>
+        </div>
 
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('approved')}>
-          <CardContent className="p-6">
-            <div>
-              <p className="text-sm text-white/70 mb-1">Approved Amount</p>
-              <p className="text-3xl font-bold text-white">${stats.approvedAmount.toLocaleString()}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div 
+          className="dashboard-stat-card cursor-pointer" 
+          onClick={() => handleMetricClick('approved')}
+        >
+          <p className="stat-label">Approved<br />Amount</p>
+          <p className="stat-value">${stats.approvedAmount.toLocaleString()}</p>
+        </div>
 
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('pending')}>
-          <CardContent className="p-6">
-            <div>
-              <p className="text-sm text-white/70 mb-1">Pending Review</p>
-              <p className="text-3xl font-bold text-white">{stats.pendingReview}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div 
+          className="dashboard-stat-card cursor-pointer" 
+          onClick={() => handleMetricClick('pending')}
+        >
+          <p className="stat-label">Pending<br />Review</p>
+          <p className="stat-value">{stats.pendingReview}</p>
+        </div>
 
-        <Card className="border-2 border-blue-950 bg-blue-950 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]" onClick={() => handleMetricClick('approved')}>
-          <CardContent className="p-6">
-            <div>
-              <p className="text-sm text-white/70 mb-1">Success Rate</p>
-              <p className="text-3xl font-bold text-white">{stats.successRate}%</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div 
+          className="dashboard-stat-card cursor-pointer" 
+          onClick={() => handleMetricClick('approved')}
+        >
+          <p className="stat-label">Success Rate</p>
+          <p className="stat-value">{stats.successRate}%</p>
+        </div>
       </div>
 
       {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-md">
-          <TabsTrigger value="applications" className="text-xs sm:text-sm">Loan Applications</TabsTrigger>
-          <TabsTrigger value="activity" className="text-xs sm:text-sm">Recent Activity</TabsTrigger>
-          <TabsTrigger value="loans" className="text-xs sm:text-sm">Existing Loans</TabsTrigger>
-        </TabsList>
+        <div className="inline-flex items-center rounded-full bg-sidebar p-1 border border-sidebar-border">
+          <button
+            onClick={() => setActiveTab('applications')}
+            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+              activeTab === 'applications'
+                ? 'bg-primary text-primary-foreground'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Loan Applications
+          </button>
+          <button
+            onClick={() => setActiveTab('activity')}
+            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+              activeTab === 'activity'
+                ? 'bg-primary text-primary-foreground'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Recent Activity
+          </button>
+          <button
+            onClick={() => setActiveTab('loans')}
+            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+              activeTab === 'loans'
+                ? 'bg-primary text-primary-foreground'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Existing Loans
+          </button>
+        </div>
 
         <TabsContent value="applications" className="mt-6">
           {statusFilter && <div className="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
