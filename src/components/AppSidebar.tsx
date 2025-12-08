@@ -100,7 +100,7 @@ export function AppSidebar() {
         <div className="flex-1 space-y-1">
           <SidebarGroup>
             {/* Collapse Toggle */}
-            <div className="flex items-center mb-2 justify-center">
+            <div className={cn("flex items-center mb-2", open ? "justify-start px-1" : "justify-center")}>
               <button onClick={toggleSidebar} className={cn("p-2 rounded-lg transition-all duration-200", "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground")}>
                 <Menu className="h-5 w-5 text-white" />
               </button>
