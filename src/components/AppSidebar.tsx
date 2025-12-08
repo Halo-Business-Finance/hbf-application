@@ -1,69 +1,69 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  Home, 
-  FileText, 
-  Wallet, 
-  FolderOpen, 
-  CreditCard, 
-  Landmark, 
-  LogOut, 
-  Menu,
-  LayoutDashboard,
-  Shield
-} from 'lucide-react';
+import { Home, FileText, Wallet, FolderOpen, CreditCard, Landmark, LogOut, Menu, LayoutDashboard, Shield } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-
-const items = [
-  { title: 'Dashboard', url: '/', icon: LayoutDashboard },
-  { title: 'Applications', url: '/loan-applications', icon: FileText },
-  { title: 'Existing Loans', url: '/existing-loans', icon: Wallet },
-  { title: 'Documents', url: '/document-storage', icon: FolderOpen },
-  { title: 'Credit Reports', url: '/credit-reports', icon: CreditCard },
-  { title: 'Bank Accounts', url: '/bank-accounts', icon: Landmark },
-];
-
-const adminItems = [
-  { title: 'Admin Portal', url: '/admin', icon: Shield },
-];
-
+const items = [{
+  title: 'Dashboard',
+  url: '/',
+  icon: LayoutDashboard
+}, {
+  title: 'Applications',
+  url: '/loan-applications',
+  icon: FileText
+}, {
+  title: 'Existing Loans',
+  url: '/existing-loans',
+  icon: Wallet
+}, {
+  title: 'Documents',
+  url: '/document-storage',
+  icon: FolderOpen
+}, {
+  title: 'Credit Reports',
+  url: '/credit-reports',
+  icon: CreditCard
+}, {
+  title: 'Bank Accounts',
+  url: '/bank-accounts',
+  icon: Landmark
+}];
+const adminItems = [{
+  title: 'Admin Portal',
+  url: '/admin',
+  icon: Shield
+}];
 export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAdmin } = useUserRole();
-  const { signOut, user } = useAuth();
-  const { toast } = useToast();
-  const { open, toggleSidebar } = useSidebar();
+  const {
+    isAdmin
+  } = useUserRole();
+  const {
+    signOut,
+    user
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    open,
+    toggleSidebar
+  } = useSidebar();
   const currentPath = location.pathname;
   const [firstName, setFirstName] = useState<string>('');
-
   useEffect(() => {
     const fetchUserName = async () => {
       if (!user) return;
-      
       try {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('first_name')
-          .eq('id', user.id)
-          .maybeSingle();
-        
+        const {
+          data: profileData
+        } = await supabase.from('profiles').select('first_name').eq('id', user.id).maybeSingle();
         if (profileData?.first_name) {
           setFirstName(profileData.first_name);
         }
@@ -71,16 +71,14 @@ export function AppSidebar() {
         console.error('Error fetching user name:', error);
       }
     };
-
     fetchUserName();
   }, [user]);
-
   const handleLogout = async () => {
     try {
       await signOut();
       toast({
         title: "Logged Out",
-        description: "You have been successfully logged out",
+        description: "You have been successfully logged out"
       });
       navigate('/');
     } catch (error: any) {
@@ -92,130 +90,70 @@ export function AppSidebar() {
       });
     }
   };
-
   const isActive = (url: string) => {
     if (url === '/') return currentPath === '/';
     return currentPath.startsWith(url);
   };
-
-  return (
-    <Sidebar 
-      collapsible="icon" 
-      className={cn(
-        "border-r-0 transition-all duration-300",
-        open ? "w-64" : "w-16"
-      )}
-    >
+  return <Sidebar collapsible="icon" className={cn("border-r-0 transition-all duration-300", open ? "w-64" : "w-16")}>
       <SidebarContent className={cn("flex flex-col bg-sidebar py-4", open ? "px-3" : "px-2")}>
         {/* Main Navigation */}
         <div className="flex-1 space-y-1">
           <SidebarGroup>
             {/* Collapse Toggle */}
             <div className={cn("flex items-center mb-2", open ? "justify-start" : "justify-center")}>
-              <button
-                onClick={toggleSidebar}
-                className={cn(
-                  "p-2 rounded-lg transition-all duration-200",
-                  "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground"
-                )}
-              >
-                <Menu className="h-5 w-5" />
+              <button onClick={toggleSidebar} className={cn("p-2 rounded-lg transition-all duration-200", "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground")}>
+                <Menu className="h-5 w-5 text-white" />
               </button>
             </div>
-            {open && (
-              <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
+            {open && <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
                 Main Menu
-              </SidebarGroupLabel>
-            )}
+              </SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu className="space-y-1">
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                {items.map(item => <SidebarMenuItem key={item.title}>
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
                         <SidebarMenuButton asChild>
-                          <NavLink
-                            to={item.url}
-                            end={item.url === '/'}
-                            className={cn(
-                              "flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200",
-                              "text-sidebar-foreground/70 hover:text-sidebar-foreground",
-                              open ? "px-3" : "px-0 justify-center",
-                              isActive(item.url) 
-                                ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" 
-                                : "hover:bg-sidebar-accent"
-                            )}
-                          >
-                            <item.icon className={cn(
-                              "h-5 w-5 flex-shrink-0 transition-transform duration-200",
-                              isActive(item.url) && "scale-110"
-                            )} />
-                            {open && (
-                              <span className="truncate">{item.title}</span>
-                            )}
+                          <NavLink to={item.url} end={item.url === '/'} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "px-0 justify-center", isActive(item.url) ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" : "hover:bg-sidebar-accent")}>
+                            <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-200", isActive(item.url) && "scale-110")} />
+                            {open && <span className="truncate">{item.title}</span>}
                           </NavLink>
                         </SidebarMenuButton>
                       </TooltipTrigger>
-                      {!open && (
-                        <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
+                      {!open && <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
                           {item.title}
-                        </TooltipContent>
-                      )}
+                        </TooltipContent>}
                     </Tooltip>
-                  </SidebarMenuItem>
-                ))}
+                  </SidebarMenuItem>)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
 
           {/* Admin Section */}
-          {isAdmin() && (
-            <SidebarGroup className="mt-6">
-              {open && (
-                <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
+          {isAdmin() && <SidebarGroup className="mt-6">
+              {open && <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
                   Administration
-                </SidebarGroupLabel>
-              )}
+                </SidebarGroupLabel>}
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
-                  {adminItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
+                  {adminItems.map(item => <SidebarMenuItem key={item.title}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
                           <SidebarMenuButton asChild>
-                            <NavLink
-                              to={item.url}
-                              className={cn(
-                                "flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200",
-                                "text-sidebar-foreground/70 hover:text-sidebar-foreground",
-                                open ? "px-3" : "px-0 justify-center",
-                                isActive(item.url)
-                                  ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium"
-                                  : "hover:bg-sidebar-accent"
-                              )}
-                            >
-                              <item.icon className={cn(
-                                "h-5 w-5 flex-shrink-0 transition-transform duration-200",
-                                isActive(item.url) && "scale-110"
-                              )} />
-                              {open && (
-                                <span className="truncate">{item.title}</span>
-                              )}
+                            <NavLink to={item.url} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "px-0 justify-center", isActive(item.url) ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium" : "hover:bg-sidebar-accent")}>
+                              <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-200", isActive(item.url) && "scale-110")} />
+                              {open && <span className="truncate">{item.title}</span>}
                             </NavLink>
                           </SidebarMenuButton>
                         </TooltipTrigger>
-                        {!open && (
-                          <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
+                        {!open && <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
                             {item.title}
-                          </TooltipContent>
-                        )}
+                          </TooltipContent>}
                       </Tooltip>
-                    </SidebarMenuItem>
-                  ))}
+                    </SidebarMenuItem>)}
                 </SidebarMenu>
               </SidebarGroupContent>
-            </SidebarGroup>
-          )}
+            </SidebarGroup>}
         </div>
         
         {/* User & Logout Section */}
@@ -223,40 +161,28 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {/* User Info */}
-              {open && firstName && (
-                <div className="px-3 py-2 mb-2">
+              {open && firstName && <div className="px-3 py-2 mb-2">
                   <p className="text-xs text-sidebar-muted">Logged in as</p>
                   <p className="text-sm font-medium text-sidebar-foreground truncate">{firstName}</p>
-                </div>
-              )}
+                </div>}
               
               {/* Logout Button */}
               <SidebarMenuItem>
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
-                    <SidebarMenuButton 
-                      onClick={handleLogout}
-                      className={cn(
-                        "flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full",
-                        "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive",
-                        open ? "px-3" : "px-0 justify-center"
-                      )}
-                    >
+                    <SidebarMenuButton onClick={handleLogout} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full", "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive", open ? "px-3" : "px-0 justify-center")}>
                       <LogOut className="h-5 w-5 flex-shrink-0" />
                       {open && <span>Log Out</span>}
                     </SidebarMenuButton>
                   </TooltipTrigger>
-                  {!open && (
-                    <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
+                  {!open && <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
                       Log Out
-                    </TooltipContent>
-                  )}
+                    </TooltipContent>}
                 </Tooltip>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-    </Sidebar>
-  );
+    </Sidebar>;
 }
