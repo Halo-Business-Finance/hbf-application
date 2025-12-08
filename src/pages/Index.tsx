@@ -204,16 +204,14 @@ const DashboardView = () => {
       <OnboardingGuide userId={user?.id} />
 
       {/* Header with bottom separator */}
-      <div className="-mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="border-b border-border pb-4">
-          <div className="flex-1">
-            {firstName && <h2 className="text-lg sm:text-xl font-bold text-black mb-3">
-                Welcome, {firstName}
-              </h2>}
-            <p className="text-sm sm:text-base text-black mb-4">
-              Manage your loan applications and track your progress here
-            </p>
-          </div>
+      <div className="border-b border-border pb-4">
+        <div className="flex-1">
+          {firstName && <h2 className="text-lg sm:text-xl font-bold text-foreground mb-3">
+              Welcome, {firstName}
+            </h2>}
+          <p className="text-sm sm:text-base text-muted-foreground mb-4">
+            Manage your loan applications and track your progress here
+          </p>
         </div>
       </div>
 
