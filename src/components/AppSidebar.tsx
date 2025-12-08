@@ -109,7 +109,7 @@ export function AppSidebar() {
     >
       <SidebarContent className="flex flex-col bg-sidebar px-3 py-4">
         {/* Collapse Toggle */}
-        <div className="flex items-center justify-end mb-4">
+        <div className={cn("flex items-center mb-4", open ? "justify-end" : "justify-center")}>
           <button
             onClick={toggleSidebar}
             className={cn(
@@ -144,8 +144,9 @@ export function AppSidebar() {
                             to={item.url}
                             end={item.url === '/'}
                             className={cn(
-                              "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                              "flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200",
                               "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+                              open ? "px-3" : "px-0 justify-center",
                               isActive(item.url) 
                                 ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" 
                                 : "hover:bg-sidebar-accent"
@@ -191,8 +192,9 @@ export function AppSidebar() {
                             <NavLink
                               to={item.url}
                               className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                                "flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200",
                                 "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+                                open ? "px-3" : "px-0 justify-center",
                                 isActive(item.url)
                                   ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium"
                                   : "hover:bg-sidebar-accent"
@@ -241,8 +243,9 @@ export function AppSidebar() {
                     <SidebarMenuButton 
                       onClick={handleLogout}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full",
-                        "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive"
+                        "flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full",
+                        "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive",
+                        open ? "px-3" : "px-0 justify-center"
                       )}
                     >
                       <LogOut className="h-5 w-5 flex-shrink-0" />
