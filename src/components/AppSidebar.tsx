@@ -105,7 +105,7 @@ export function AppSidebar() {
                 <Menu className="h-5 w-5 text-white" />
               </button>
             </div>
-            {open && <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
+            {open && <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider px-3 mb-2 text-white">
                 Main Menu
               </SidebarGroupLabel>}
             <SidebarGroupContent>
@@ -116,7 +116,7 @@ export function AppSidebar() {
                         <SidebarMenuButton asChild>
                           <NavLink to={item.url} end={item.url === '/'} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "px-0 justify-center", isActive(item.url) ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" : "hover:bg-sidebar-accent")}>
                             <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-200", isActive(item.url) && "scale-110")} />
-                            {open && <span className="truncate">{item.title}</span>}
+                            {open && <span className="truncate text-white">{item.title}</span>}
                           </NavLink>
                         </SidebarMenuButton>
                       </TooltipTrigger>
@@ -131,7 +131,7 @@ export function AppSidebar() {
 
           {/* Admin Section */}
           {isAdmin() && <SidebarGroup className="mt-6">
-              {open && <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
+              {open && <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider px-3 mb-2 text-white">
                   Administration
                 </SidebarGroupLabel>}
               <SidebarGroupContent>
@@ -142,7 +142,7 @@ export function AppSidebar() {
                           <SidebarMenuButton asChild>
                             <NavLink to={item.url} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "px-0 justify-center", isActive(item.url) ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium" : "hover:bg-sidebar-accent")}>
                               <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-200", isActive(item.url) && "scale-110")} />
-                              {open && <span className="truncate">{item.title}</span>}
+                              {open && <span className="truncate text-white">{item.title}</span>}
                             </NavLink>
                           </SidebarMenuButton>
                         </TooltipTrigger>
@@ -171,8 +171,8 @@ export function AppSidebar() {
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
                     <SidebarMenuButton onClick={handleLogout} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full", "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive", open ? "px-3" : "px-0 justify-center")}>
-                      <LogOut className="h-5 w-5 flex-shrink-0" />
-                      {open && <span>Log Out</span>}
+                      <LogOut className="h-5 w-5 flex-shrink-0 text-white" />
+                      {open && <span className="text-white">Log Out</span>}
                     </SidebarMenuButton>
                   </TooltipTrigger>
                   {!open && <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-foreground border-sidebar-border">
