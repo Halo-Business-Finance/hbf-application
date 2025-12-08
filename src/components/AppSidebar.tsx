@@ -111,7 +111,7 @@ export function AppSidebar() {
         <div className="flex-1 space-y-1">
           <SidebarGroup>
             {/* Collapse Toggle */}
-            <div className="flex items-center justify-center mb-2">
+            <div className={cn("flex items-center mb-2", open ? "justify-start px-3" : "justify-center")}>
               <button
                 onClick={toggleSidebar}
                 className={cn(
