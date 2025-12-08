@@ -38,15 +38,7 @@ import { CreditScoreWidget } from '@/components/CreditScoreWidget';
 import { BankBalanceWidget } from '@/components/BankBalanceWidget';
 import { DashboardOverview } from '@/components/DashboardOverview';
 import { Footer } from '@/components/Footer';
-import {
-  ApplicationProgressTracker,
-  QuickActions,
-  OnboardingGuide,
-  FloatingSupportButton,
-  DocumentChecklist,
-  EstimatedTimeline,
-  DashboardCharts
-} from '@/components/dashboard';
+import { ApplicationProgressTracker, QuickActions, OnboardingGuide, FloatingSupportButton, DocumentChecklist, EstimatedTimeline, DashboardCharts } from '@/components/dashboard';
 const FundedLoansView = ({
   userId
 }: {
@@ -226,12 +218,8 @@ const DashboardView = () => {
 
       {/* Progress & Timeline Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <ApplicationProgressTracker 
-          currentStatus={stats.pendingReview > 0 ? 'under_review' : stats.totalApplications > 0 ? 'submitted' : 'draft'} 
-        />
-        <EstimatedTimeline 
-          currentStatus={stats.pendingReview > 0 ? 'under_review' : stats.totalApplications > 0 ? 'submitted' : 'draft'}
-        />
+        <ApplicationProgressTracker currentStatus={stats.pendingReview > 0 ? 'under_review' : stats.totalApplications > 0 ? 'submitted' : 'draft'} />
+        <EstimatedTimeline currentStatus={stats.pendingReview > 0 ? 'under_review' : stats.totalApplications > 0 ? 'submitted' : 'draft'} />
         <DocumentChecklist userId={user?.id} />
       </div>
 
@@ -250,34 +238,22 @@ const DashboardView = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div 
-          className="dashboard-stat-card cursor-pointer" 
-          onClick={() => handleMetricClick('all')}
-        >
+        <div className="dashboard-stat-card cursor-pointer" onClick={() => handleMetricClick('all')}>
           <p className="stat-label">Total<br />Applications</p>
           <p className="stat-value">{stats.totalApplications}</p>
         </div>
 
-        <div 
-          className="dashboard-stat-card cursor-pointer" 
-          onClick={() => handleMetricClick('approved')}
-        >
+        <div className="dashboard-stat-card cursor-pointer" onClick={() => handleMetricClick('approved')}>
           <p className="stat-label">Approved<br />Amount</p>
           <p className="stat-value">${stats.approvedAmount.toLocaleString()}</p>
         </div>
 
-        <div 
-          className="dashboard-stat-card cursor-pointer" 
-          onClick={() => handleMetricClick('pending')}
-        >
+        <div className="dashboard-stat-card cursor-pointer" onClick={() => handleMetricClick('pending')}>
           <p className="stat-label">Pending<br />Review</p>
           <p className="stat-value">{stats.pendingReview}</p>
         </div>
 
-        <div 
-          className="dashboard-stat-card cursor-pointer" 
-          onClick={() => handleMetricClick('approved')}
-        >
+        <div className="dashboard-stat-card cursor-pointer" onClick={() => handleMetricClick('approved')}>
           <p className="stat-label">Success Rate</p>
           <p className="stat-value">{stats.successRate}%</p>
         </div>
@@ -286,34 +262,13 @@ const DashboardView = () => {
       {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="inline-flex items-center rounded-full bg-sidebar p-1 border border-sidebar-border">
-          <button
-            onClick={() => setActiveTab('applications')}
-            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-              activeTab === 'applications'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-white/70 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setActiveTab('applications')} className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${activeTab === 'applications' ? 'bg-primary text-primary-foreground' : 'text-white/70 hover:text-white'}`}>
             Loan Applications
           </button>
-          <button
-            onClick={() => setActiveTab('activity')}
-            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-              activeTab === 'activity'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-white/70 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setActiveTab('activity')} className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${activeTab === 'activity' ? 'bg-primary text-primary-foreground' : 'text-white/70 hover:text-white'}`}>
             Recent Activity
           </button>
-          <button
-            onClick={() => setActiveTab('loans')}
-            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-              activeTab === 'loans'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-white/70 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setActiveTab('loans')} className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${activeTab === 'loans' ? 'bg-primary text-primary-foreground' : 'text-white/70 hover:text-white'}`}>
             Existing Loans
           </button>
         </div>
@@ -874,7 +829,7 @@ const Index = () => {
   }
   return <Layout>
       <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="max-w-7xl mx-auto px-6 py-10 bg-white">
         <main>
         {/* Dashboard for Authenticated Users */}
         {authenticated && !selectedLoanType && <DashboardView />}
