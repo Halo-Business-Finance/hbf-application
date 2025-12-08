@@ -261,17 +261,7 @@ const DashboardView = () => {
 
       {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="inline-flex items-center rounded-full bg-sidebar p-1 border border-sidebar-border">
-          <button onClick={() => setActiveTab('applications')} className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${activeTab === 'applications' ? 'bg-primary text-primary-foreground' : 'text-white/70 hover:text-white'}`}>
-            Loan Applications
-          </button>
-          <button onClick={() => setActiveTab('activity')} className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${activeTab === 'activity' ? 'bg-primary text-primary-foreground' : 'text-white/70 hover:text-white'}`}>
-            Recent Activity
-          </button>
-          <button onClick={() => setActiveTab('loans')} className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${activeTab === 'loans' ? 'bg-primary text-primary-foreground' : 'text-white/70 hover:text-white'}`}>
-            Existing Loans
-          </button>
-        </div>
+        
 
         <TabsContent value="applications" className="mt-6">
           {statusFilter && <div className="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">

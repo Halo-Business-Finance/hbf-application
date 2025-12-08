@@ -74,7 +74,7 @@ export const EstimatedTimeline = ({
       </CardHeader>
       <CardContent>
         {/* Summary */}
-        <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg mb-4">
+        <div className="flex items-center justify-between p-3 rounded-lg mb-4 bg-white">
           <div>
             <p className="text-sm font-medium text-foreground">Total Estimated Time</p>
             <p className="text-xs text-black">From application to funding</p>
@@ -86,7 +86,7 @@ export const EstimatedTimeline = ({
         </div>
 
         {/* Current stage highlight */}
-        {currentStage && <div className="p-3 border border-primary/30 bg-primary/5 rounded-lg mb-4">
+        {currentStage && <div className="p-3 border border-primary/30 rounded-lg mb-4 bg-white">
             <div className="flex items-center gap-2 mb-1">
               <Clock className="h-4 w-4 text-primary animate-pulse" />
               <span className="text-sm font-medium text-primary">Current Stage</span>
