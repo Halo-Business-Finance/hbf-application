@@ -107,7 +107,7 @@ export function AppSidebar() {
         open ? "w-64" : "w-16"
       )}
     >
-      <SidebarContent className="flex flex-col bg-sidebar px-3 py-4">
+      <SidebarContent className={cn("flex flex-col bg-sidebar py-4", open ? "px-3" : "px-2")}>
         {/* Collapse Toggle */}
         <div className={cn("flex items-center mb-4", open ? "justify-end" : "justify-center")}>
           <button
