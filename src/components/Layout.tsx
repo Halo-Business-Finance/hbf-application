@@ -5,21 +5,20 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Footer } from '@/components/Footer';
-
 interface LayoutProps {
   children: ReactNode;
 }
-
-const Layout = ({ children }: LayoutProps) => {
-  return (
-    <SidebarProvider>
+const Layout = ({
+  children
+}: LayoutProps) => {
+  return <SidebarProvider>
       <div className="min-h-screen w-full bg-background flex flex-col gradient-bg-animated">
         <Navbar />
         <div className="flex flex-1 w-full overflow-hidden">
           <AppSidebar />
           <div className="flex-1 flex flex-col overflow-hidden">
             <Breadcrumbs />
-            <main className="flex-1 overflow-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-20 md:pb-8">
+            <main className="flex-1 overflow-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-20 md:pb-8 bg-white">
               <div className="animate-fade-in">
                 {children}
               </div>
@@ -29,8 +28,6 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
         <BottomNav />
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 };
-
 export default Layout;
