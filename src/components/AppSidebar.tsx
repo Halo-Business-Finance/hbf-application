@@ -109,12 +109,12 @@ export function AppSidebar() {
                 Main Menu
               </SidebarGroupLabel>}
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
-                {items.map(item => <SidebarMenuItem key={item.title}>
+              <SidebarMenu className={cn("space-y-1", !open && "items-center")}>
+                {items.map(item => <SidebarMenuItem key={item.title} className={cn(!open && "w-auto")}>
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
-                        <SidebarMenuButton asChild>
-                          <NavLink to={item.url} end={item.url === '/'} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "px-0 justify-center", isActive(item.url) ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" : "hover:bg-sidebar-accent")}>
+                        <SidebarMenuButton asChild className={cn(!open && "w-auto")}>
+                          <NavLink to={item.url} end={item.url === '/'} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "p-2 justify-center", isActive(item.url) ? "bg-gradient-primary text-sidebar-foreground shadow-primary font-medium" : "hover:bg-sidebar-accent")}>
                             <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-200", isActive(item.url) && "scale-110")} />
                             {open && <span className="truncate text-white">{item.title}</span>}
                           </NavLink>
@@ -135,12 +135,12 @@ export function AppSidebar() {
                   Administration
                 </SidebarGroupLabel>}
               <SidebarGroupContent>
-                <SidebarMenu className="space-y-1">
-                  {adminItems.map(item => <SidebarMenuItem key={item.title}>
+                <SidebarMenu className={cn("space-y-1", !open && "items-center")}>
+                  {adminItems.map(item => <SidebarMenuItem key={item.title} className={cn(!open && "w-auto")}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
-                          <SidebarMenuButton asChild>
-                            <NavLink to={item.url} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "px-0 justify-center", isActive(item.url) ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium" : "hover:bg-sidebar-accent")}>
+                          <SidebarMenuButton asChild className={cn(!open && "w-auto")}>
+                            <NavLink to={item.url} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200", "text-sidebar-foreground/70 hover:text-sidebar-foreground", open ? "px-3" : "p-2 justify-center", isActive(item.url) ? "bg-gradient-accent text-sidebar-foreground shadow-accent font-medium" : "hover:bg-sidebar-accent")}>
                               <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-200", isActive(item.url) && "scale-110")} />
                               {open && <span className="truncate text-white">{item.title}</span>}
                             </NavLink>
@@ -159,15 +159,15 @@ export function AppSidebar() {
         {/* User & Logout Section */}
         <SidebarGroup className="mt-auto pt-4 border-t border-sidebar-border">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className={cn(!open && "items-center")}>
               {/* User Info */}
               {open && firstName}
               
               {/* Logout Button */}
-              <SidebarMenuItem>
+              <SidebarMenuItem className={cn(!open && "w-auto")}>
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
-                    <SidebarMenuButton onClick={handleLogout} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer w-full", "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive", open ? "px-3" : "px-0 justify-center")}>
+                    <SidebarMenuButton onClick={handleLogout} className={cn("flex items-center gap-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer", "text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive", open ? "px-3 w-full" : "p-2 justify-center w-auto")}>
                       <LogOut className="h-5 w-5 flex-shrink-0 text-white" />
                       {open && <span className="text-white">Log Out</span>}
                     </SidebarMenuButton>
