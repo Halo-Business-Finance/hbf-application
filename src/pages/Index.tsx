@@ -196,12 +196,12 @@ const DashboardView = () => {
       <OnboardingGuide userId={user?.id} />
 
       {/* Header with bottom separator */}
-      <div className="border-b border-border pb-4">
+      <div className="border-none rounded-none">
         <div className="flex-1">
           {firstName && <h2 className="text-lg sm:text-xl font-bold text-foreground mb-3">
               Welcome, {firstName}
             </h2>}
-          <p className="text-sm sm:text-base text-muted-foreground mb-4">
+          <p className="text-sm sm:text-base mb-4 text-black">
             Manage your loan applications and track your progress here
           </p>
         </div>
@@ -829,7 +829,7 @@ const Index = () => {
   }
   return <Layout>
       <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-6 py-10 bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-10 bg-white border-0">
         <main>
         {/* Dashboard for Authenticated Users */}
         {authenticated && !selectedLoanType && <DashboardView />}
