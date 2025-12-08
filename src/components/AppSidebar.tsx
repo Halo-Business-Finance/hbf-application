@@ -107,22 +107,21 @@ export function AppSidebar() {
       )}
     >
       <SidebarContent className={cn("flex flex-col bg-sidebar py-4", open ? "px-3" : "px-2")}>
-        {/* Collapse Toggle */}
-        <div className="flex items-center justify-center mb-4">
-          <button
-            onClick={toggleSidebar}
-            className={cn(
-              "p-2 rounded-lg transition-all duration-200",
-              "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground"
-            )}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-
         {/* Main Navigation */}
         <div className="flex-1 space-y-1">
           <SidebarGroup>
+            {/* Collapse Toggle */}
+            <div className="flex items-center justify-center mb-2">
+              <button
+                onClick={toggleSidebar}
+                className={cn(
+                  "p-2 rounded-lg transition-all duration-200",
+                  "hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground"
+                )}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
             {open && (
               <SidebarGroupLabel className="text-sidebar-muted text-xs font-semibold uppercase tracking-wider px-3 mb-2">
                 Main Menu
